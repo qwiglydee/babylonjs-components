@@ -1,0 +1,31 @@
+{
+  "name": "babylonjs-components",
+  "private": true,
+  "author": "qwiglydee@gmail.com",
+  "type": "module",
+  "scripts": {
+    "build": "webpack build --mode production",
+    "serve": "webpack serve --mode development --port 8000"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^8.0",
+    "@babylonjs/gui": "^8.0",
+    "@babylonjs/loaders": "^8.0",
+    "@babylonjs/materials": "^8.0",
+    "@lit/context": "^1.0",
+    "lit": "^3.0"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^13.0",
+    "html-webpack-plugin": "^5.0",
+    "minify-html-literals-loader": "^1.0",
+    "terser-webpack-plugin": "^5.0",
+    "ts-loader": "^9.0",
+    "tslib": "^2.0",
+    "typescript": "^5.0",
+    "webpack": "^5.0",
+    "webpack-cli": "^6.0",
+    "webpack-dev-server": "^5.0",
+    "@rbarilani/remove-source-map-url-webpack-plugin": "^1.0"
+  }
+}

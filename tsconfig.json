@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "moduleResolution": "node",
+    "sourceMap": false,  // redefined in webpack.conf
+    "importHelpers": true,
+
+    /* Linting */
+    "strict": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true,
+    // "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+
+    "outDir": "./build/",
+    "paths": {
+      "@utils/*": ["./src/utils/*"]
+    }
+  },
+  "include": ["src"]
+}

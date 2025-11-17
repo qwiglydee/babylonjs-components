@@ -1,0 +1,8 @@
+.*
+!.gitignore
+/package-lock.json
+/node_modules/
+/lib/
+/build/
+/dist/
+/public/assets/

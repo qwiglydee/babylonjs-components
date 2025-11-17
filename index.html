@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My3d test page</title>
+        <link rel="stylesheet" href="bootstrap.min.css" />
+        <script src="fullscreen.js"></script>
+        <style>
+            .fullscreen {
+                width: 100vw;
+                height: var(--vh100, 100vh); /* from fullscreen.js */
+            }
+
+            the-app {
+                display: block;
+                height: 100%;
+            }
+
+            my3d-babylon {
+                background-color: var(--bs-gray-dark);
+                height: 100%;
+                min-height: 360px;
+                max-height: 75vh;
+                border-radius: var(--bs-border-radius-lg);
+                overflow: hidden;
+            }
+        </style>
+    </head>
+
+    <body class="container bg-light fullscreen">
+        <the-app class="my-3">
+            <my3d-babylon id="main"></my3d-babylon>
+
+            <our-something></our-something>
+        </the-app>
+
+        <script>
+            var app = document.querySelector("my3d-app");
+        </script>
+    </body>
+</html>
