@@ -1,13 +1,37 @@
 import { css, html, PropertyValues, ReactiveElement, render } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 
-import { debug } from "@utils/debug";
-import { IBabylonElem } from "./context";
-import { Deferred } from "@utils/deferred";
-import { scheduleEvent } from "@utils/events";
+import { Engine } from "@babylonjs/core/Engines/engine";
+import type { EngineOptions } from "@babylonjs/core/Engines/thinEngine";
+import { Scene } from "@babylonjs/core/scene";
+import { provide } from "@lit/context";
+import { dbgChanges, debug } from "@utils/debug";
+import { bubbleEvent } from "@utils/events";
+import { IBabylonElem, sceneCtx } from "./context";
+import { Color3 } from "@babylonjs/core/Maths";
+
+const ENGOPTIONS: EngineOptions = {
+    antialias: true,
+    stencil: true,
+    doNotHandleContextLost: true,
+};
 
 @customElement("my3d-babylon")
 export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
+    @query("canvas")
+    canvas!: HTMLCanvasElement;
+
+    engine!: Engine;
+
+    @provide({ context: sceneCtx })
+    scene!: Scene; // available to subcomponents immediately
+
+    @property({ type: Boolean })
+    rightHanded = false;
+
+    @property({ type: Number })
+    visibilityMin = 0.25;
+
     static override styles = css`
         :host {
             display: block;
@@ -39,15 +63,30 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         `;
     }
 
+    #needresize = true;
+    #resizingObs!: ResizeObserver;
+    #visibilityObs!: IntersectionObserver;
+
     constructor() {
         super();
-        debug(this, "constructed");
+        this.#resizingObs = new ResizeObserver(() => {
+            this.#needresize = true;
+        });
+        this.#visibilityObs = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) this.#startRendering();
+                else this.#stopRendering();
+            },
+            { threshold: this.visibilityMin }
+        );
     }
 
     override connectedCallback(): void {
         super.connectedCallback();
         debug(this, "connected");
         this.#init();
+        this.#resizingObs.observe(this);
+        this.#visibilityObs.observe(this);
     }
 
     override disconnectedCallback(): void {
@@ -56,17 +95,57 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         debug(this, "disconnected");
     }
 
+    // @ts-ignore
+    override connectedMoveCallback() {
+        // keep context when reconnecting (not widely available) 
+    }
+
     #init() {
-        /// TODO
-        scheduleEvent(null, 3000, this, "babylon.init");
+        render(this.render(), this.renderRoot); /** one-shot rendering */
+        debug(this, "initializing", this.canvas);
+        this.engine = new Engine(this.canvas, undefined, ENGOPTIONS);
+        this.scene = new Scene(this.engine);
+        this.scene.useRightHandedSystem = this.rightHanded;
+
+        // NB: some sub-components add stuff in the same frame
+        this.scene.whenReadyAsync(true).then(this.#onready);
     }
 
     #dispose() {
-        /// TODO
+        this.scene.dispose();
+        this.engine.dispose();
     }
 
-    protected override update(changes: PropertyValues): void {
-        if (!this.hasUpdated) render(this.render(), this.renderRoot); /** one-shot rendering */
+    #onready = () => {
+        bubbleEvent(this, "babylon.init");
+        this.#startRendering();
+    }
+
+    #startRendering() {
+        debug(this, "rendering START");
+        this.scene.activeCamera?.setEnabled(true);
+        this.engine.runRenderLoop(this.#rendering);
+    }
+
+    #stopRendering() {
+        debug(this, "rendering STOP");
+        this.engine.stopRenderLoop(this.#rendering);
+        this.scene.activeCamera?.setEnabled(false);
+    }
+
+    #rendering = () => {
+        if (this.#needresize) {
+            this.engine.resize();
+            this.#needresize = false;
+        }
+        if (this.scene.activeCamera) {
+            this.scene.render();
+        }
+    };
+
+    override update(changes: PropertyValues): void {
+        debug(this, "updating", dbgChanges(this, changes));
+        
         super.update(changes);
     }
 }

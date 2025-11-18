@@ -1,0 +1,45 @@
+import { consume } from "@lit/context";
+import { customElement } from "lit/decorators.js";
+
+import type { Scene } from "@babylonjs/core/scene";
+import { debug } from "@utils/debug";
+import { VirtualElement } from "@utils/element";
+
+import { UniversalCamera } from "@babylonjs/core/Cameras/universalCamera";
+import { Vector3 } from "@babylonjs/core/Maths";
+import { assertNonNull } from "@utils/asserts";
+import { sceneCtx } from "./context";
+
+@customElement("my3d-camera-basic")
+export class MyBasicCameraElem extends VirtualElement {
+    @consume({ context: sceneCtx, subscribe: false })
+    scene!: Scene;
+
+    _camera!: UniversalCamera;
+
+    override connectedCallback(): void {
+        super.connectedCallback();
+        assertNonNull(this.scene);
+        this.#init();
+
+        // prevent controls when not rendering
+        this._camera.onEnabledStateChangedObservable.add(() => {
+            if (this._camera.isEnabled()) {
+                // this._camera.useAutoRotationBehavior = this.autoSpin;
+                this._camera.attachControl(); 
+            } else { 
+                // this._camera.useAutoRotationBehavior = false;
+                this._camera.detachControl();
+            }
+        });
+        if (!this.scene.activeCamera) this.scene.activeCamera = this._camera;
+        this._camera.setEnabled(true);
+    }
+
+    #init() {
+        debug(this, "initilizing");
+        this._camera = new UniversalCamera("(Camera)", Vector3.Zero(), this.scene);
+        this._camera.setEnabled(false);
+        this._camera.target = Vector3.Forward();
+    }
+}

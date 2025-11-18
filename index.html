@@ -30,14 +30,18 @@
 
     <body class="container bg-light fullscreen">
         <the-app class="my-3">
-            <my3d-babylon id="main"></my3d-babylon>
+            <my3d-babylon id="main" rightHanded>
+                <my3d-camera-basic></my3d-camera-basic>
+                <my3d-axes></my3d-axes>
+                <my3d-something></my3d-something>
+            </my3d-babylon>
 
             <our-something param="foo"></our-something>
         </the-app>
 
         <script>
             var app = document.querySelector("the-app");
-            var my = { app: document.querySelector("my3d-babylon") };
+            var my = { babylon: document.querySelector("my3d-babylon") };
         </script>
     </body>
 </html>
