@@ -3,6 +3,8 @@ import { customElement } from "lit/decorators.js";
 
 import { debug } from "@utils/debug";
 import { IBabylonElem } from "./context";
+import { Deferred } from "@utils/deferred";
+import { scheduleEvent } from "@utils/events";
 
 @customElement("my3d-babylon")
 export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
@@ -34,25 +36,33 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         return html`
             <canvas></canvas>
             <slot name="overlay"></slot>
-        `
+        `;
+    }
+
+    constructor() {
+        super();
+        debug(this, "constructed");
     }
 
     override connectedCallback(): void {
         super.connectedCallback();
+        debug(this, "connected");
         this.#init();
     }
 
     override disconnectedCallback(): void {
         this.#dispose();
         super.disconnectedCallback();
+        debug(this, "disconnected");
     }
 
     #init() {
-        ///
+        /// TODO
+        scheduleEvent(null, 3000, this, "babylon.init");
     }
 
     #dispose() {
-        ///
+        /// TODO
     }
 
     protected override update(changes: PropertyValues): void {

@@ -1,16 +1,24 @@
 import { consume } from "@lit/context";
-import { css, html, LitElement } from "lit";
-import { customElement } from "lit/decorators.js";
+import { css, html, LitElement, PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { babylonCtx, IBabylonElem, statusCtx } from "./context";
+import { debug, dbgChanges } from "@utils/debug";
 
+/**
+ * Element linked to neighbour babylon via context.
+ * NB: element is not immediately avaiable because of random init/connect order.
+ */
 @customElement("our-something")
 export class OurSomethingElem extends LitElement {
-    @consume({ context: statusCtx, subscribe: false })
+    @consume({ context: statusCtx, subscribe: true })
     status?: string;
 
-    @consume({ context: babylonCtx, subscribe: false })
-    babylon?: IBabylonElem;
+    @consume({ context: babylonCtx, subscribe: true })
+    babylon: IBabylonElem | null = null;
+
+    @property()
+    param: string = "";
 
     static override styles = css`
         :host {
@@ -22,9 +30,24 @@ export class OurSomethingElem extends LitElement {
             margin: 4px;
             text-align: center;
         }
-    ` 
+    `;
+
+    protected override shouldUpdate(_changedProperties: PropertyValues): boolean {
+        return this.babylon != null;
+    }
+
+    protected override update(changes: PropertyValues): void {
+        if (!this.hasUpdated) this.#init();
+        debug(this, "updating", dbgChanges(this, changes));
+        super.update(changes);
+    }
 
     protected override render() {
-        return html`${this.status}, ${this.babylon?.id}!`;
+        debug(this, "rendering");
+        return html`[${this.param}] ${this.status}, ${this.babylon?.id}!`;
+    }
+
+    #init() {
+        debug(this, "initializing", this.babylon);
     }
 }

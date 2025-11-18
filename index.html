@@ -32,11 +32,12 @@
         <the-app class="my-3">
             <my3d-babylon id="main"></my3d-babylon>
 
-            <our-something></our-something>
+            <our-something param="foo"></our-something>
         </the-app>
 
         <script>
-            var app = document.querySelector("my3d-app");
+            var app = document.querySelector("the-app");
+            var my = { app: document.querySelector("my3d-babylon") };
         </script>
     </body>
 </html>
