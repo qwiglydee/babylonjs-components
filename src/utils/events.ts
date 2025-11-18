@@ -6,7 +6,7 @@ export function queueEvent<T>(that: HTMLElement, type: string, detail?: T): any 
     queueMicrotask(() => bubbleEvent<T>(that, type, detail));
 }
 
-export function scheduleEvent<T>(timer: number, time: number, that: HTMLElement, type: string, detail?: T): any {
+export function scheduleEvent<T>(timer: number | null, time: number, that: HTMLElement, type: string, detail?: T): any {
     if (timer) clearTimeout(timer);
     return setTimeout(() => bubbleEvent<T>(that, type, detail), time);
 }

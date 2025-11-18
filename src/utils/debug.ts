@@ -1,8 +1,5 @@
-type PropertyValues = Map<string, any>;
-
 export function debug(that: any, label: string, data: any = "...") {
-    const source = that.tagName ? `${that.tagName}${that.id ? '#' + that.id : ""}` : that.constructor.name; 
-    console.debug(source, label, data);
+    console.debug(that.constructor.name, label, data);
 }
 
 export function debugEvent(that: any, event: Event | CustomEvent) {
@@ -10,8 +7,6 @@ export function debugEvent(that: any, event: Event | CustomEvent) {
     debug(that, event.type, { detail: event.detail, path: event.composedPath() });
 }
 
-export function debugChanges(that: HTMLElement, label: string, changes: PropertyValues, keys?: PropertyKey[]) {
-    if (!keys) keys = [...changes.keys()];
-    // @ts-ignore
-    debug(that, label, { new: Object.fromEntries(keys.map(k => [k, that[k]])), old: Object.fromEntries(changes)});
+export function dbgChanges(that: any, changes: Map<any, unknown>) {
+    return new Map(Array.from(changes.keys()).map(k => [k, that[k]]));
 }
