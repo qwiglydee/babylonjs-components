@@ -29,7 +29,7 @@ export class MySomethingElem extends VirtualElement {
         new DirectionalLight("test", Vector3.Down(), this.scene);
         let sphere = CreateSphere("test", {}, this.scene);
         sphere.material = new StandardMaterial("test", this.scene);
-        sphere.position.z = 3;
+        sphere.position.z = -3;
     }
 
     override update(changes: PropertyValues) {

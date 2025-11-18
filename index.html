@@ -31,7 +31,8 @@
     <body class="container bg-light fullscreen">
         <the-app class="my-3">
             <my3d-babylon id="main" rightHanded>
-                <my3d-camera-basic></my3d-camera-basic>
+                <my3d-camera-basic id="cam1" selected></my3d-camera-basic>
+                <my3d-camera-basic id="cam2"></my3d-camera-basic>
                 <my3d-axes></my3d-axes>
                 <my3d-something></my3d-something>
             </my3d-babylon>
@@ -42,6 +43,10 @@
         <script>
             var app = document.querySelector("the-app");
             var my = { babylon: document.querySelector("my3d-babylon") };
+
+            function switchCam(id) {
+                document.querySelectorAll("my3d-camera-basic").forEach(cam => {cam.selected = cam.id == id});
+            }
         </script>
     </body>
 </html>
