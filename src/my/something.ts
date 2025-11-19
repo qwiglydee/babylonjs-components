@@ -30,6 +30,7 @@ export class MySomethingElem extends VirtualElement {
         debug(this, "initilizing");
         let sphere = CreateSphere("test", {}, this.scene);
         sphere.position = Vector3.Forward(this.scene.useRightHandedSystem);
+        sphere.position.y = 0.5;
         let mat = new PBRMaterial("test", this.scene);
         mat.albedoTexture = new Texture(this.texture, this.scene, { invertY: false });
         mat.roughness = 0.5;
