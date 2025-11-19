@@ -6,7 +6,7 @@ import type { EngineOptions } from "@babylonjs/core/Engines/thinEngine";
 import { Scene } from "@babylonjs/core/scene";
 import { provide } from "@lit/context";
 import { dbgChanges, debug } from "@utils/debug";
-import { bubbleEvent } from "@utils/events";
+import { bubbleEvent, queueEvent } from "@utils/events";
 import { IBabylonElem, sceneCtx } from "./context";
 import { Color3 } from "@babylonjs/core/Maths";
 
@@ -87,9 +87,16 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         this.#init();
         this.#resizingObs.observe(this);
         this.#visibilityObs.observe(this);
+        // let sub-components init their stuff 
+        queueMicrotask(() => {
+            this.scene.executeWhenReady(this.#onready, true);
+        })
     }
 
     override disconnectedCallback(): void {
+        this.#resizingObs.disconnect();
+        this.#visibilityObs.disconnect();
+        this.#stopRendering();
         this.#dispose();
         super.disconnectedCallback();
         debug(this, "disconnected");
@@ -106,9 +113,6 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         this.engine = new Engine(this.canvas, undefined, ENGOPTIONS);
         this.scene = new Scene(this.engine);
         this.scene.useRightHandedSystem = this.rightHanded;
-
-        // NB: some sub-components add stuff in the same frame
-        this.scene.whenReadyAsync(true).then(this.#onready);
     }
 
     #dispose() {
@@ -117,18 +121,19 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     }
 
     #onready = () => {
-        bubbleEvent(this, "babylon.init");
+        debug(this, "ready");
         this.#startRendering();
+        // TODO: hide screen
+        queueEvent(this, "babylon.init");
     }
 
     #startRendering() {
-        debug(this, "rendering START");
+        if (!this.scene.isReady()) return;
         this.scene.activeCamera?.setEnabled(true);
         this.engine.runRenderLoop(this.#rendering);
     }
 
     #stopRendering() {
-        debug(this, "rendering STOP");
         this.engine.stopRenderLoop(this.#rendering);
         this.scene.activeCamera?.setEnabled(false);
     }
