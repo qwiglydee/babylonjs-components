@@ -6,9 +6,8 @@ import type { EngineOptions } from "@babylonjs/core/Engines/thinEngine";
 import { Scene } from "@babylonjs/core/scene";
 import { provide } from "@lit/context";
 import { dbgChanges, debug } from "@utils/debug";
-import { bubbleEvent, queueEvent } from "@utils/events";
-import { IBabylonElem, sceneCtx } from "./context";
-import { Color3 } from "@babylonjs/core/Maths";
+import { queueEvent } from "@utils/events";
+import { IBabylonElem, sceneCtx, sizeCtx } from "./context";
 
 const ENGOPTIONS: EngineOptions = {
     antialias: true,
@@ -25,6 +24,10 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
     @provide({ context: sceneCtx })
     scene!: Scene; // available to subcomponents immediately
+
+    @provide({ context: sizeCtx })
+    @property({ type: Number })
+    worldSize = 100;
 
     @property({ type: Boolean })
     rightHanded = false;

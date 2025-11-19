@@ -7,6 +7,7 @@ export interface IBabylonElem extends ReactiveElement {
     /** TODO: some internal API **/
 }
 
-/** TODO: some internal contexts **/
+
+export const sizeCtx = createContext<number>(Symbol('babylon.size'))
 
 export const sceneCtx = createContext<Scene>(Symbol('babylon.scene'));

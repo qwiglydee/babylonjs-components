@@ -1,18 +1,16 @@
 import { consume } from "@lit/context";
-import { type PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import type { Scene } from "@babylonjs/core/scene";
-import { dbgChanges, debug } from "@utils/debug";
+import { debug } from "@utils/debug";
 import { VirtualElement } from "@utils/element";
 
-import { sceneCtx } from "./context";
-import { assertNonNull } from "@utils/asserts";
-import { CreateSphere } from "@babylonjs/core/Meshes/Builders/sphereBuilder";
-import { DirectionalLight } from "@babylonjs/core/Lights";
-import { Vector3 } from "@babylonjs/core/Maths";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
+import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
+import { Vector3 } from "@babylonjs/core/Maths";
+import { CreateSphere } from "@babylonjs/core/Meshes/Builders/sphereBuilder";
+import { assertNonNull } from "@utils/asserts";
+import { sceneCtx } from "./context";
 
 @customElement("my3d-something")
 export class MySomethingElem extends VirtualElement {
@@ -30,11 +28,11 @@ export class MySomethingElem extends VirtualElement {
     #init() {
         assertNonNull(this.scene);
         debug(this, "initilizing");
-        new DirectionalLight("test", Vector3.Down(), this.scene);
         let sphere = CreateSphere("test", {}, this.scene);
         sphere.position = Vector3.Forward(this.scene.useRightHandedSystem);
-        let mat = new StandardMaterial("test", this.scene);
-        mat.diffuseTexture = new Texture(this.texture, this.scene);
+        let mat = new PBRMaterial("test", this.scene);
+        mat.albedoTexture = new Texture(this.texture, this.scene, { invertY: false });
+        mat.roughness = 0.5;
         sphere.material = mat; 
     }
 
