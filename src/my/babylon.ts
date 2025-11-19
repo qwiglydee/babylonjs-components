@@ -1,16 +1,20 @@
 import { css, html, PropertyValues, ReactiveElement, render } from "lit";
-import { customElement, property, query } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 
+import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import type { EngineOptions } from "@babylonjs/core/Engines/thinEngine";
+import { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
+import { Color4 } from "@babylonjs/core/Maths";
 import { Scene } from "@babylonjs/core/scene";
+import { Nullable } from "@babylonjs/core/types";
 import { provide } from "@lit/context";
 import { dbgChanges, debug } from "@utils/debug";
 import { queueEvent } from "@utils/events";
-import { IBabylonElem, sceneCtx, sizeCtx } from "./context";
-import { MyScreenElem } from "./screen";
-import { Color3, Color4 } from "@babylonjs/core/Maths";
-import { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
+
+import { IBabylonElem, pickCtx, sceneCtx, sizeCtx } from "./context";
+import { MoveingCtrl } from "./controllers/appMoving";
+import { PickingCtrl } from "./controllers/appPicking";
 
 const ENGOPTIONS: EngineOptions = {
     antialias: true,
@@ -43,6 +47,10 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
     @property()
     background = "#33334D"; // babylon brand color to sync all backgrounds
+
+    @provide({ context: pickCtx })
+    @state()
+    picked: Nullable<PickingInfo> = null;
 
     static override styles = css`
         :host {
@@ -98,6 +106,9 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         );
     }
 
+    _pickCtrl = new PickingCtrl(this);
+    _moveCtrl = new MoveingCtrl(this);
+
     override connectedCallback(): void {
         super.connectedCallback();
         debug(this, "connected");
@@ -105,16 +116,10 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         this.#resizingObs.observe(this);
         this.#visibilityObs.observe(this);
 
-        // this.assets.onLoadingObservable.add((count: number) => {
-        //     // this.engine.loadingUIText = `Загрузка...`;
-        //     if (count) this.engine.displayLoadingUI();
-        //     else this.engine.hideLoadingUI();
-        // });
-
-        // let sub-components init their stuff 
+        // let sub-components init their stuff
         queueMicrotask(() => {
             this.scene.executeWhenReady(this.#onready, true);
-        })
+        });
     }
 
     override disconnectedCallback(): void {
@@ -128,7 +133,7 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
     // @ts-ignore
     override connectedMoveCallback() {
-        // keep context when reconnecting (not widely available) 
+        // keep context when reconnecting (not widely available)
     }
 
     #init() {
@@ -152,7 +157,7 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         this.#startRendering();
         this.engine.hideLoadingUI();
         queueEvent(this, "babylon.init");
-    }
+    };
 
     #startRendering() {
         if (!this.scene.isReady()) return;
@@ -177,7 +182,12 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
     override update(changes: PropertyValues): void {
         debug(this, "updating", dbgChanges(this, changes));
-        
         super.update(changes);
+    }
+
+    override updated(changes: PropertyValues): void {
+        if (changes.has("picked")) {
+            queueEvent(this, "babylon.pick", this.picked?.pickedMesh ? { name: this.picked.pickedMesh.name, id: this.picked.pickedMesh.id } : null);
+        }
     }
 }

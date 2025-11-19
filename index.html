@@ -15,6 +15,7 @@
             the-app {
                 display: block;
                 height: 100%;
+                position: relative;
             }
 
             my3d-babylon {
@@ -25,11 +26,18 @@
                 border-radius: var(--bs-border-radius-lg);
                 overflow: hidden;
             }
+
+            our-status {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: auto;
+            }
         </style>
     </head>
 
-    <body class="container bg-light fullscreen">
-        <the-app class="m-3">
+    <body class="container bg-light fullscreen p-1">
+        <the-app>
             <my3d-babylon id="main" worldSize="100" rightHanded>
                 <my3d-camera-basic id="cam1" selected></my3d-camera-basic>
                 <my3d-camera-basic id="cam2"></my3d-camera-basic>
@@ -46,6 +54,7 @@
             </my3d-babylon>
 
             <!-- <our-something param="foo"></our-something> -->
+            <our-status></our-status>
         </the-app>
 
         <script>

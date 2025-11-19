@@ -1,10 +1,10 @@
-import { provide } from "@lit/context";
-import { ReactiveElement } from "lit";
-import { customElement } from "lit/decorators.js";
+import { consume, provide } from "@lit/context";
+import { PropertyValues, ReactiveElement } from "lit";
+import { customElement, state } from "lit/decorators.js";
 
-import { babylonCtx, BabylonInitEvent, IBabylonElem, statusCtx } from "./our/context";
+import { babylonCtx, BabylonInitEvent, BabylonPickEvent, IBabylonElem, statusCtx } from "./our/context";
 import { assertNonNull } from "@utils/asserts";
-import { debug, debugEvent } from "@utils/debug";
+import { dbgChanges, debug, debugEvent } from "@utils/debug";
 
 /**
  * Babylon-unaware web app
@@ -26,11 +26,17 @@ export class TheAppElem extends ReactiveElement {
     constructor() {
         super();
         this.addEventListener('babylon.init', this.#oninit);
+        this.addEventListener('babylon.pick', this.#onpick)
     }
 
     #oninit = (event: BabylonInitEvent) => {
         debugEvent(this, event);
         this.status = "hello";  
         this.babylon = event.target as IBabylonElem;
+    }
+
+    #onpick = (event: BabylonPickEvent) => {
+        debugEvent(this, event);
+        this.status = event.detail ? `Picked ${event.detail.name}` : "...";  
     }
 }
