@@ -8,6 +8,9 @@ import { provide } from "@lit/context";
 import { dbgChanges, debug } from "@utils/debug";
 import { queueEvent } from "@utils/events";
 import { IBabylonElem, sceneCtx, sizeCtx } from "./context";
+import { MyScreenElem } from "./screen";
+import { Color3, Color4 } from "@babylonjs/core/Maths";
+import { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
 
 const ENGOPTIONS: EngineOptions = {
     antialias: true,
@@ -19,6 +22,9 @@ const ENGOPTIONS: EngineOptions = {
 export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     @query("canvas")
     canvas!: HTMLCanvasElement;
+
+    @query("my3d-screen")
+    screen!: HTMLElement & ILoadingScreen;
 
     engine!: Engine;
 
@@ -34,6 +40,9 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
     @property({ type: Number })
     visibilityMin = 0.25;
+
+    @property()
+    background = "#33334D"; // babylon brand color to sync all backgrounds
 
     static override styles = css`
         :host {
@@ -57,12 +66,17 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
             z-index: 1;
             pointer-events: none;
         }
+
+        my3d-screen {
+            z-index: 2;
+        }
     `;
 
     render() {
         return html`
             <canvas></canvas>
             <slot name="overlay"></slot>
+            <my3d-screen></my3d-screen>
         `;
     }
 
@@ -90,6 +104,13 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         this.#init();
         this.#resizingObs.observe(this);
         this.#visibilityObs.observe(this);
+
+        // this.assets.onLoadingObservable.add((count: number) => {
+        //     // this.engine.loadingUIText = `Загрузка...`;
+        //     if (count) this.engine.displayLoadingUI();
+        //     else this.engine.hideLoadingUI();
+        // });
+
         // let sub-components init their stuff 
         queueMicrotask(() => {
             this.scene.executeWhenReady(this.#onready, true);
@@ -114,8 +135,11 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         render(this.render(), this.renderRoot); /** one-shot rendering */
         debug(this, "initializing", this.canvas);
         this.engine = new Engine(this.canvas, undefined, ENGOPTIONS);
+        this.engine.loadingScreen = this.screen;
+        this.engine.loadingScreen.loadingUIBackgroundColor = this.background;
         this.scene = new Scene(this.engine);
         this.scene.useRightHandedSystem = this.rightHanded;
+        this.scene.clearColor = Color4.FromHexString(this.background);
     }
 
     #dispose() {
@@ -126,7 +150,7 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     #onready = () => {
         debug(this, "ready");
         this.#startRendering();
-        // TODO: hide screen
+        this.engine.hideLoadingUI();
         queueEvent(this, "babylon.init");
     }
 
