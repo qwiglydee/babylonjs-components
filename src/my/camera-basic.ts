@@ -23,7 +23,7 @@ export class MyBasicCameraElem extends VirtualElement {
 
     @state()
     target: Nullable<AbstractMesh> = null;
-    
+
     _camera!: UniversalCamera;
 
     override connectedCallback(): void {
@@ -47,6 +47,7 @@ export class MyBasicCameraElem extends VirtualElement {
     #init() {
         debug(this, "initilizing");
         this._camera = new UniversalCamera("(Camera)", Vector3.Backward(this.scene.useRightHandedSystem), this.scene);
+        this._camera.position.y = 1.75;
         this._camera.setEnabled(false);
     }
 

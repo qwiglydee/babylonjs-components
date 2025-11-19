@@ -30,7 +30,7 @@
 
     <body class="container bg-light fullscreen">
         <the-app class="m-3">
-            <my3d-babylon id="main"  worldSize="100" rightHanded>
+            <my3d-babylon id="main" worldSize="100" rightHanded>
                 <my3d-camera-basic id="cam1" selected></my3d-camera-basic>
                 <my3d-camera-basic id="cam2"></my3d-camera-basic>
 
@@ -38,8 +38,10 @@
                     <my3d-skybox intensity="0.25" blurring="0.75"></my3d-skybox>
                 </my3d-skyenv>
 
+                <my3d-stuff radius="5" count="3"></my3d-stuff>
+                <my3d-ground-flat size="20" src="assets/ground.png"></my3d-ground-flat>
+                <my3d-ground-grid size="20" src="assets/ground.png"></my3d-ground-grid>
                 <my3d-axes></my3d-axes>
-                <my3d-stuff radius="10" count="3"></my3d-stuff>
 
             </my3d-babylon>
 

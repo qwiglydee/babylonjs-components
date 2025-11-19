@@ -6,3 +6,5 @@ import "./skyenv";
 import "./skybox";
 import "./screen";
 import "./stuff";
+import "./ground-flat";
+import "./ground-grid";
