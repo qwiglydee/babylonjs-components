@@ -1,5 +1,7 @@
 export function debug(that: any, label: string, data: any = "...") {
-    console.debug(that.constructor.name, label, data);
+    let src = that.constructor.name;
+    if (that.id) src += `#${that.id}`;
+    console.debug(src, label, data);
 }
 
 export function debugEvent(that: any, event: Event | CustomEvent) {

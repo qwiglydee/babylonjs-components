@@ -1,10 +1,12 @@
+// NB: order of imports determines order their `connectedCallbacks` are called
 import "./babylon";
+import "./utility";
+import "./screen";
 import "./something";
 import "./axes";
 import "./camera-basic";
 import "./skyenv";
 import "./skybox";
-import "./screen";
 import "./stuff";
 import "./ground-flat";
 import "./ground-grid";

@@ -1,20 +1,19 @@
 import { consume } from "@lit/context";
 import { type PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
-import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
-import { Color3, Vector2 } from "@babylonjs/core/Maths";
+import { Color3 } from "@babylonjs/core/Maths";
 import { CreateGround } from "@babylonjs/core/Meshes/Builders/groundBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
-import { assertNonNull } from "@utils/asserts";
-
-import { VirtualElement } from "@utils/element";
-import { sceneCtx, sizeCtx } from "./context";
 import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
+import { assertNonNull } from "@utils/asserts";
+import { VirtualElement } from "@utils/element";
+
+import { sceneCtx, sizeCtx } from "./context";
 
 
 @customElement("my3d-ground-grid")
