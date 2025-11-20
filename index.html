@@ -83,7 +83,7 @@
                 <hr />
                 <our-stuff-tools class="d-flex gap-1 align-items-center">
                     <div class="input-group border-secondary">
-                        <span class="input-group-text">Picked</span>
+                        <span class="input-group-text">Picked:</span>
                         <our-stuff-pick class="form-control"></our-stuff-pick>
                     </div>
                     <div class="form-check form-switch">
@@ -96,6 +96,13 @@
                     </div>
                     <button type="button" class="btn btn-outline-primary" name="delete" disabled>delete</button>
                 </our-stuff-tools>
+                <our-camera-switch class="d-flex gap-1 align-items-center">
+                    <label for="sel-cam">Camera:</label>
+                    <select id="sel-cam" name="camera" class="form-select" disabled>
+                        <option value="cam1">Cam1</option>
+                        <option value="cam2">Cam2</option>
+                    </select>
+                </our-camera-switch>
             </div>
             <our-status></our-status>
         </the-app>
