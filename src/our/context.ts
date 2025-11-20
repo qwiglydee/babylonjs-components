@@ -17,6 +17,8 @@ export type BabylonInitEvent = CustomEvent;
 export interface PickDetail {
   name: string;
   id: string;
+  enabled: boolean;
+  visible: boolean;
 }
 
 export type BabylonPickEvent = CustomEvent<PickDetail>;

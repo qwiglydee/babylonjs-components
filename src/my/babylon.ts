@@ -187,7 +187,17 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
     override updated(changes: PropertyValues): void {
         if (changes.has("picked")) {
-            queueEvent(this, "babylon.pick", this.picked?.pickedMesh ? { name: this.picked.pickedMesh.name, id: this.picked.pickedMesh.id } : null);
+            const mesh = this.picked?.pickedMesh;
+            if (mesh) {
+                queueEvent(this, "babylon.pick", {
+                    name: mesh.name,
+                    id: mesh.id,
+                    enabled: mesh.isEnabled(),
+                    visible: mesh.isVisible,
+                });
+            } else {
+                queueEvent(this, "babylon.pick", null);
+            }
         }
     }
 }

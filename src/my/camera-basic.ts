@@ -48,6 +48,7 @@ export class MyBasicCameraElem extends VirtualElement {
         debug(this, "initilizing");
         this._camera = new UniversalCamera("(Camera)", Vector3.Backward(this.scene.useRightHandedSystem), this.scene);
         this._camera.position.y = 1.75;
+        this._camera.position.z = 2;
         this._camera.setEnabled(false);
     }
 

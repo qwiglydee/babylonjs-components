@@ -37,6 +37,6 @@ export class TheAppElem extends ReactiveElement {
 
     #onpick = (event: BabylonPickEvent) => {
         debugEvent(this, event);
-        this.status = event.detail ? `Picked ${event.detail.name}#${event.detail.id}` : "...";  
+        this.status = event.detail ? `Picked ${event.detail.name} [${event.detail.id}]` : "...";  
     }
 }

@@ -29,8 +29,11 @@ export class MyStuffElem extends VirtualElement {
     @property()
     texture = "assets/checker.png";
 
-    @property({ type: Number })
-    rndRadius = 1;
+    @property({ type: Boolean, reflect: true })
+    disabled = false;
+
+    @property({ type: Boolean, reflect: true })
+    override hidden = false;
 
     @state()
     _position = Vector3.Zero();
@@ -44,15 +47,14 @@ export class MyStuffElem extends VirtualElement {
         );
     }
 
+    override connectedCallback(): void {
+        super.connectedCallback();
+        this.#init();
+    }
+
     override disconnectedCallback(): void {
         this.#dispose();
         super.disconnectedCallback();
-    }
-
-    override update(changes: PropertyValues): void {
-        if (!this.hasUpdated) this.#init();
-        if (changes.has('_position')) this._mesh.position = this._position;
-        super.update(changes);
     }
 
     _mesh!: Mesh;
@@ -104,4 +106,10 @@ export class MyStuffElem extends VirtualElement {
         this._mesh.dispose(true, false);
     }
 
+    override update(changes: PropertyValues): void {
+        if (changes.has('_position')) this._mesh.position = this._position;
+        if (changes.has('disabled')) this._mesh.setEnabled(!this.disabled);
+        if (changes.has('hidden')) this._mesh.visibility = this.hidden ? 0 : 1;
+        super.update(changes);
+    }
 }
