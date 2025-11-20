@@ -7,13 +7,13 @@ import { LinkedElement, WrappingElement } from "./elements";
 
 @customElement("our-stuff-add")
 export class OurStuffAddElem extends WrappingElement {
-    @query("button[name=create]")
+    @query("button[name=create]", true)
     button!: HTMLButtonElement;
 
-    @query("select[name=shape]")
+    @query("select[name=shape]", true)
     select!: HTMLSelectElement;
 
-    @query("input[name=dist]")
+    @query("input[name=dist]", true)
     input!: HTMLSelectElement;
 
     override linkedCallback(): void {
@@ -73,10 +73,10 @@ export class OurStuffToolsElem extends WrappingElement {
     @queryAll("input")
     inputs!: HTMLInputElement[];
 
-    @query("input[name=enabled]")
+    @query("input[name=enabled]", true)
     inpEnabled!: HTMLInputElement;
 
-    @query("input[name=visible]")
+    @query("input[name=visible]", true)
     inpVisible!: HTMLInputElement;
 
     @state()

@@ -24,10 +24,10 @@ const ENGOPTIONS: EngineOptions = {
 
 @customElement("my3d-babylon")
 export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
-    @query("canvas")
+    @query("canvas", true)
     canvas!: HTMLCanvasElement;
 
-    @query("my3d-screen")
+    @query("my3d-screen", true)
     screen!: HTMLElement & ILoadingScreen;
 
     engine!: Engine;

@@ -12,7 +12,7 @@ export class OurSomestuffElem extends WrappingElement {
     @consume({ context: statusCtx, subscribe: true })
     status?: string;
 
-    @query("button[name=hello]")
+    @query("button[name=hello]", true)
     button?: HTMLButtonElement;
     
     override linkedCallback(): void {        
