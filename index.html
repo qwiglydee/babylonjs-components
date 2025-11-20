@@ -37,11 +37,33 @@
             our-somestuff {
                 display: blocks;
             }
-        </style>
+
+            our-stuff-add, our-stuff-del {
+                max-width: 20rem;
+            }
+            </style>
     </head>
 
     <body class="container bg-light fullscreen p-1">
         <the-app>
+
+            <div class="toolbar d-flex gap-2 m-2">
+                <our-stuff-add class="input-group">
+                    <select name="shape" class="form-select border-primary" disabled>
+                        <option>cube</option>
+                        <option>cone</option>
+                        <option>sphere</option>
+                        <option selected>icosphere</option>
+                    </select>
+                    <input type="number" name="dist" class="form-control border-primary" value="5" disabled>
+                    <button type="button" class="btn btn-outline-primary" name="create"  disabled>+</button>
+                </our-stuff-add>
+                <our-stuff-del class="input-group">
+                    <input type="text" name="id" class="form-control border-primary" disabled>
+                    <button type="button" class="btn btn-outline-primary" name="delete" disabled>-</button>
+                </our-stuff-del>
+            </div>
+
             <my3d-babylon id="main" worldSize="100" rightHanded>
                 <my3d-camera-basic id="cam1" selected></my3d-camera-basic>
                 <my3d-camera-basic id="cam2"></my3d-camera-basic>
@@ -50,11 +72,11 @@
                     <my3d-skybox intensity="0.25" blurring="0.75"></my3d-skybox>
                 </my3d-skyenv>
 
-                <my3d-stuff radius="5" count="3"></my3d-stuff>
                 <my3d-ground-flat size="20" src="assets/ground.png"></my3d-ground-flat>
                 <my3d-ground-grid size="20" src="assets/ground.png"></my3d-ground-grid>
                 <my3d-axes></my3d-axes>
 
+                <my3d-stuff id="box" shape="cube"></my3d-stuff>
             </my3d-babylon>
 
             <our-something></our-something>
@@ -67,13 +89,15 @@
 
         <script>
             var app = document.querySelector("the-app");
-            var my = { 
+            var my = {
                 babylon: document.querySelector("my3d-babylon"),
-                stuff: document.querySelector("my3d-stuff")
+                stuff: document.querySelector("my3d-stuff"),
             };
 
             function switchCam(id) {
-                document.querySelectorAll("my3d-camera-basic").forEach(cam => {cam.selected = cam.id == id});
+                document.querySelectorAll("my3d-camera-basic").forEach((cam) => {
+                    cam.selected = cam.id == id;
+                });
             }
         </script>
     </body>

@@ -1,5 +1,5 @@
 import { consume } from "@lit/context";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { PBRMetallicRoughnessMaterial } from "@babylonjs/core/Materials/PBR/pbrMetallicRoughnessMaterial";
 import { Vector3 } from "@babylonjs/core/Maths";
@@ -10,80 +10,98 @@ import { debug } from "@utils/debug";
 import { VirtualElement } from "@utils/element";
 
 import { sceneCtx } from "./context";
+import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
+import { Texture } from "@babylonjs/core/Materials/Textures/texture";
+import { assert, assertNonNull } from "@utils/asserts";
+import { PropertyValues } from "lit";
 
 @customElement("my3d-stuff")
 export class MyStuffElem extends VirtualElement {
     @consume({ context: sceneCtx, subscribe: false })
     scene!: Scene;
 
-    @property({ type: Number })
-    radius = 10;
+    @property()
+    shape?: string;
 
     @property({ type: Number })
     size = 1;
 
+    @property()
+    texture = "assets/checker.png";
+
     @property({ type: Number })
-    count = 3;
+    rndRadius = 1;
 
-    static shapes = ['box', 'ball', 'cone', 'diamond'];
+    @state()
+    _position = Vector3.Zero();
 
-    override connectedCallback(): void {
-        super.connectedCallback();
-        this.#init();
-        this.#create();
+    setPosition(coords: {x?: number, y?: number, z?: number}) {
+        // NB: invoked before mesh created
+        this._position = new Vector3(
+            coords.x ?? this._position.x,
+            coords.y ?? this._position.y,
+            coords.z ?? this._position.z
+        );
     }
 
-    #randomLoc() {
-        const rndc = () => (Math.random() * 2 - 1) * this.radius;
-        const snap = (coord: number) => this.size * (0.5 + Math.floor(coord / this.size));
-
-        return new Vector3(snap(rndc()), 0.5 * this.size, snap(rndc()));
+    override disconnectedCallback(): void {
+        this.#dispose();
+        super.disconnectedCallback();
     }
 
-    _defaultMat!: PBRMetallicRoughnessMaterial;
+    override update(changes: PropertyValues): void {
+        if (!this.hasUpdated) this.#init();
+        if (changes.has('_position')) this._mesh.position = this._position;
+        super.update(changes);
+    }
 
+    _mesh!: Mesh;
 
-    _createItem = (shape: string) => {
-        debug(this, "creating", { shape });
-        const scene = this.scene;
+    _getMatrial() {
+        let mat = this.scene.getMaterialByName("test") as PBRMaterial;
+        if (!mat) {
+            mat = new PBRMaterial("test", this.scene);
+            mat.albedoTexture = new Texture(this.texture, this.scene, { invertY: false });
+            mat.roughness = 0.5;
+        }
+        return mat;
+    }
 
-        let mesh: Mesh;
-        switch (shape) {
-            case 'box':
-                mesh = MeshBuilder.CreateBox(shape, { size: this.size }, scene);
+    #init() {
+        assertNonNull(this.shape, `Missing ${this.tagName}.shape`);
+
+        let id = this.id;
+        if (!id) {
+            let idx = (1 + (this.scene.meshes.length ?? 0)).toString().padStart(3, "0");
+            id = `${this.shape}.${idx}`;
+            this.id = id;
+        }
+        debug(this, "creating", {shape: this.shape, id });
+
+        switch (this.shape) {
+            case 'cube':
+                this._mesh = MeshBuilder.CreateBox(this.shape, { size: this.size }, this.scene);
                 break;
-            case 'ball':
-                mesh = MeshBuilder.CreateSphere(shape, { diameter: this.size }, scene);
+            case 'sphere':
+                this._mesh = MeshBuilder.CreateSphere(this.shape, { diameter: this.size }, this.scene);
                 break;
             case 'cone':
-                mesh = MeshBuilder.CreateCylinder(shape, { height: this.size, diameterBottom: this.size, diameterTop: 0 }, scene);
+                this._mesh = MeshBuilder.CreateCylinder(this.shape, { height: this.size, diameterBottom: this.size, diameterTop: 0 }, this.scene);
                 break;
-            case 'diamond':
-                mesh = MeshBuilder.CreateIcoSphere(shape, { radius: 0.5 * this.size, subdivisions: 1 }, scene);
+            case 'icosphere':
+                this._mesh = MeshBuilder.CreateIcoSphere(this.shape, { radius: 0.5 * this.size, subdivisions: 1 }, this.scene);
                 break;
             default:
-                throw Error();
+                throw Error(`Invalid shape: ${this.shape}`);
         }
-        let idx = (1 + (scene.meshes.length ?? 0)).toString().padStart(3, "0");
-        mesh.id = `${shape}.${idx}`;
-        mesh.position = this.#randomLoc();
-        mesh.material = this._defaultMat;
-        return mesh;
+        this._mesh.id = id;
+        this._mesh.position.y = 0.5 * this.size;
+        this._mesh.bakeCurrentTransformIntoVertices();
+        this._mesh.material = this._getMatrial();
     };
 
-    async #init() {
-        this._defaultMat = new PBRMetallicRoughnessMaterial("default", this.scene);
-        this._defaultMat.metallic = 0;
-        this._defaultMat.roughness = 0.5;    
+    #dispose() {
+        this._mesh.dispose(true, false);
     }
 
-    async #create() {
-        if (!this.count) return;
-        for (let i = 0; i < this.count; i++) this._createItem(MyStuffElem.shapes[i % 4]);
-    }
-
-    createItem(shape?: string) {
-        if (!shape) shape = MyStuffElem.shapes[Math.floor(Math.random() * MyStuffElem.shapes.length)]
-        this._createItem(shape);
-    }
 }

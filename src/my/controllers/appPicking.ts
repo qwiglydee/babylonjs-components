@@ -2,6 +2,7 @@ import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { PointerEventTypes, PointerInfo } from "@babylonjs/core/Events/pointerEvents";
 import { debug } from "@utils/debug";
 import { BabylonCtrl } from "./appCtrl";
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 
 export class PickingCtrl extends BabylonCtrl {
     init() {
@@ -9,6 +10,9 @@ export class PickingCtrl extends BabylonCtrl {
             if (info.type == PointerEventTypes.POINTERTAP && info.pickInfo) {
                 if (info.pickInfo?.pickedMesh) this.#pick(info.pickInfo); else this.#unpick();
             }
+        });
+        this.scene.onMeshRemovedObservable.add((mesh: AbstractMesh) => {
+            if (mesh === this.host.picked?.pickedMesh) this.#unpick();
         });
     }
 
