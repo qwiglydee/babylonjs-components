@@ -15,7 +15,7 @@ export class OurStatusElem extends LitElement {
 
     static override styles = css`
         :host {
-            display: inline-block;
+            display: block;
             background-color: lightgray;
             color: black;
             text-align: center;

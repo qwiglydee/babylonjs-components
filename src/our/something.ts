@@ -1,24 +1,15 @@
 import { consume } from "@lit/context";
-import { css, html, LitElement, PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { css, html, PropertyValues } from "lit";
+import { customElement } from "lit/decorators.js";
 
-import { babylonCtx, IBabylonElem, statusCtx } from "./context";
-import { debug, dbgChanges } from "@utils/debug";
+import { dbgChanges, debug } from "@utils/debug";
+import { statusCtx } from "./context";
+import { LinkedElement } from "./elements";
 
-/**
- * Element linked to neighbour babylon via context.
- * NB: element is not immediately avaiable because of random init/connect order.
- */
 @customElement("our-something")
-export class OurSomethingElem extends LitElement {
+export class OurSomethingElem extends LinkedElement {
     @consume({ context: statusCtx, subscribe: true })
     status?: string;
-
-    @consume({ context: babylonCtx, subscribe: true })
-    babylon: IBabylonElem | null = null;
-
-    @property()
-    param: string = "";
 
     static override styles = css`
         :host {
@@ -32,22 +23,12 @@ export class OurSomethingElem extends LitElement {
         }
     `;
 
-    protected override shouldUpdate(_changedProperties: PropertyValues): boolean {
-        return this.babylon != null;
-    }
-
-    protected override update(changes: PropertyValues): void {
-        if (!this.hasUpdated) this.#init();
-        debug(this, "updating", dbgChanges(this, changes));
-        super.update(changes);
+    override linkedCallback(): void {
+        debug(this, "linked babylon", this.babylon);
     }
 
     protected override render() {
         debug(this, "rendering");
-        return html`[${this.param}] ${this.status}, ${this.babylon?.id}!`;
-    }
-
-    #init() {
-        debug(this, "initializing", this.babylon);
+        return html`${this.status}, ${this.babylon?.localName}#${this.babylon?.id}!`;
     }
 }
