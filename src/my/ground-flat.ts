@@ -8,19 +8,15 @@ import { Color3 } from "@babylonjs/core/Maths";
 import { CreateGround } from "@babylonjs/core/Meshes/Builders/groundBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
-import type { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
 import { assertNonNull } from "@utils/asserts";
-import { VirtualElement } from "@utils/element";
 
-import { sceneCtx, sizeCtx } from "./context";
+import { sizeCtx } from "./context";
+import { SceneElement } from "./elements";
 
 
 @customElement("my3d-ground-flat")
-export class MyFlatGroundElem extends VirtualElement {
-    @consume({ context: sceneCtx, subscribe: false })
-    scene!: Scene;
-
+export class MyFlatGroundElem extends SceneElement {
     @consume({ context: sizeCtx })
     worldSize = 1;
 
@@ -39,16 +35,11 @@ export class MyFlatGroundElem extends VirtualElement {
     @property({ type: Number })
     opacity = 1.0;
 
-    override connectedCallback(): void {
-        assertNonNull(this.src, `${this.tagName}.src is required`)
-        super.connectedCallback();
-        this.#init();
-    }
-
     _ground!: Mesh;
     _material!: BackgroundMaterial;
 
-    #init() {
+    override init() {
+        assertNonNull(this.src, `${this.tagName}.src is required`)
         // debug(this, "initilizing");
         this._material = new BackgroundMaterial("(Ground)", this.scene);
         this._material.useRGBColor = false;
@@ -62,6 +53,10 @@ export class MyFlatGroundElem extends VirtualElement {
         this._ground.material = this._material;
 
         this.size ??= 0.5 * this.worldSize;
+    }
+
+    override dispose() {
+        this._ground.dispose(true, true);
     }
 
     // #calcSize() {

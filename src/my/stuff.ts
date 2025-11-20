@@ -1,25 +1,18 @@
-import { consume } from "@lit/context";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { PBRMetallicRoughnessMaterial } from "@babylonjs/core/Materials/PBR/pbrMetallicRoughnessMaterial";
 import { Vector3 } from "@babylonjs/core/Maths";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import type { Scene } from "@babylonjs/core/scene";
 import { debug } from "@utils/debug";
-import { VirtualElement } from "@utils/element";
 
-import { sceneCtx } from "./context";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
-import { assert, assertNonNull } from "@utils/asserts";
+import { assertNonNull } from "@utils/asserts";
 import { PropertyValues } from "lit";
+import { SceneElement } from "./elements";
 
 @customElement("my3d-stuff")
-export class MyStuffElem extends VirtualElement {
-    @consume({ context: sceneCtx, subscribe: false })
-    scene!: Scene;
-
+export class MyStuffElem extends SceneElement {
     @property()
     shape?: string;
 
@@ -47,16 +40,6 @@ export class MyStuffElem extends VirtualElement {
         );
     }
 
-    override connectedCallback(): void {
-        super.connectedCallback();
-        this.#init();
-    }
-
-    override disconnectedCallback(): void {
-        this.#dispose();
-        super.disconnectedCallback();
-    }
-
     _mesh!: Mesh;
 
     _getMatrial() {
@@ -69,7 +52,7 @@ export class MyStuffElem extends VirtualElement {
         return mat;
     }
 
-    #init() {
+    override init() {
         assertNonNull(this.shape, `Missing ${this.tagName}.shape`);
 
         let id = this.id;
@@ -102,7 +85,7 @@ export class MyStuffElem extends VirtualElement {
         this._mesh.material = this._getMatrial();
     };
 
-    #dispose() {
+    override dispose() {
         this._mesh.dispose(true, false);
     }
 

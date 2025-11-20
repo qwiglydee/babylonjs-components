@@ -7,20 +7,16 @@ import { Color3 } from "@babylonjs/core/Maths";
 import { CreateGround } from "@babylonjs/core/Meshes/Builders/groundBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
-import type { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
 import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
 import { assertNonNull } from "@utils/asserts";
-import { VirtualElement } from "@utils/element";
 
-import { sceneCtx, sizeCtx } from "./context";
+import { sizeCtx } from "./context";
+import { SceneElement } from "./elements";
 
 
 @customElement("my3d-ground-grid")
-export class MyGridGroundElem extends VirtualElement {
-    @consume({ context: sceneCtx, subscribe: false })
-    scene!: Scene;
-
+export class MyGridGroundElem extends SceneElement {
     @consume({ context: sizeCtx })
     worldSize = 1;
 
@@ -45,16 +41,11 @@ export class MyGridGroundElem extends VirtualElement {
     @property({ type: Number })
     opacity2 = 0.25;
 
-    override connectedCallback(): void {
-        assertNonNull(this.src, `${this.tagName}.src is required`)
-        super.connectedCallback();
-        this.#init();
-    }
-
     _ground!: Mesh;
     _material!: GridMaterial;
 
-    #init() {
+    override init() {
+        assertNonNull(this.src, `${this.tagName}.src is required`)
         // debug(this, "initilizing");
         this._material = new GridMaterial("(Ground)", this.scene);
         this._material.majorUnitFrequency = 8;
@@ -67,6 +58,10 @@ export class MyGridGroundElem extends VirtualElement {
         this._ground.material = this._material;
 
         this.size ??= 0.5 * this.worldSize;
+    }
+
+    override dispose(): void {
+        this._ground.dispose(true, true);    
     }
 
     // #calcSize() {

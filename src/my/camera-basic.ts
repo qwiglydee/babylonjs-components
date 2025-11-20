@@ -1,23 +1,15 @@
-import { consume } from "@lit/context";
 import { PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { UniversalCamera } from "@babylonjs/core/Cameras/universalCamera";
 import { Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import type { Scene } from "@babylonjs/core/scene";
 import { Nullable } from "@babylonjs/core/types";
-import { assertNonNull } from "@utils/asserts";
-import { debug } from "@utils/debug";
-import { VirtualElement } from "@utils/element";
 
-import { sceneCtx } from "./context";
+import { SceneElement } from "./elements";
 
 @customElement("my3d-camera-basic")
-export class MyBasicCameraElem extends VirtualElement {
-    @consume({ context: sceneCtx, subscribe: false })
-    scene!: Scene;
-
+export class MyBasicCameraElem extends SceneElement {
     @property({ type: Boolean })
     selected = false;
 
@@ -26,12 +18,12 @@ export class MyBasicCameraElem extends VirtualElement {
 
     _camera!: UniversalCamera;
 
-    override connectedCallback(): void {
-        super.connectedCallback();
-        assertNonNull(this.scene);
-        this.#init();
+    override init(): void {
+        this._camera = new UniversalCamera("(Camera)", Vector3.Backward(this.scene.useRightHandedSystem), this.scene);
+        this._camera.position.y = 1.75;
+        this._camera.position.z = 2;
+        this._camera.setEnabled(false);
 
-        // prevent controls when not rendering
         this._camera.onEnabledStateChangedObservable.add(() => {
             if (this._camera.isEnabled()) {
                 // this._camera.useAutoRotationBehavior = this.autoSpin;
@@ -44,12 +36,9 @@ export class MyBasicCameraElem extends VirtualElement {
         if (!this.scene.activeCamera) this.scene.activeCamera = this._camera;
     }
 
-    #init() {
-        debug(this, "initilizing");
-        this._camera = new UniversalCamera("(Camera)", Vector3.Backward(this.scene.useRightHandedSystem), this.scene);
-        this._camera.position.y = 1.75;
-        this._camera.position.z = 2;
+    override dispose(): void {
         this._camera.setEnabled(false);
+        this._camera.dispose();
     }
 
     override update(changes: PropertyValues): void {

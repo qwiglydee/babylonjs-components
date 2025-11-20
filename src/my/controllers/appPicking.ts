@@ -1,8 +1,7 @@
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { PointerEventTypes, PointerInfo } from "@babylonjs/core/Events/pointerEvents";
-import { debug } from "@utils/debug";
-import { BabylonCtrl } from "./appCtrl";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { BabylonCtrl } from "./appCtrl";
 
 export class PickingCtrl extends BabylonCtrl {
     init() {
@@ -20,14 +19,12 @@ export class PickingCtrl extends BabylonCtrl {
 
     #pick(info: PickingInfo) {
         if (this.host.picked?.pickedMesh !== info.pickedMesh) {
-            debug(this, "picking", info);
             this.host.picked = info;
         }
     }
 
     #unpick() {
         if (this.host.picked !== null) {
-            debug(this, "unpicking");
             this.host.picked = null;
         }
     }

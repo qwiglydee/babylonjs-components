@@ -111,8 +111,7 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
     override connectedCallback(): void {
         super.connectedCallback();
-        debug(this, "connected");
-        this.#init();
+        this._init();
         this.#resizingObs.observe(this);
         this.#visibilityObs.observe(this);
 
@@ -126,9 +125,8 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         this.#resizingObs.disconnect();
         this.#visibilityObs.disconnect();
         this.#stopRendering();
-        this.#dispose();
+        this._dispose();
         super.disconnectedCallback();
-        debug(this, "disconnected");
     }
 
     // @ts-ignore
@@ -136,7 +134,7 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         // keep context when reconnecting (not widely available)
     }
 
-    #init() {
+    _init() {
         render(this.render(), this.renderRoot); /** one-shot rendering */
         debug(this, "initializing", this.canvas);
         this.engine = new Engine(this.canvas, undefined, ENGOPTIONS);
@@ -147,13 +145,13 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         this.scene.clearColor = Color4.FromHexString(this.background);
     }
 
-    #dispose() {
+    _dispose() {
         this.scene.dispose();
         this.engine.dispose();
     }
 
     #onready = () => {
-        debug(this, "ready");
+        // debug(this, "ready");
         this.#startRendering();
         this.engine.hideLoadingUI();
         queueEvent(this, "babylon.init");
@@ -180,10 +178,10 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         }
     };
 
-    override update(changes: PropertyValues): void {
-        debug(this, "updating", dbgChanges(this, changes));
-        super.update(changes);
-    }
+    // override update(changes: PropertyValues): void {
+    //     debug(this, "updating", dbgChanges(this, changes));
+    //     super.update(changes);
+    // }
 
     override updated(changes: PropertyValues): void {
         if (changes.has("picked")) {

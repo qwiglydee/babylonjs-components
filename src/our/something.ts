@@ -1,8 +1,9 @@
 import { consume } from "@lit/context";
-import { css, html, PropertyValues } from "lit";
+import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { dbgChanges, debug } from "@utils/debug";
+import { debug } from "@utils/debug";
+
 import { statusCtx } from "./context";
 import { LinkedElement } from "./elements";
 
@@ -28,7 +29,7 @@ export class OurSomethingElem extends LinkedElement {
     }
 
     protected override render() {
-        debug(this, "rendering");
+        // debug(this, "rendering");
         return html`${this.status}, ${this.babylon?.localName}#${this.babylon?.id}!`;
     }
 }

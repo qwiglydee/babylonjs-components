@@ -1,7 +1,6 @@
 import { PointerDragBehavior } from "@babylonjs/core/Behaviors/Meshes/pointerDragBehavior";
 import { Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import { debug } from "@utils/debug";
 import { BabylonCtrl } from "./appCtrl";
 
 export class MoveingCtrl extends BabylonCtrl{
@@ -29,7 +28,6 @@ export class MoveingCtrl extends BabylonCtrl{
 
     #pick(mesh: AbstractMesh) {
         if (this.dragBhv.attachedNode !== mesh) {
-            debug(this, "grabbing", mesh.id);
             this.dragBhv.attach(mesh);
         }
     }

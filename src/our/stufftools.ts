@@ -1,12 +1,9 @@
 import { customElement, query, queryAll, state } from "lit/decorators.js";
 
-import { consume } from "@lit/context";
 import { assertNonNull } from "@utils/asserts";
-import { dbgChanges, debug } from "@utils/debug";
-import { css, CSSResultGroup, html, nothing, PropertyValues } from "lit";
-import { babylonCtx, BabylonPickEvent, IBabylonElem, PickDetail } from "./context";
+import { css, html, PropertyValues } from "lit";
+import { BabylonPickEvent, PickDetail } from "./context";
 import { LinkedElement, WrappingElement } from "./elements";
-import { bubbleEvent } from "@utils/events";
 
 @customElement("our-stuff-add")
 export class OurStuffAddElem extends WrappingElement {
@@ -42,7 +39,6 @@ export class OurStuffAddElem extends WrappingElement {
         elem.setAttribute("shape", shape);
         // @ts-ignore
         elem.setPosition(this._rndPosition(Number(this.input.value)));
-        debug(this, "adding", elem);
         this.babylon?.appendChild(elem);
     }
 }
@@ -111,9 +107,7 @@ export class OurStuffToolsElem extends WrappingElement {
 
 
     override update(changes: PropertyValues): void {
-        debug(this, "updating", dbgChanges(this, changes));
         if (changes.has('picked')) {
-            debug(this, "picked", this.picked);
             const valid = this.picked !== null;
             this.buttons.forEach(b => b.disabled = !valid); 
             this.inputs.forEach(b => b.disabled = !valid); 

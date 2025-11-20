@@ -2,7 +2,6 @@
 import "./babylon";
 import "./utility";
 import "./screen";
-import "./something";
 import "./axes";
 import "./camera-basic";
 import "./skyenv";

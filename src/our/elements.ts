@@ -7,7 +7,7 @@ import { consume } from "@lit/context";
  * Element linked to neighbour babylon element
  * It does not update until babylon is ready
  */
-export class LinkedElement extends LitElement {
+export abstract class LinkedElement extends LitElement {
     @consume({ context: babylonCtx, subscribe: true })
     babylon: IBabylonElem | null = null;
 
@@ -19,20 +19,20 @@ export class LinkedElement extends LitElement {
         if (!this.hasUpdated && this.babylon !== null) this.linkedCallback();
     }
 
-    linkedCallback() {};
+    abstract linkedCallback(): void;
 }
 
 /**
  * Element linked to neighbour babylon element, wrapping some light dom 
  * It does not update until babylon is ready
  */
-export class WrappingElement extends ReactiveElement {
+export abstract class WrappingElement extends ReactiveElement {
+    @consume({ context: babylonCtx, subscribe: true })
+    babylon: IBabylonElem | null = null;
+
     protected override createRenderRoot() {
         return this;
     }
-
-    @consume({ context: babylonCtx, subscribe: true })
-    babylon: IBabylonElem | null = null;
 
     protected override shouldUpdate(_changedProperties: PropertyValues): boolean {
         return this.babylon !== null;
@@ -42,5 +42,5 @@ export class WrappingElement extends ReactiveElement {
         if (!this.hasUpdated && this.babylon !== null) this.linkedCallback();
     }
 
-    linkedCallback() {};
+    abstract linkedCallback(): void;
 }

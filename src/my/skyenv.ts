@@ -1,40 +1,32 @@
-import { consume } from "@lit/context";
 import { type PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import "@babylonjs/core/Helpers/sceneHelpers";
 import { CubeTexture } from "@babylonjs/core/Materials/Textures/cubeTexture";
-import type { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
-import { debug } from "@utils/debug";
-import { VirtualElement } from "@utils/element";
 
-import { sceneCtx } from "./context";
+import { SceneElement } from "./elements";
 
 @customElement("my3d-skyenv")
-export class MyEnvironElem extends VirtualElement {
-    @consume({ context: sceneCtx, subscribe: false })
-    scene!: Scene;
-
+export class MyEnvironElem extends SceneElement {
     @property()
     src?: string;
 
     @property({ type: Number })
     intensity = 0.5;
 
-    override connectedCallback(): void {
+    override init() {
         assertNonNull(this.src, `${this.tagName}.src is required`)
-        super.connectedCallback();
-        this.#init();
-    }
-
-    #init() {
         this.scene.environmentTexture = new CubeTexture(this.src!, this.scene, {
             // I dunno what does all this mean
             noMipmap: false,
             prefiltered: true,
             createPolynomials: true,
         });
+    }
+
+    override dispose(): void {
+        this.scene.environmentTexture?.dispose();
     }
 
     override update(changes: PropertyValues) {

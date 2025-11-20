@@ -1,33 +1,26 @@
-import { consume } from "@lit/context";
-import { ReactiveElement, type PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { AxesViewer } from "@babylonjs/core/Debug/axesViewer";
-import type { Scene } from "@babylonjs/core/scene";
-
-import { sceneCtx } from "./context";
-import { VirtualElement } from "@utils/element";
 import { assertNonNull } from "@utils/asserts";
 
-@customElement("my3d-axes")
-export class MyAxesElem extends VirtualElement {
-    @consume({ context: sceneCtx, subscribe: false })
-    scene!: Scene;
+import { SceneElement } from "./elements";
 
+@customElement("my3d-axes")
+export class MyAxesElem extends SceneElement {
     @property({ type: Number })
     scale = 1;
 
     @property({ type: Number })
     thickness = 1;
 
-    override connectedCallback(): void {
-        super.connectedCallback();
-        this.#init();
-    }
+    _axes!: AxesViewer;
 
-    #init() {
+    override init(): void {
         assertNonNull(this.scene);
-        new AxesViewer(this.scene, this.scale, undefined, undefined, undefined, undefined, this.thickness);
+        this._axes = new AxesViewer(this.scene, this.scale, undefined, undefined, undefined, undefined, this.thickness);
     }
 
+    override dispose(): void {
+        this._axes.dispose();
+    }
 }

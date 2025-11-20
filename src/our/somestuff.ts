@@ -16,7 +16,6 @@ export class OurSomestuffElem extends WrappingElement {
     button?: HTMLButtonElement;
     
     override linkedCallback(): void {        
-        debug(this, "linked babylon", this.babylon);
         assertNonNull(this.button, "Missing button");
         this.button.addEventListener('click', this.#onclick);
         this.button.disabled = false;

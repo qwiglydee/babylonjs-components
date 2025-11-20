@@ -8,17 +8,13 @@ import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { CreateBox } from "@babylonjs/core/Meshes/Builders/boxBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
-import type { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
-import { VirtualElement } from "@utils/element";
 
-import { sceneCtx, sizeCtx } from "./context";
+import { sizeCtx } from "./context";
+import { SceneElement } from "./elements";
 
 @customElement("my3d-skybox")
-export class MyEnvironElem extends VirtualElement {
-    @consume({ context: sceneCtx, subscribe: false })
-    scene!: Scene;
-
+export class MyEnvironElem extends SceneElement {
     @consume({ context: sizeCtx })
     worldSize = 1;
 
@@ -28,16 +24,11 @@ export class MyEnvironElem extends VirtualElement {
     @property({ type: Number })
     blurring = 0.5;
 
-    override connectedCallback(): void {
-        super.connectedCallback();
-        this.#init();
-    }
-
     _skytxt!: BaseTexture;
     _skymat!: BackgroundMaterial;
     _skymesh!: Mesh;
 
-    #init() {
+    override init(): void {
         assertNonNull(this.scene.environmentTexture, "Missing environment texture in scene")
 
         this._skytxt = this.scene.environmentTexture.clone()!;
@@ -53,6 +44,10 @@ export class MyEnvironElem extends VirtualElement {
         this._skymesh.material = this._skymat;
         this._skymesh.infiniteDistance = true;
         this._skymesh.ignoreCameraMaxZ = true;
+    }
+
+    override dispose(): void {
+        this._skymesh.dispose(true, true);
     }
 
     override update(changes: PropertyValues) {
