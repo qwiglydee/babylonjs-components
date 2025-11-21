@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
 import { type PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { Color3 } from "@babylonjs/core/Maths";
@@ -11,12 +11,16 @@ import type { Nullable } from "@babylonjs/core/types";
 import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
 import { assertNonNull } from "@utils/asserts";
 
-import { sizeCtx } from "./context";
+import { boundsCtx, BoundsInfo, sizeCtx } from "./context";
 import { SceneElement } from "./elements";
 
 
 @customElement("my3d-ground-grid")
 export class MyGridGroundElem extends SceneElement {
+    @consume({ context: boundsCtx, subscribe: true })
+    @state()
+    bounds: Nullable<BoundsInfo> = null;
+
     @consume({ context: sizeCtx })
     worldSize = 1;
 
@@ -64,10 +68,6 @@ export class MyGridGroundElem extends SceneElement {
         this._ground.dispose(true, true);    
     }
 
-    // #calcSize() {
-    //     return this.model.world ? 2 * (new Vector2(this.model.world.extendSize.x, this.model.world.extendSize.z)).length() : this.defaultSize;
-    // }
-
     #resize() {
         // debug(this, "resizing", { size: this._size });
         this._ground.scaling.x = this.size;
@@ -76,7 +76,7 @@ export class MyGridGroundElem extends SceneElement {
     }
 
     override update(changes: PropertyValues) {
-        // if (this.autoSize && (changes.has("model") || changes.has("autoSize"))) this._size = this.#calcSize();
+        if (changes.has("bounds") && this.autoSize && this.bounds) this.size = 2 * this.bounds!.world.boundingSphere.radiusWorld;
         if (changes.has("size") || changes.has("scale")) this.#resize();
         if (changes.has("opacity")) this._material.opacity = this.opacity;
         if (changes.has("opacity2")) this._material.minorUnitVisibility = this.opacity2;
