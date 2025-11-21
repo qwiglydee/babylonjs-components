@@ -210,6 +210,7 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         if (changes.has("_bounds_dirty") && this._bounds_dirty) {
             this._bounds_dirty = false;
             this.bounds = this.getBounds();
+            debug(this, "bounds", { model: this.bounds?.model?.boundingSphere.centerWorld.toString(), world: this.bounds?.world?.boundingSphere.centerWorld.toString()})
         }
         super.update(changes);
     }

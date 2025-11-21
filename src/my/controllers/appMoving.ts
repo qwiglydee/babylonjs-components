@@ -18,6 +18,10 @@ export class MoveingCtrl extends BabylonController<IBabylonElem> {
         this.dragBhv.onDragObservable.add((data: { dragDistance: number }) => {
             this.dragDist += data.dragDistance;
         });
+        this.dragBhv.onDragEndObservable.add(() => {
+            // @ts-ignore
+            this.host._bounds_dirty = true;
+        });
     }
 
     dispose() {
