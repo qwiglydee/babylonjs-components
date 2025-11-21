@@ -1,21 +1,31 @@
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { PointerEventTypes, PointerInfo } from "@babylonjs/core/Events/pointerEvents";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import { BabylonCtrl } from "./appCtrl";
+import { BabylonController } from "./base";
+import { IBabylonElem } from "../context";
 
-export class PickingCtrl extends BabylonCtrl {
+export class PickingCtrl extends BabylonController<IBabylonElem> {
+    #observers: any[] = [];
+
     init() {
-        this.scene.onPointerObservable.add((info: PointerInfo) => {
-            if (info.type == PointerEventTypes.POINTERTAP && info.pickInfo) {
-                if (info.pickInfo?.pickedMesh) this.#pick(info.pickInfo); else this.#unpick();
-            }
-        });
-        this.scene.onMeshRemovedObservable.add((mesh: AbstractMesh) => {
-            if (mesh === this.host.picked?.pickedMesh) this.#unpick();
-        });
+        this.#observers.push(
+            this.scene.onPointerObservable.add((info: PointerInfo) => {
+                if (info.type == PointerEventTypes.POINTERTAP && info.pickInfo) {
+                    if (info.pickInfo?.pickedMesh) this.#pick(info.pickInfo);
+                    else this.#unpick();
+                }
+            })
+        );
+        this.#observers.push(
+            this.scene.onMeshRemovedObservable.add((mesh: AbstractMesh) => {
+                if (mesh === this.host.picked?.pickedMesh) this.#unpick();
+            })
+        );
     }
 
-    dispose() {}
+    dispose() {
+        this.#observers.forEach(o => o.remove())
+    }
 
     #pick(info: PickingInfo) {
         if (this.host.picked?.pickedMesh !== info.pickedMesh) {

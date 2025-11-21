@@ -7,6 +7,7 @@ import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Nullable } from "@babylonjs/core/types";
 
 import { SceneElement } from "./elements";
+import { CamDumbCtrl } from "./controllers/camDumb";
 
 @customElement("my3d-camera-basic")
 export class MyBasicCameraElem extends SceneElement {
@@ -17,6 +18,8 @@ export class MyBasicCameraElem extends SceneElement {
     target: Nullable<AbstractMesh> = null;
 
     _camera!: UniversalCamera;
+
+    _cameraCtrl = new CamDumbCtrl(this);
 
     override init(): void {
         this._camera = new UniversalCamera("(Camera)", Vector3.Backward(this.scene.useRightHandedSystem), this.scene);

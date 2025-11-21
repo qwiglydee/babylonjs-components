@@ -1,10 +1,12 @@
 import { PointerDragBehavior } from "@babylonjs/core/Behaviors/Meshes/pointerDragBehavior";
 import { Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import { BabylonCtrl } from "./appCtrl";
+import { BabylonController } from "./base";
+import { IBabylonElem } from "../context";
+import { debug } from "@utils/debug";
 
-export class MoveingCtrl extends BabylonCtrl{
-    dragBhv!: PointerDragBehavior;
+export class MoveingCtrl extends BabylonController<IBabylonElem> {
+    dragBhv?: PointerDragBehavior;
     dragDist = 0;
     dragNormal = Vector3.UpReadOnly;
 
@@ -18,21 +20,31 @@ export class MoveingCtrl extends BabylonCtrl{
         });
     }
 
-    dispose() {}
+    dispose() {
+        this.dragBhv?.detach();
+        delete this.dragBhv;
+    }
 
     hostUpdate() {
+        // NB: cannot use picked context consumer on the same element
         if (!this.dragBhv) return;
         if (this.host.picked?.pickedMesh) this.#pick(this.host.picked.pickedMesh);
         else this.#unpick();
     }
 
     #pick(mesh: AbstractMesh) {
-        if (this.dragBhv.attachedNode !== mesh) {
-            this.dragBhv.attach(mesh);
+        const same = this.dragBhv?.enabled && this.dragBhv?.attachedNode === mesh;
+
+        debug(this, "picking", { mesh,  same });
+        if (!same) {
+            this.dragBhv!.attach(mesh);
+            this.dragBhv!.enabled = true;;
         }
     }
 
     #unpick() {
-        this.dragBhv.detach();
+        debug(this, "unpicking", this.dragBhv?.attachedNode);
+        this.dragBhv!.detach();
+        this.dragBhv!.enabled = false;
     }
 }
