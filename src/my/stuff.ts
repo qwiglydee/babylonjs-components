@@ -22,6 +22,9 @@ export class MyStuffElem extends SceneElement {
     @property()
     texture = "assets/checker.png";
 
+    @property({ type: Number })
+    randomizePos = 0;
+
     @property({ type: Boolean, reflect: true })
     disabled = false;
 
@@ -31,8 +34,8 @@ export class MyStuffElem extends SceneElement {
     @state()
     _position = Vector3.Zero();
 
-    setPosition(coords: {x?: number, y?: number, z?: number}) {
-        // NB: invoked before mesh created
+    set position(coords: {x?: number, y?: number, z?: number}) {
+        // NB: could be set before init
         this._position = new Vector3(
             coords.x ?? this._position.x,
             coords.y ?? this._position.y,
@@ -52,16 +55,19 @@ export class MyStuffElem extends SceneElement {
         return mat;
     }
 
+    _rndPosition(radius: number) {
+        const rndc = () => Math.floor((Math.random() * 2 - 1) * radius);
+        return new Vector3(rndc(), 0, rndc());
+    }
+
     override init() {
         assertNonNull(this.shape, `Missing ${this.tagName}.shape`);
 
-        let id = this.id;
-        if (!id) {
+        if (!this.id) {
             let idx = (1 + (this.scene.meshes.length ?? 0)).toString().padStart(3, "0");
-            id = `${this.shape}.${idx}`;
-            this.id = id;
+            this.id = `${this.shape}.${idx}`;
         }
-        debug(this, "creating", {shape: this.shape, id });
+        debug(this, "creating", {shape: this.shape, rnd: this.randomizePos });
 
         switch (this.shape) {
             case 'cube':
@@ -79,10 +85,11 @@ export class MyStuffElem extends SceneElement {
             default:
                 throw Error(`Invalid shape: ${this.shape}`);
         }
-        this._mesh.id = id;
-        this._mesh.position.y = 0.5 * this.size;
-        this._mesh.bakeCurrentTransformIntoVertices();
+        this._mesh.id = this.id;
         this._mesh.material = this._getMatrial();
+
+        if (this.randomizePos) this._position = this._rndPosition(this.randomizePos);
+        this._position.y = 0.5 * this.size;
     };
 
     override dispose() {

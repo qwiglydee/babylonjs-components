@@ -14,12 +14,12 @@ export class OurStuffAddElem extends WrappingElement {
     select!: HTMLSelectElement;
 
     @query("input[name=dist]", true)
-    input!: HTMLSelectElement;
+    inputRnd!: HTMLSelectElement;
 
     override linkedCallback(): void {
         assertNonNull(this.babylon, "Missing babylon element");
         this.button.addEventListener("click", this.#onclick);
-        this.input.disabled = false;
+        this.inputRnd.disabled = false;
         this.select.disabled = false;
         this.button.disabled = false;
     }
@@ -29,16 +29,17 @@ export class OurStuffAddElem extends WrappingElement {
         if (value) this._addStuff(value);
     };
 
-    _rndPosition(radius: number) {
-        const rndc = () => 0.5 + Math.floor((Math.random() * 2 - 1) * radius);
-        return { x: rndc(), z: rndc()}
-    }
+    // _rndPosition(radius: number) {
+    //     const rndc = () => 0.5 + Math.floor((Math.random() * 2 - 1) * radius);
+    //     return { x: rndc(), z: rndc()}
+    // }
 
     _addStuff(shape: string) {
         const elem = document.createElement("my3d-stuff");
         elem.setAttribute("shape", shape);
         // @ts-ignore
-        elem.setPosition(this._rndPosition(Number(this.input.value)));
+        // elem.position = this._rndPosition(Number(this.inputRnd.value));
+        elem.setAttribute('randomizePos', this.inputRnd.value);
         this.babylon?.appendChild(elem);
     }
 }
