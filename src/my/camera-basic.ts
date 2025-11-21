@@ -8,6 +8,7 @@ import { Nullable } from "@babylonjs/core/types";
 
 import { SceneElement } from "./elements";
 import { CamDumbCtrl } from "./controllers/camDumb";
+import { CamTargetCtrl } from "./controllers/camTarget";
 
 @customElement("my3d-camera-basic")
 export class MyBasicCameraElem extends SceneElement {
@@ -19,10 +20,12 @@ export class MyBasicCameraElem extends SceneElement {
 
     _camera!: UniversalCamera;
 
-    _cameraCtrl = new CamDumbCtrl(this);
+    _targetCtrl = new CamTargetCtrl(this);
+    // _cameraCtrl = new CamDumbCtrl(this);
 
     override init(): void {
         this._camera = new UniversalCamera("(Camera)", Vector3.Backward(this.scene.useRightHandedSystem), this.scene);
+        if (this.id) this._camera.id = this.id;
         this._camera.position.y = 1.75;
         this._camera.position.z = 2;
         this._camera.setEnabled(false);

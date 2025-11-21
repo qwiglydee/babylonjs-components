@@ -4,6 +4,7 @@ import "./utility";
 import "./screen";
 import "./axes";
 import "./camera-basic";
+import "./camera-arc";
 import "./skyenv";
 import "./skybox";
 import "./stuff";
