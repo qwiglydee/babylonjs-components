@@ -68,6 +68,10 @@ export class MyGridGroundElem extends SceneElement {
         this._ground.dispose(true, true);    
     }
 
+    override toggle(enabled: boolean): void {
+        this._syncEnabled(this._ground, enabled);
+    }
+
     #resize() {
         // debug(this, "resizing", { size: this._size });
         this._ground.scaling.x = this.size;

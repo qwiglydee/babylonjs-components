@@ -9,7 +9,7 @@ export class OurCamswitchElem extends WrappingElement {
     select?: HTMLSelectElement;
     
     get cameras() { 
-        return this.babylon?.querySelectorAll("my3d-camera-basic");
+        return this.babylon?.querySelectorAll(".camera");
     }
 
     override linkedCallback(): void {        

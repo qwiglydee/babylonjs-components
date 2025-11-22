@@ -55,4 +55,8 @@ export class MyEnvironElem extends SceneElement {
         if (changes.has("blurring") && this._skymat) this._skymat.reflectionBlur = this.blurring;
         super.update(changes);
     }
+
+    override toggle(enabled: boolean): void {
+        this._syncEnabled(this._skymesh, enabled);
+    }
 }

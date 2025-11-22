@@ -34,4 +34,8 @@ export class MyEnvironElem extends SceneElement {
         if (changes.has("intensity") && this.scene.environmentTexture) this.scene.environmentTexture.level = this.intensity;
         super.update(changes);
     }
+
+    override toggle(enabled: boolean): void {
+        if (!enabled) throw Error("toggling sky off not supported");
+    }
 }

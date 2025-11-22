@@ -21,7 +21,7 @@ export interface PickDetail {
   visible: boolean;
 }
 
-export type BabylonPickEvent = CustomEvent<PickDetail>;
+export type BabylonPickEvent = CustomEvent<PickDetail | null>;
 
 declare global {
   interface GlobalEventHandlersEventMap {

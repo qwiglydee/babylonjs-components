@@ -16,7 +16,7 @@ import { SceneElement } from "./base";
 /**
  * highlights single mesh
  */
-@customElement("my3d-highlighter1")
+@customElement("my3d-highlighter")
 export class MyHighlighter1Elem extends SceneElement {
     @property({ type: Color3, converter: (hexvalue, _) => hexvalue ? Color3.FromHexString(hexvalue) : Color3.White()})
     color: Color3 = Color3.White();
@@ -29,7 +29,6 @@ export class MyHighlighter1Elem extends SceneElement {
     _pickCtrl = new TargetingCtrl(this);
     
     override init() {
-        debug(this, "initilizing");
         this._highlighter = new HighlightLayer("(highlighter)", this.scene);
     }
 
@@ -39,11 +38,16 @@ export class MyHighlighter1Elem extends SceneElement {
 
     override update(changes: PropertyValues): void {
         if (changes.has('target')) {
-            debug(this, "highlighting", { target: this.target, color: this.color })
+            // debug(this, "highlighting", { target: this.target, color: this.color.toString() })
             this.clear();
             if (this.target) this._highlighter.addMesh(this.target as Mesh, this.color)
         }
         super.update(changes);
+    }
+
+    override toggle(enabled: boolean): void {
+        this.enabled = enabled;
+        this._highlighter.isEnabled = enabled;
     }
 
     clear() {

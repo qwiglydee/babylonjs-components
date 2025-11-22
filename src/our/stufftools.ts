@@ -1,9 +1,10 @@
 import { customElement, query, queryAll, state } from "lit/decorators.js";
 
 import { assertNonNull } from "@utils/asserts";
-import { css, html, PropertyValues } from "lit";
-import { BabylonPickEvent, PickDetail } from "./context";
-import { LinkedElement, WrappingElement } from "./base";
+import { PropertyValues } from "lit";
+import { WrappingElement } from "./base";
+import { BabylonPickEvent } from "./context";
+import { debug } from "@utils/debug";
 
 @customElement("our-stuff-add")
 export class OurStuffAddElem extends WrappingElement {
@@ -44,28 +45,6 @@ export class OurStuffAddElem extends WrappingElement {
     }
 }
 
-@customElement("our-stuff-pick")
-export class OurStuffPickElem extends LinkedElement {
-    override linkedCallback(): void {
-        assertNonNull(this.babylon, "Missing babylon element");
-        this.babylon.addEventListener('babylon.pick', this.#onpick);
-    }
-
-    @state()
-    picked?: PickDetail;
-
-    static override styles = css`:host { display: inline; height: 100; }`
-
-    override render() {
-        if (!this.picked) return "";
-        return html`${this.picked.name} [${this.picked.id}]`
-    }
-
-    #onpick = (event: BabylonPickEvent) => {
-        this.picked = event.detail;
-    }
-}
-
 @customElement("our-stuff-tools")
 export class OurStuffToolsElem extends WrappingElement {
     @queryAll("button")
@@ -77,22 +56,17 @@ export class OurStuffToolsElem extends WrappingElement {
     @query("input[name=enabled]", true)
     inpEnabled!: HTMLInputElement;
 
-    @query("input[name=visible]", true)
-    inpVisible!: HTMLInputElement;
+    @query("select[name=stuffid]", true)
+    selId!: HTMLInputElement;
 
     @state()
-    picked: PickDetail | null = null;
+    selected: HTMLElement | null = null;
 
     override linkedCallback(): void {
         assertNonNull(this.babylon, "Missing babylon element");
         this.babylon.addEventListener('babylon.pick', this.#onpick);
         this.addEventListener("click", this.#onclick);
         this.addEventListener("change", this.#onchange);
-    }
-
-
-    #onpick = (event: BabylonPickEvent) => {
-        this.picked = event.detail;
     }
 
     #onclick = (event: Event) => {
@@ -102,42 +76,39 @@ export class OurStuffToolsElem extends WrappingElement {
 
     #onchange = (event: Event) => {
         const target = event.target as HTMLInputElement;
-        if (target === this.inpEnabled) this._tglEnabled(target.checked);
-        if (target === this.inpVisible) this._tglVisible(target.checked);
+        if (target === this.inpEnabled && this.selected) this._tglEnabled(target.checked);
+        if (target === this.selId) this._select(target.value);
     }
 
+    #onpick = (event: BabylonPickEvent) => {
+        this._select(event.detail?.id ?? null);
+    }
+
+    _select(id: string | null) {
+        debug(this, "selecting", id);
+        this.selected = id ? document.getElementById(id) : null;
+    }
 
     override update(changes: PropertyValues): void {
-        if (changes.has('picked')) {
-            const valid = this.picked !== null;
-            this.buttons.forEach(b => b.disabled = !valid); 
-            this.inputs.forEach(b => b.disabled = !valid); 
-            if (this.picked) {
-                this.inpEnabled.checked = this.picked.enabled;
-                this.inpVisible.checked = this.picked.visible;
-            }
+        if (changes.has('selected')) {
+            debug(this, "selected", this.selected);
+            this.buttons.forEach(b => b.disabled = this.selected == null);
+            this.inputs.forEach(b => b.disabled = this.selected == null);         
+            this.selId.value = this.selected ? this.selected.id : "";
+            // @ts-ignore
+            this.inpEnabled.checked = this.selected ? !this.selected.disabled : false;
         }
         super.update(changes);
     }
 
-    #getElem() {
-        return this.picked ? document.getElementById(this.picked.id) : null;
-    }
-
     _delItem() {
-        const elem = this.#getElem();
-        if (elem) elem.remove();
+        assertNonNull(this.selected);
+        this.selected.remove();
     }
 
     _tglEnabled(enable: boolean) {
-        const elem = this.#getElem();
+        assertNonNull(this.selected);
         // @ts-ignore
-        if (elem) elem.disabled = !enable;
-    }
-
-    _tglVisible(enable: boolean) {
-        const elem = this.#getElem();
-        // @ts-ignore
-        if (elem) elem.hidden = !enable;
+        this.selected.disabled = !enable;
     }
 }

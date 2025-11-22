@@ -9,8 +9,8 @@ import type { Nullable } from "@babylonjs/core/types";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
 import { GhostBehavior } from "../lib/ghostbhv";
-import { TargetingCtrl } from "./controllers/targetPicking";
 import { SceneElement } from "./base";
+import { TargetingCtrl } from "./controllers/targetPicking";
 
 @customElement("my3d-ghost")
 export class MyGhostElem extends SceneElement {
@@ -25,6 +25,7 @@ export class MyGhostElem extends SceneElement {
     override init() {
         this._mesh = CreateBox("(ghost)", {}, this.scene);
         Tags.AddTagsTo(this._mesh, "aux");
+        this._mesh.setEnabled(false);
         this._mesh.isPickable = false;
         this._mesh.material = new BackgroundMaterial("(ghost)", this.scene);
         this._mesh.material.alpha = 0.25;
@@ -39,7 +40,12 @@ export class MyGhostElem extends SceneElement {
     }
 
     override update(changes: PropertyValues) {
-        if (changes.has('target')) this._bhv.targetMesh = this.target;
+        if (changes.has('target') && this.enabled) this._bhv.targetMesh = this.target;
         super.update(changes);
+    }
+
+    override toggle(enabled: boolean): void {
+        this._syncEnabled(this._mesh, enabled);
+        this._bhv.targetMesh = enabled ? this.target : null;
     }
 }

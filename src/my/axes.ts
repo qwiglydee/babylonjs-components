@@ -23,4 +23,7 @@ export class MyAxesElem extends SceneElement {
     override dispose(): void {
         this._axes.dispose();
     }
+
+    override toggle(_enabled: boolean): void {
+    }
 }

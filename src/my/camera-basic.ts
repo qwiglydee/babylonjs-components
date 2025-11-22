@@ -11,7 +11,7 @@ import { TargetingCtrl } from "./controllers/targetPicking";
 
 @customElement("my3d-camera-basic")
 export class MyBasicCameraElem extends SceneElement {
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true })
     selected = false;
 
     @state()
@@ -29,15 +29,7 @@ export class MyBasicCameraElem extends SceneElement {
         this._camera.position.z = 2;
         this._camera.setEnabled(false);
 
-        this._camera.onEnabledStateChangedObservable.add(() => {
-            if (this._camera.isEnabled()) {
-                // this._camera.useAutoRotationBehavior = this.autoSpin;
-                this._camera.attachControl();
-            } else {
-                // this._camera.useAutoRotationBehavior = false;
-                this._camera.detachControl();
-            }
-        });
+        this._camera.onEnabledStateChangedObservable.add((e) => this.toggle(e));
         if (!this.scene.activeCamera) this.scene.activeCamera = this._camera;
     }
 
@@ -46,12 +38,21 @@ export class MyBasicCameraElem extends SceneElement {
         this._camera.dispose();
     }
 
+    override toggle(enabled: boolean): void {
+        this._syncEnabled(this._camera, enabled);
+
+        if (enabled) {
+            // this._camera.useAutoRotationBehavior = this.autoSpin;
+            this._camera.attachControl();
+        } else {
+            // this._camera.useAutoRotationBehavior = false;
+            this._camera.detachControl();
+        }            
+    }
+
     override update(changes: PropertyValues): void {
         if (changes.has("selected")) {
-            if (this.selected) {
-                this.scene.activeCamera = this._camera;
-                this._camera.setEnabled(true);
-            } else this._camera.setEnabled(false);
+            if (this.selected) this.scene.activeCamera = this._camera;
         }
 
         if (changes.has('target')) {

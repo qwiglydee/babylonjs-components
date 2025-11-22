@@ -69,6 +69,10 @@ export class MyFlatGroundElem extends SceneElement {
         this._ground.scaling.z = this.size;
     }
 
+    override toggle(enabled: boolean): void {
+        this._syncEnabled(this._ground, enabled);
+    }
+
     override update(changes: PropertyValues) {
         if (changes.has("bounds") && this.autoSize && this.bounds) this.size = 2 * this.bounds!.world.boundingSphere.radiusWorld;
         if (changes.has("size")) this.#resize();

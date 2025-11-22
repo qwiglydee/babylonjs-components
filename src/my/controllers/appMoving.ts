@@ -3,7 +3,6 @@ import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Nullable } from "@babylonjs/core/types";
-import { debug } from "@utils/debug";
 
 import { BabylonController, type BabylonHost } from "./base";
 
@@ -44,8 +43,6 @@ export class MoveingCtrl extends BabylonController<PickingHost> {
 
     #pick(mesh: AbstractMesh) {
         const same = this.dragBhv?.enabled && this.dragBhv?.attachedNode === mesh;
-
-        debug(this, "picking", { mesh, same });
         if (!same) {
             this.dragBhv!.attach(mesh);
             this.dragBhv!.enabled = true;
@@ -53,7 +50,6 @@ export class MoveingCtrl extends BabylonController<PickingHost> {
     }
 
     #unpick() {
-        debug(this, "unpicking", this.dragBhv?.attachedNode);
         this.dragBhv!.detach();
         this.dragBhv!.enabled = false;
     }

@@ -1,7 +1,9 @@
 import { consume } from "@lit/context";
-import { ReactiveElement } from "lit";
+import { PropertyValues, ReactiveElement } from "lit";
+import { property } from "lit/decorators.js";
 
-import { Scene } from "@babylonjs/core";
+import { Node } from "@babylonjs/core/node";
+import { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
 
 import { sceneCtx } from "./context";
@@ -15,6 +17,12 @@ export abstract class SceneElement extends ReactiveElement {
     @consume({ context: sceneCtx, subscribe: false })
     scene!: Scene;
 
+    @property({ type: Boolean, reflect: true })
+    disabled = false;
+
+    get enabled() { return !this.disabled }
+    set enabled(val: boolean) { this.disabled = !val; }
+
     override connectedCallback(): void {
         super.connectedCallback();
         assertNonNull(this.scene); // just in case
@@ -26,6 +34,16 @@ export abstract class SceneElement extends ReactiveElement {
         super.disconnectedCallback();
     }
 
+    override willUpdate(changed: PropertyValues) {
+        if (changed.has('disabled')) this.toggle(this.enabled);
+    }
+
     abstract init(): void;
     abstract dispose(): void;
+    abstract toggle(enabled: boolean): void;
+
+    _syncEnabled(object: Node, enabled: boolean) {
+        this.enabled = enabled;
+        object.setEnabled(enabled);
+    } 
 } 

@@ -3,7 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { Vector3 } from "@babylonjs/core/Maths";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { debug } from "@utils/debug";
+import { dbgChanges, debug } from "@utils/debug";
 
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
@@ -24,9 +24,6 @@ export class MyStuffElem extends SceneElement {
 
     @property({ type: Number })
     randomizePos = 0;
-
-    @property({ type: Boolean, reflect: true })
-    disabled = false;
 
     @property({ type: Boolean, reflect: true })
     override hidden = false;
@@ -96,9 +93,12 @@ export class MyStuffElem extends SceneElement {
         this._mesh.dispose(true, false);
     }
 
+    override toggle(enabled: boolean): void {
+        this._syncEnabled(this._mesh, enabled);
+    }
+
     override update(changes: PropertyValues): void {
         if (changes.has('_position')) this._mesh.position = this._position;
-        if (changes.has('disabled')) this._mesh.setEnabled(!this.disabled);
         if (changes.has('hidden')) this._mesh.visibility = this.hidden ? 0 : 1;
         super.update(changes);
     }
