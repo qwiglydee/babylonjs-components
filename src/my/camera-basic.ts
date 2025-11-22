@@ -7,8 +7,7 @@ import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Nullable } from "@babylonjs/core/types";
 
 import { SceneElement } from "./elements";
-import { CamDumbCtrl } from "./controllers/camDumb";
-import { CamTargetCtrl } from "./controllers/camTarget";
+import { TargetingCtrl } from "./controllers/targetPicking";
 
 @customElement("my3d-camera-basic")
 export class MyBasicCameraElem extends SceneElement {
@@ -20,7 +19,7 @@ export class MyBasicCameraElem extends SceneElement {
 
     _camera!: UniversalCamera;
 
-    _targetCtrl = new CamTargetCtrl(this);
+    #pickCtrl = new TargetingCtrl(this);
     // _cameraCtrl = new CamDumbCtrl(this);
 
     override init(): void {

@@ -10,7 +10,7 @@ import { Nullable } from "@babylonjs/core/types";
 
 import { smoothFocus, smoothParams, smoothTarget } from "../lib/smoothcam";
 import { boundsCtx, BoundsInfo } from "./context";
-import { CamTargetCtrl } from "./controllers/camTarget";
+import { TargetingCtrl } from "./controllers/targetPicking";
 import { SceneElement } from "./elements";
 
 @customElement("my3d-camera-arc")
@@ -39,7 +39,7 @@ export class MyArcCameraElem extends SceneElement {
 
     _camera!: ArcRotateCamera;
 
-    #pickCtrl = new CamTargetCtrl(this);
+    #pickCtrl = new TargetingCtrl(this);
 
     override init(): void {
         this._camera = new ArcRotateCamera(
