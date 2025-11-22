@@ -6,11 +6,10 @@ import { HighlightLayer } from "@babylonjs/core/Layers/highlightLayer";
 import { Color3 } from "@babylonjs/core/Maths";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import type { Nullable } from "@babylonjs/core/types";
-import { debug } from "@utils/debug";
 
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import { TargetingCtrl } from "./controllers/targetPicking";
 import { SceneElement } from "./base";
+import { TargetingCtrl } from "./controllers/targetPicking";
 
 
 /**
@@ -46,8 +45,7 @@ export class MyHighlighter1Elem extends SceneElement {
     }
 
     override toggle(enabled: boolean): void {
-        this.enabled = enabled;
-        this._highlighter.isEnabled = enabled;
+        this._syncEnabled(this._highlighter, enabled);
     }
 
     clear() {

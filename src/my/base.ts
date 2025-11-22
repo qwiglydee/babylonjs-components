@@ -2,12 +2,12 @@ import { consume } from "@lit/context";
 import { PropertyValues, ReactiveElement } from "lit";
 import { property } from "lit/decorators.js";
 
-import { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
 
 import { sceneCtx } from "./context";
 
+type Enableble = { setEnabled(val: boolean): void } | { isEnabled: boolean };
 
 export abstract class SceneElement extends ReactiveElement {
     protected override createRenderRoot() {
@@ -42,8 +42,10 @@ export abstract class SceneElement extends ReactiveElement {
     abstract dispose(): void;
     abstract toggle(enabled: boolean): void;
 
-    _syncEnabled(object: Node, enabled: boolean) {
+    _syncEnabled(object: Enableble, enabled: boolean) {
         this.enabled = enabled;
-        object.setEnabled(enabled);
+        if ('setEnabled' in object) object.setEnabled!(enabled);
+        else if ('isEnabled' in object) object.isEnabled = enabled;
+        else throw Error("Not enablebla object");
     } 
 } 

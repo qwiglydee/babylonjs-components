@@ -3,7 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { Vector3 } from "@babylonjs/core/Maths";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { dbgChanges, debug } from "@utils/debug";
+import { debug } from "@utils/debug";
 
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
@@ -99,7 +99,6 @@ export class MyStuffElem extends SceneElement {
 
     override update(changes: PropertyValues): void {
         if (changes.has('_position')) this._mesh.position = this._position;
-        if (changes.has('hidden')) this._mesh.visibility = this.hidden ? 0 : 1;
         super.update(changes);
     }
 }
