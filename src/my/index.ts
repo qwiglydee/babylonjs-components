@@ -10,3 +10,4 @@ import "./skybox";
 import "./stuff";
 import "./ground-flat";
 import "./ground-grid";
+import "./highlighter";
