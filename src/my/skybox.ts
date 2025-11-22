@@ -11,7 +11,7 @@ import { Tags } from "@babylonjs/core/Misc/tags";
 import { assertNonNull } from "@utils/asserts";
 
 import { sizeCtx } from "./context";
-import { SceneElement } from "./elements";
+import { SceneElement } from "./base";
 
 @customElement("my3d-skybox")
 export class MyEnvironElem extends SceneElement {

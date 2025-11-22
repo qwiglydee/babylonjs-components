@@ -3,7 +3,7 @@ import { customElement, query, queryAll, state } from "lit/decorators.js";
 import { assertNonNull } from "@utils/asserts";
 import { css, html, PropertyValues } from "lit";
 import { BabylonPickEvent, PickDetail } from "./context";
-import { LinkedElement, WrappingElement } from "./elements";
+import { LinkedElement, WrappingElement } from "./base";
 
 @customElement("our-stuff-add")
 export class OurStuffAddElem extends WrappingElement {

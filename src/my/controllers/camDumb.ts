@@ -1,13 +1,12 @@
-import { Camera } from "@babylonjs/core/Cameras/camera";
-import { BabylonController, BabylonControllerHost } from "./base";
 import { debug } from "@utils/debug";
+import { BabylonController, type BabylonHost } from "./base";
+import { Camera } from "@babylonjs/core/Cameras/camera";
 
-export interface CameraControllerHost extends BabylonControllerHost {
+interface CameraHost extends BabylonHost {
     _camera: Camera;
 }
 
-export class CamDumbCtrl extends BabylonController<CameraControllerHost> {
-
+export class CamDumbCtrl extends BabylonController<CameraHost> {
     #observer: any;
 
     override init() {
@@ -17,10 +16,10 @@ export class CamDumbCtrl extends BabylonController<CameraControllerHost> {
 
     override dispose(): void {
         this.#observer?.remove();
-        debug(this, "dispose");        
+        debug(this, "dispose");
     }
 
     #ontoggle = (enabled: boolean) => {
         debug(this, "toggled", { cam: this.host._camera.id, enabled });
-    }
+    };
 }

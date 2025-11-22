@@ -1,10 +1,9 @@
-import { consume, provide } from "@lit/context";
-import { PropertyValues, ReactiveElement } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { provide } from "@lit/context";
+import { ReactiveElement } from "lit";
+import { customElement } from "lit/decorators.js";
 
+import { debugEvent } from "@utils/debug";
 import { babylonCtx, BabylonInitEvent, BabylonPickEvent, IBabylonElem, statusCtx } from "./our/context";
-import { assertNonNull } from "@utils/asserts";
-import { dbgChanges, debug, debugEvent } from "@utils/debug";
 
 /**
  * Babylon-unaware web app

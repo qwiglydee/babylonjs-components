@@ -1,10 +1,15 @@
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { PointerEventTypes, PointerInfo } from "@babylonjs/core/Events/pointerEvents";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import { BabylonController } from "./base";
-import { IBabylonElem } from "../context";
+import { Nullable } from "@babylonjs/core/types";
 
-export class PickingCtrl extends BabylonController<IBabylonElem> {
+import { BabylonController, type BabylonHost } from "./base";
+
+interface PickingHost extends BabylonHost {
+    picked: Nullable<PickingInfo>;
+}
+
+export class PickingCtrl extends BabylonController<PickingHost> {
     #observers: any[] = [];
 
     init() {
@@ -24,7 +29,7 @@ export class PickingCtrl extends BabylonController<IBabylonElem> {
     }
 
     dispose() {
-        this.#observers.forEach(o => o.remove())
+        this.#observers.forEach((o) => o.remove());
     }
 
     #pick(info: PickingInfo) {

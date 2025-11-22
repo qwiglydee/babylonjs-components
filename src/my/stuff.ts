@@ -9,7 +9,7 @@ import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { assertNonNull } from "@utils/asserts";
 import { PropertyValues } from "lit";
-import { SceneElement } from "./elements";
+import { SceneElement } from "./base";
 
 @customElement("my3d-stuff")
 export class MyStuffElem extends SceneElement {

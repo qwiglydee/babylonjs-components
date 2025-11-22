@@ -10,7 +10,7 @@ import { debug } from "@utils/debug";
 
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { TargetingCtrl } from "./controllers/targetPicking";
-import { SceneElement } from "./elements";
+import { SceneElement } from "./base";
 
 
 /**
@@ -26,7 +26,7 @@ export class MyHighlighter1Elem extends SceneElement {
 
     _highlighter!: HighlightLayer;
 
-    #pickCtrl = new TargetingCtrl(this);
+    _pickCtrl = new TargetingCtrl(this);
     
     override init() {
         debug(this, "initilizing");

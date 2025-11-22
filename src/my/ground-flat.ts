@@ -12,7 +12,7 @@ import type { Nullable } from "@babylonjs/core/types";
 import { assertNonNull } from "@utils/asserts";
 
 import { boundsCtx, BoundsInfo, sizeCtx } from "./context";
-import { SceneElement } from "./elements";
+import { SceneElement } from "./base";
 
 
 @customElement("my3d-ground-flat")

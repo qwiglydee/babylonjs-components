@@ -1,26 +1,26 @@
 import { Scene } from "@babylonjs/core/scene";
 import { ReactiveController, ReactiveControllerHost } from "lit";
 
-
-export interface BabylonControllerHost extends ReactiveControllerHost  {
-    scene: Scene;
+export interface BabylonHost extends ReactiveControllerHost {
+    readonly scene: Scene;
 }
 
+export abstract class BabylonController<Host extends BabylonHost> implements ReactiveController {
+    host: Host;
 
-export abstract class BabylonController<Elem extends BabylonControllerHost> implements ReactiveController {
-    host: Elem;
+    get scene() {
+        return this.host.scene;
+    }
 
-    get scene() { return this.host.scene; }
-
-    constructor(host: Elem) {
+    constructor(host: Host) {
         this.host = host;
         this.host.addController(this);
     }
 
     hostConnected() {
-        // after host initialized 
-        queueMicrotask(() => this.init())
-    };
+        // after host initialized
+        queueMicrotask(() => this.init());
+    }
 
     hostDisconnected() {
         this.dispose();

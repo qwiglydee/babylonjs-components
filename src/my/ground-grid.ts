@@ -12,7 +12,7 @@ import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
 import { assertNonNull } from "@utils/asserts";
 
 import { boundsCtx, BoundsInfo, sizeCtx } from "./context";
-import { SceneElement } from "./elements";
+import { SceneElement } from "./base";
 
 
 @customElement("my3d-ground-grid")

@@ -10,14 +10,14 @@ import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
 import { GhostBehavior } from "../lib/ghostbhv";
 import { TargetingCtrl } from "./controllers/targetPicking";
-import { SceneElement } from "./elements";
+import { SceneElement } from "./base";
 
 @customElement("my3d-ghost")
 export class MyGhostElem extends SceneElement {
     @state()
     target: Nullable<AbstractMesh> = null;
 
-    #pickCtrl = new TargetingCtrl(this);
+    _pickCtrl = new TargetingCtrl(this);
 
     _mesh!: Mesh;
     _bhv!: GhostBehavior;

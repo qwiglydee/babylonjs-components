@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import { AxesViewer } from "@babylonjs/core/Debug/axesViewer";
 import { assertNonNull } from "@utils/asserts";
 
-import { SceneElement } from "./elements";
+import { SceneElement } from "./base";
 
 @customElement("my3d-axes")
 export class MyAxesElem extends SceneElement {

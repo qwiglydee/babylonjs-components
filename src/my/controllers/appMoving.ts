@@ -1,11 +1,17 @@
 import { PointerDragBehavior } from "@babylonjs/core/Behaviors/Meshes/pointerDragBehavior";
+import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import { BabylonController } from "./base";
-import { IBabylonElem } from "../context";
+import { Nullable } from "@babylonjs/core/types";
 import { debug } from "@utils/debug";
 
-export class MoveingCtrl extends BabylonController<IBabylonElem> {
+import { BabylonController, type BabylonHost } from "./base";
+
+interface PickingHost extends BabylonHost {
+    picked: Nullable<PickingInfo>;
+}
+
+export class MoveingCtrl extends BabylonController<PickingHost> {
     dragBhv?: PointerDragBehavior;
     dragDist = 0;
     dragNormal = Vector3.UpReadOnly;
@@ -39,10 +45,10 @@ export class MoveingCtrl extends BabylonController<IBabylonElem> {
     #pick(mesh: AbstractMesh) {
         const same = this.dragBhv?.enabled && this.dragBhv?.attachedNode === mesh;
 
-        debug(this, "picking", { mesh,  same });
+        debug(this, "picking", { mesh, same });
         if (!same) {
             this.dragBhv!.attach(mesh);
-            this.dragBhv!.enabled = true;;
+            this.dragBhv!.enabled = true;
         }
     }
 

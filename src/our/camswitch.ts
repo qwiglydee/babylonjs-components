@@ -1,7 +1,7 @@
 import { customElement, query } from "lit/decorators.js";
 
 import { assertNonNull } from "@utils/asserts";
-import { WrappingElement } from "./elements";
+import { WrappingElement } from "./base";
 
 @customElement("our-camera-switch")
 export class OurCamswitchElem extends WrappingElement {

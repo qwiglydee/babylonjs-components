@@ -5,7 +5,7 @@ import { customElement } from "lit/decorators.js";
 import { debug } from "@utils/debug";
 
 import { statusCtx } from "./context";
-import { LinkedElement } from "./elements";
+import { LinkedElement } from "./base";
 
 @customElement("our-something")
 export class OurSomethingElem extends LinkedElement {

@@ -1,13 +1,11 @@
-import type { ReactiveElement } from "lit";
 import { createContext } from "@lit/context";
 
-import { Scene } from "@babylonjs/core/scene";
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
-import { Nullable } from "@babylonjs/core/types";
 import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
+import { Scene } from "@babylonjs/core/scene";
+import { Nullable } from "@babylonjs/core/types";
 
-export interface IBabylonElem extends ReactiveElement {
-    /** some internal API **/
+export interface IBabylonElem {
     worldSize: number;
     scene: Scene;
     picked: Nullable<PickingInfo>;

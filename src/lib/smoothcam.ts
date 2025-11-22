@@ -1,7 +1,6 @@
 import { ArcRotateCamera, ComputeAlpha, ComputeBeta } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
 import { Lerp, Vector3 } from "@babylonjs/core/Maths";
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 
 /**
  * Sets some parameters with interpolation

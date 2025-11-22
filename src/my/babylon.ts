@@ -9,15 +9,15 @@ import { Color4, Vector3 } from "@babylonjs/core/Maths";
 import { Scene } from "@babylonjs/core/scene";
 import { Nullable } from "@babylonjs/core/types";
 import { provide } from "@lit/context";
-import { dbgChanges, debug } from "@utils/debug";
+import { debug } from "@utils/debug";
 import { queueEvent } from "@utils/events";
 
-import { boundsCtx, BoundsInfo, IBabylonElem, pickCtx, sceneCtx, sizeCtx } from "./context";
-import { MoveingCtrl } from "./controllers/appMoving";
-import { PickingCtrl } from "./controllers/appPicking";
 import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
+import { boundsCtx, BoundsInfo, IBabylonElem, pickCtx, sceneCtx, sizeCtx } from "./context";
+import { MoveingCtrl } from "./controllers/appMoving";
+import { PickingCtrl } from "./controllers/appPicking";
 
 const ENGOPTIONS: EngineOptions = {
     antialias: true,
@@ -45,10 +45,9 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     @provide({ context: boundsCtx })
     bounds: Nullable<BoundsInfo> = null;
 
+    @provide({ context: pickCtx })
     @state()
-    _bounds_dirty = false;
-
-    static dumbounds = new BoundingInfo(new Vector3(-1, -1, -1), new Vector3(+1, +1, +1));
+    picked: Nullable<PickingInfo> = null;
 
     @property({ type: Boolean })
     rightHanded = false;
@@ -58,10 +57,6 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
     @property()
     background = "#33334D"; // babylon brand color to sync all backgrounds
-
-    @provide({ context: pickCtx })
-    @state()
-    picked: Nullable<PickingInfo> = null;
 
     static override styles = css`
         :host {
@@ -103,6 +98,9 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     #resizingObs!: ResizeObserver;
     #visibilityObs!: IntersectionObserver;
 
+    _pickCtrl = new PickingCtrl(this);
+    _moveCtrl = new MoveingCtrl(this);
+
     constructor() {
         super();
         this.#resizingObs = new ResizeObserver(() => {
@@ -116,9 +114,6 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
             { threshold: this.visibilityMin }
         );
     }
-
-    _pickCtrl = new PickingCtrl(this);
-    _moveCtrl = new MoveingCtrl(this);
 
     override connectedCallback(): void {
         super.connectedCallback();
@@ -147,6 +142,11 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     override connectedMoveCallback() {
         // keep context when reconnecting (not widely available)
     }
+
+    @state()
+    _bounds_dirty = false;
+
+    static dumbounds = new BoundingInfo(new Vector3(-1, -1, -1), new Vector3(+1, +1, +1));
 
     _init() {
         render(this.render(), this.renderRoot); /** one-shot rendering */
@@ -206,11 +206,9 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     };
 
     override update(changes: PropertyValues): void {
-        debug(this, "updating", dbgChanges(this, changes));
         if (changes.has("_bounds_dirty") && this._bounds_dirty) {
             this._bounds_dirty = false;
             this.bounds = this.getBounds();
-            debug(this, "bounds", { model: this.bounds?.model?.boundingSphere.centerWorld.toString(), world: this.bounds?.world?.boundingSphere.centerWorld.toString()})
         }
         super.update(changes);
     }
