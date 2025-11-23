@@ -28,7 +28,7 @@ export class MyHighlighter1Elem extends SceneElement {
     _pickCtrl = new TargetingCtrl(this);
     
     override init() {
-        this._highlighter = new HighlightLayer("(highlighter)", this.scene);
+        this._highlighter = new HighlightLayer(this.localName, this.scene);
     }
 
     override dispose(): void {

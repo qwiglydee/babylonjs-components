@@ -45,7 +45,7 @@ export class MyGridGroundElem extends SceneElement {
     @property({ type: Number })
     opacity2 = 0.25;
 
-    _ground!: Mesh;
+    _mesh!: Mesh;
     _material!: GridMaterial;
 
     override init() {
@@ -56,26 +56,28 @@ export class MyGridGroundElem extends SceneElement {
         this._material.backFaceCulling = false;
         this._material.opacityTexture = new Texture(this.src, this.scene);
 
-        this._ground = CreateGround("(Ground)", { width: 1.0, height: 1.0, subdivisions: 1 }, this.scene);
-        Tags.AddTagsTo(this._ground, "aux");
-        this._ground.isPickable = false;
-        this._ground.material = this._material;
+        this._mesh = CreateGround(this.localName, { width: 1.0, height: 1.0, subdivisions: 1 }, this.scene);
+        this._setId(this._mesh);
+        this._setTags(this._mesh);
+        Tags.AddTagsTo(this._mesh, "aux");
+        this._mesh.isPickable = false;
+        this._mesh.material = this._material;
 
         this.size ??= 0.5 * this.worldSize;
     }
 
     override dispose(): void {
-        this._ground.dispose(true, true);    
+        this._mesh.dispose(true, true);    
     }
 
     override toggle(enabled: boolean): void {
-        this._syncEnabled(this._ground, enabled);
+        this._syncEnabled(this._mesh, enabled);
     }
 
     #resize() {
         // debug(this, "resizing", { size: this._size });
-        this._ground.scaling.x = this.size;
-        this._ground.scaling.z = this.size;
+        this._mesh.scaling.x = this.size;
+        this._mesh.scaling.z = this.size;
         this._material.gridRatio = this.scale / this.size;
     }
 

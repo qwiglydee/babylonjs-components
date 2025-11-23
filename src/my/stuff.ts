@@ -64,29 +64,34 @@ export class MyStuffElem extends SceneElement {
             let idx = (1 + (this.scene.meshes.length ?? 0)).toString().padStart(3, "0");
             this.id = `${this.shape}.${idx}`;
         }
+        const name = `${this.localName}-${this.shape}`
+
         debug(this, "creating", {shape: this.shape, rnd: this.randomizePos });
 
         switch (this.shape) {
             case 'cube':
-                this._mesh = MeshBuilder.CreateBox(this.shape, { size: this.size }, this.scene);
+                this._mesh = MeshBuilder.CreateBox(name, { size: this.size }, this.scene);
                 break;
             case 'sphere':
-                this._mesh = MeshBuilder.CreateSphere(this.shape, { diameter: this.size }, this.scene);
+                this._mesh = MeshBuilder.CreateSphere(name, { diameter: this.size }, this.scene);
                 break;
             case 'cone':
-                this._mesh = MeshBuilder.CreateCylinder(this.shape, { height: this.size, diameterBottom: this.size, diameterTop: 0 }, this.scene);
+                this._mesh = MeshBuilder.CreateCylinder(name, { height: this.size, diameterBottom: this.size, diameterTop: 0 }, this.scene);
                 break;
             case 'icosphere':
-                this._mesh = MeshBuilder.CreateIcoSphere(this.shape, { radius: 0.5 * this.size, subdivisions: 1 }, this.scene);
+                this._mesh = MeshBuilder.CreateIcoSphere(name, { radius: 0.5 * this.size, subdivisions: 1 }, this.scene);
                 break;
             default:
                 throw Error(`Invalid shape: ${this.shape}`);
         }
-        this._mesh.id = this.id;
+        this._setId(this._mesh);
+        this._setTags(this._mesh);
         this._mesh.material = this._getMatrial();
 
         if (this.randomizePos) this._position = this._rndPosition(this.randomizePos);
         this._position.y = 0.5 * this.size;
+
+        this._setTags(this._mesh);
     };
 
     override dispose() {

@@ -23,8 +23,9 @@ export class MyBasicCameraElem extends SceneElement {
     // _cameraCtrl = new CamDumbCtrl(this);
 
     override init(): void {
-        this._camera = new UniversalCamera("(Camera)", Vector3.Backward(this.scene.useRightHandedSystem), this.scene);
-        if (this.id) this._camera.id = this.id;
+        this._camera = new UniversalCamera(this.localName, Vector3.Backward(this.scene.useRightHandedSystem), this.scene);
+        this._setId(this._camera);
+        this._setTags(this._camera);
         this._camera.position.y = 1.75;
         this._camera.position.z = 2;
         this._camera.setEnabled(false);

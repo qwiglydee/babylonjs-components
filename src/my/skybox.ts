@@ -24,39 +24,41 @@ export class MyEnvironElem extends SceneElement {
     @property({ type: Number })
     blurring = 0.5;
 
-    _skytxt!: BaseTexture;
-    _skymat!: BackgroundMaterial;
-    _skymesh!: Mesh;
+    _texture!: BaseTexture;
+    _material!: BackgroundMaterial;
+    _mesh!: Mesh;
 
     override init(): void {
         assertNonNull(this.scene.environmentTexture, "Missing environment texture in scene")
 
-        this._skytxt = this.scene.environmentTexture.clone()!;
-        this._skytxt.coordinatesMode = Texture.SKYBOX_MODE;
+        this._texture = this.scene.environmentTexture.clone()!;
+        this._texture.coordinatesMode = Texture.SKYBOX_MODE;
 
-        this._skymat = new BackgroundMaterial("(SkyBox)", this.scene);
-        this._skymat.backFaceCulling = false;
-        this._skymat.reflectionTexture = this._skytxt;
+        this._material = new BackgroundMaterial("(SkyBox)", this.scene);
+        this._material.backFaceCulling = false;
+        this._material.reflectionTexture = this._texture;
 
-        this._skymesh = CreateBox("(SkyBox)", { size: this.worldSize, sideOrientation: Mesh.BACKSIDE }, this.scene);
-        Tags.AddTagsTo(this._skymesh, "aux");
-        this._skymesh.isPickable = false;
-        this._skymesh.material = this._skymat;
-        this._skymesh.infiniteDistance = true;
-        this._skymesh.ignoreCameraMaxZ = true;
+        this._mesh = CreateBox(this.localName, { size: this.worldSize, sideOrientation: Mesh.BACKSIDE }, this.scene);
+        this._setId(this._mesh);
+        this._setTags(this._mesh);
+        Tags.AddTagsTo(this._mesh, "aux");
+        this._mesh.isPickable = false;
+        this._mesh.material = this._material;
+        this._mesh.infiniteDistance = true;
+        this._mesh.ignoreCameraMaxZ = true;
     }
 
     override dispose(): void {
-        this._skymesh.dispose(true, true);
+        this._mesh.dispose(true, true);
     }
 
     override update(changes: PropertyValues) {
-        if (changes.has("intensity") && this._skytxt) this._skytxt.level = this.intensity;
-        if (changes.has("blurring") && this._skymat) this._skymat.reflectionBlur = this.blurring;
+        if (changes.has("intensity") && this._texture) this._texture.level = this.intensity;
+        if (changes.has("blurring") && this._material) this._material.reflectionBlur = this.blurring;
         super.update(changes);
     }
 
     override toggle(enabled: boolean): void {
-        this._syncEnabled(this._skymesh, enabled);
+        this._syncEnabled(this._mesh, enabled);
     }
 }

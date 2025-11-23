@@ -23,7 +23,9 @@ export class MyGhostElem extends SceneElement {
     _bhv!: GhostBehavior;
     
     override init() {
-        this._mesh = CreateBox("(ghost)", {}, this.scene);
+        this._mesh = CreateBox(this.localName, {}, this.scene);
+        this._setId(this._mesh);
+        this._setTags(this._mesh);
         Tags.AddTagsTo(this._mesh, "aux");
         this._mesh.setEnabled(false);
         this._mesh.isPickable = false;

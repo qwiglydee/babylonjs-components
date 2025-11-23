@@ -43,14 +43,15 @@ export class MyArcCameraElem extends SceneElement {
 
     override init(): void {
         this._camera = new ArcRotateCamera(
-            "(Camera)",
+            this.localName,
             Tools.ToRadians(this.defaultAlpha),
             Tools.ToRadians(this.defaultBeta),
             this.defaultRadius,
             Vector3.Zero(),
             this.scene
         );
-        if (this.id) this._camera.id = this.id;
+        this._setId(this._camera);
+        this._setTags(this._camera);
         this._camera.setEnabled(false);
         this._camera.minZ = 0.001;
         this._camera.maxZ = 1000;

@@ -2,10 +2,12 @@ import { consume } from "@lit/context";
 import { PropertyValues, ReactiveElement } from "lit";
 import { property } from "lit/decorators.js";
 
+import { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
 
 import { sceneCtx } from "./context";
+import { Tags } from "@babylonjs/core/Misc/tags";
 
 type Enableble = { setEnabled(val: boolean): void } | { isEnabled: boolean };
 
@@ -48,4 +50,13 @@ export abstract class SceneElement extends ReactiveElement {
         else if ('isEnabled' in object) object.isEnabled = enabled;
         else throw Error("Not enablebla object");
     } 
+
+    _setId(object: Node) {
+        if (this.id) object.id = this.id;
+    }
+
+    _setTags(object: Node) {
+        const classes = this.getAttribute('class');
+        if (classes) Tags.AddTagsTo(object, classes);
+    }
 } 
