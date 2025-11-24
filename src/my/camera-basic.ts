@@ -56,7 +56,7 @@ export class MyBasicCameraElem extends SceneElement {
             if (this.selected) this.scene.activeCamera = this._camera;
         }
 
-        if (changes.has('target')) {
+        if (changes.has("target") || changes.has("bounds")) {
             this._camera.setTarget(this.target?.getAbsolutePosition() ?? Vector3.ZeroReadOnly);
         }
         super.update(changes);

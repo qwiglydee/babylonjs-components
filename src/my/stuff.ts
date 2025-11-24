@@ -100,6 +100,7 @@ export class MyStuffElem extends SceneElement {
 
     override toggle(enabled: boolean): void {
         this._syncEnabled(this._mesh, enabled);
+        this.babylon.requestUpdate('scene');
     }
 
     override update(changes: PropertyValues): void {

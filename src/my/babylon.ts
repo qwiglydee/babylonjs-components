@@ -245,31 +245,22 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     }
 
     getBounds(): BoundsInfo {
-        const ext = this.scene.getWorldExtends(MyBabylonElem._importantMesh);
-        if (ext.min.y === Number.MAX_VALUE)
-            return {
-                model: MyBabylonElem.dumbounds,
-                world: MyBabylonElem.dumbounds,
-            };
+        const invalid = (ext: any) => ext.min.x === Number.MAX_VALUE || ext.min.x == ext.max.x;
 
-        // mirrored bbox
-        const flp = { min: ext.min.scale(-1), max: ext.max.scale(-1) };
+        // actual visible model
+        const modelext = this.scene.getWorldExtends((m) => m.isEnabled() && MyBabylonElem._importantMesh(m));
+        const model = invalid(modelext) ? MyBabylonElem.dumbounds : new BoundingInfo(modelext.min, modelext.max);
 
-        return {
-            model: new BoundingInfo(ext.min, ext.max),
-            world: new BoundingInfo(
-                new Vector3(
-                    Math.min(ext.min.x, flp.min.x, ext.max.x, flp.max.x),
-                    Math.min(ext.min.y, flp.min.y, ext.max.y, flp.max.y),
-                    Math.min(ext.min.z, flp.min.z, ext.max.z, flp.max.z)
-                ),
-                new Vector3(
-                    Math.max(ext.min.x, flp.min.x, ext.max.x, flp.max.x),
-                    Math.max(ext.min.y, flp.min.y, ext.max.y, flp.max.y),
-                    Math.max(ext.min.z, flp.min.z, ext.max.z, flp.max.z)
-                )
-            ),
-        };
+        // possible model mirrored around 0
+        const worldext = this.scene.getWorldExtends((m) => MyBabylonElem._importantMesh(m));
+        const world = invalid(worldext)
+            ? MyBabylonElem.dumbounds
+            : new BoundingInfo(
+                  new Vector3(Math.min(worldext.min.x, -worldext.max.x), Math.min(worldext.min.y, -worldext.max.y), Math.min(worldext.min.z, -worldext.max.z)),
+                  new Vector3(Math.max(worldext.max.x, -worldext.min.x), Math.max(worldext.max.y, -worldext.min.y), Math.max(worldext.max.z, -worldext.min.z))
+              );
+
+        return { model, world };
     }
 
     querySelectorNodes(query: string): Node[] {
