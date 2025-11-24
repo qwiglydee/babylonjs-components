@@ -11,8 +11,8 @@ import { Tags } from "@babylonjs/core/Misc/tags";
 import type { Nullable } from "@babylonjs/core/types";
 import { assertNonNull } from "@utils/asserts";
 
-import { boundsCtx, BoundsInfo, sizeCtx } from "./context";
 import { SceneElement } from "./base";
+import { boundsCtx, BoundsInfo } from "./context";
 
 
 @customElement("my3d-ground-flat")
@@ -20,9 +20,6 @@ export class MyFlatGroundElem extends SceneElement {
     @consume({ context: boundsCtx, subscribe: true })
     @state()
     bounds: Nullable<BoundsInfo> = null;
-
-    @consume({ context: sizeCtx })
-    worldSize = 1;
 
     @property()
     src: Nullable<string> = null;
@@ -59,7 +56,7 @@ export class MyFlatGroundElem extends SceneElement {
         this._mesh.isPickable = false;
         this._mesh.material = this._material;
 
-        this.size ??= 0.5 * this.worldSize;
+        this.size ??= 0.5 * this.babylon.worldSize;
     }
 
     override dispose() {

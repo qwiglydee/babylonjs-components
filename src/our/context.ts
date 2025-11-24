@@ -12,7 +12,7 @@ export const statusCtx = createContext<string>(Symbol("app.status"));
 
 export const babylonCtx = createContext<IBabylonElem | null>(Symbol("app.babylon"));
 
-export type BabylonInitEvent = CustomEvent;
+export type BabylonEvent = CustomEvent;
 
 export interface PickDetail {
   name: string;
@@ -25,7 +25,8 @@ export type BabylonPickEvent = CustomEvent<PickDetail | null>;
 
 declare global {
   interface GlobalEventHandlersEventMap {
-    'babylon.init': BabylonInitEvent;
+    'babylon.init': BabylonEvent;
+    'babylon.update': BabylonEvent;
     'babylon.pick': BabylonPickEvent;
   }
 }

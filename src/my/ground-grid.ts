@@ -11,8 +11,8 @@ import type { Nullable } from "@babylonjs/core/types";
 import { GridMaterial } from "@babylonjs/materials/grid/gridMaterial";
 import { assertNonNull } from "@utils/asserts";
 
-import { boundsCtx, BoundsInfo, sizeCtx } from "./context";
 import { SceneElement } from "./base";
+import { boundsCtx, BoundsInfo } from "./context";
 
 
 @customElement("my3d-ground-grid")
@@ -20,9 +20,6 @@ export class MyGridGroundElem extends SceneElement {
     @consume({ context: boundsCtx, subscribe: true })
     @state()
     bounds: Nullable<BoundsInfo> = null;
-
-    @consume({ context: sizeCtx })
-    worldSize = 1;
 
     @property()
     src: Nullable<string> = null;
@@ -63,7 +60,7 @@ export class MyGridGroundElem extends SceneElement {
         this._mesh.isPickable = false;
         this._mesh.material = this._material;
 
-        this.size ??= 0.5 * this.worldSize;
+        this.size ??= 0.5 * this.babylon.worldSize;
     }
 
     override dispose(): void {

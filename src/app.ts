@@ -3,7 +3,7 @@ import { ReactiveElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { debugEvent } from "@utils/debug";
-import { babylonCtx, BabylonInitEvent, BabylonPickEvent, IBabylonElem, statusCtx } from "./our/context";
+import { babylonCtx, BabylonEvent, BabylonPickEvent, IBabylonElem, statusCtx } from "./our/context";
 
 /**
  * Babylon-unaware web app
@@ -25,13 +25,18 @@ export class TheAppElem extends ReactiveElement {
     constructor() {
         super();
         this.addEventListener('babylon.init', this.#oninit);
+        this.addEventListener('babylon.update', this.#onupdate);
         this.addEventListener('babylon.pick', this.#onpick)
     }
 
-    #oninit = (event: BabylonInitEvent) => {
+    #oninit = (event: BabylonEvent) => {
         debugEvent(this, event);
         this.status = "hello";  
         this.babylon = event.target as IBabylonElem;
+    }
+
+    #onupdate = (event: BabylonEvent) => {
+        debugEvent(this, event);
     }
 
     #onpick = (event: BabylonPickEvent) => {

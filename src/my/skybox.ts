@@ -1,4 +1,3 @@
-import { consume } from "@lit/context";
 import { type PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -10,14 +9,10 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
 import { assertNonNull } from "@utils/asserts";
 
-import { sizeCtx } from "./context";
 import { SceneElement } from "./base";
 
 @customElement("my3d-skybox")
 export class MyEnvironElem extends SceneElement {
-    @consume({ context: sizeCtx })
-    worldSize = 1;
-
     @property({ type: Number })
     intensity = 0.5;
 
@@ -38,7 +33,7 @@ export class MyEnvironElem extends SceneElement {
         this._material.backFaceCulling = false;
         this._material.reflectionTexture = this._texture;
 
-        this._mesh = CreateBox(this.localName, { size: this.worldSize, sideOrientation: Mesh.BACKSIDE }, this.scene);
+        this._mesh = CreateBox(this.localName, { size: this.babylon.worldSize, sideOrientation: Mesh.BACKSIDE }, this.scene);
         this._setId(this._mesh);
         this._setTags(this._mesh);
         Tags.AddTagsTo(this._mesh, "aux");

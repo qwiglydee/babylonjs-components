@@ -6,18 +6,22 @@ import { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
 
-import { sceneCtx } from "./context";
+import { babylonCtx, IBabylonElem, sceneCtx } from "./context";
 import { Tags } from "@babylonjs/core/Misc/tags";
 
 type Enableble = { setEnabled(val: boolean): void } | { isEnabled: boolean };
 
+
 export abstract class SceneElement extends ReactiveElement {
     protected override createRenderRoot() {
         return this;
-    }  
+    }
+
+    @consume({ context: babylonCtx, subscribe: false })
+    babylon!: IBabylonElem;
 
     @consume({ context: sceneCtx, subscribe: false })
-    scene!: Scene;
+    scene!: Scene; // NB: either main scene or utility scene
 
     @property({ type: Boolean, reflect: true })
     disabled = false;
@@ -40,12 +44,8 @@ export abstract class SceneElement extends ReactiveElement {
         if (changed.has('disabled')) this.toggle(this.enabled);
     }
 
-    abstract init(): void;
-    abstract dispose(): void;
-    abstract toggle(enabled: boolean): void;
-
     _syncEnabled(object: Enableble, enabled: boolean) {
-        this.enabled = enabled;
+        this.enabled = enabled; // for babylon-originated toggle
         if ('setEnabled' in object) object.setEnabled!(enabled);
         else if ('isEnabled' in object) object.isEnabled = enabled;
         else throw Error("Not enablebla object");
@@ -59,4 +59,8 @@ export abstract class SceneElement extends ReactiveElement {
         const classes = this.getAttribute('class');
         if (classes) Tags.AddTagsTo(object, classes);
     }
+
+    abstract init(): void;
+    abstract dispose(): void;
+    abstract toggle(enabled: boolean): void;
 } 
