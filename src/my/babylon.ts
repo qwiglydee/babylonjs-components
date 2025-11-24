@@ -9,6 +9,7 @@ import type { EngineOptions } from "@babylonjs/core/Engines/thinEngine";
 import { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
 import { Color4, Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { Deferred } from "@babylonjs/core/Misc/deferred";
 import { Tags } from "@babylonjs/core/Misc/tags";
 import { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
@@ -30,6 +31,8 @@ const ENGOPTIONS: EngineOptions = {
 @customElement("my3d-babylon")
 export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     selfCtx = new ContextProvider(this, { context: babylonCtx, initialValue: this }); // provide the IBabylonElem api
+    whenReady = new Deferred<boolean>();
+    isReady = false;
 
     @property({ type: Number })
     worldSize = 100;
@@ -176,6 +179,8 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         debug(this, "ready");
         this.#startRendering();
         this.engine.hideLoadingUI();
+        this.whenReady.resolve(true);
+        this.isReady = true;
         queueEvent(this, "babylon.init");
     };
 
@@ -210,12 +215,12 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     }
 
     override updated(changes: PropertyValues): void {
-        // TODO: ibservables
-        if (changes.has("scene")) {
+        // TODO: observables
+        if (changes.has("scene") && this.isReady) {
             queueEvent(this, "babylon.update", null);
         }
 
-        if (changes.has("picked")) {
+        if (changes.has("picked") && this.isReady) {
             const mesh = this.picked?.pickedMesh;
             if (mesh) {
                 queueEvent(this, "babylon.pick", {
