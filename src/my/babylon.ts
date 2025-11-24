@@ -2,19 +2,20 @@ import { css, html, PropertyValues, ReactiveElement, render } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
+import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import type { EngineOptions } from "@babylonjs/core/Engines/thinEngine";
 import { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
 import { Color4, Vector3 } from "@babylonjs/core/Maths";
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { Tags } from "@babylonjs/core/Misc/tags";
 import { Scene } from "@babylonjs/core/scene";
 import { Nullable } from "@babylonjs/core/types";
 import { provide } from "@lit/context";
 import { debug } from "@utils/debug";
 import { queueEvent } from "@utils/events";
 
-import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import { Tags } from "@babylonjs/core/Misc/tags";
+import { querySelectorNode, querySelectorNodes } from "../lib/queryselecting";
 import { boundsCtx, BoundsInfo, IBabylonElem, pickCtx, sceneCtx, sizeCtx } from "./context";
 import { MoveingCtrl } from "./controllers/appMoving";
 import { PickingCtrl } from "./controllers/appPicking";
@@ -251,5 +252,13 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
                 )
             ),
         };
+    }
+
+    querySelectorNodes(query: string) {
+        return querySelectorNodes(this.scene, query);
+    }
+
+    querySelectorNode(query: string) {
+        return querySelectorNode(this.scene, query);
     }
 }
