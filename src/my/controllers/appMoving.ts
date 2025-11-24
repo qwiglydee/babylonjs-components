@@ -1,19 +1,19 @@
 import { PointerDragBehavior } from "@babylonjs/core/Behaviors/Meshes/pointerDragBehavior";
-import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+
+import { IBabylonElem } from "../context";
+import { BabylonController } from "./base";
 import { Nullable } from "@babylonjs/core/types";
+import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 
-import { BabylonController, type BabylonHost } from "./base";
 
-interface PickingHost extends BabylonHost {
-    picked: Nullable<PickingInfo>;
-}
-
-export class MoveingCtrl extends BabylonController<PickingHost> {
+export class MoveingCtrl extends BabylonController<IBabylonElem> {
     dragBhv?: PointerDragBehavior;
     dragDist = 0;
     dragNormal = Vector3.UpReadOnly;
+
+    #observer?: any;
 
     init() {
         this.dragBhv = new PointerDragBehavior({ dragPlaneNormal: this.dragNormal });
@@ -24,20 +24,19 @@ export class MoveingCtrl extends BabylonController<PickingHost> {
             this.dragDist += data.dragDistance;
         });
         this.dragBhv.onDragEndObservable.add(() => {
-            // @ts-ignore
-            this.host._bounds_dirty = true;
+            this.host.requestUpdate('scene');
         });
+        this.#observer = this.host.onPickedObservable.add(this.#onpicking);
     }
 
     dispose() {
+        this.#observer.remove();
         this.dragBhv?.detach();
         delete this.dragBhv;
     }
-
-    hostUpdate() {
-        // NB: cannot use picked context consumer on the same element
-        if (!this.dragBhv) return;
-        if (this.host.picked?.pickedMesh) this.#pick(this.host.picked.pickedMesh);
+    
+    #onpicking = (info: Nullable<PickingInfo>) => {
+        if (info?.pickedMesh) this.#pick(info.pickedMesh);
         else this.#unpick();
     }
 

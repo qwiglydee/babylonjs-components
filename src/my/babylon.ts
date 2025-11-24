@@ -10,12 +10,13 @@ import { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
 import { Color4, Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Deferred } from "@babylonjs/core/Misc/deferred";
+import { Observable } from "@babylonjs/core/Misc/observable";
 import { Tags } from "@babylonjs/core/Misc/tags";
 import { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import { Nullable } from "@babylonjs/core/types";
 import { debug } from "@utils/debug";
-import { queueEvent } from "@utils/events";
+import { bubbleEvent, queueEvent } from "@utils/events";
 
 import { querySelectorNode, querySelectorNodes } from "../lib/queryselecting";
 import { babylonCtx, boundsCtx, BoundsInfo, IBabylonElem, pickCtx, sceneCtx } from "./context";
@@ -43,7 +44,9 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     engine!: Engine;
 
     @provide({ context: sceneCtx })
-    scene!: Scene; // available to subcomponents immediately
+    scene!: Scene;
+
+    onUpdatedObservable = new Observable<Scene>();
 
     static dumbounds = new BoundingInfo(new Vector3(-1, -1, -1), new Vector3(+1, +1, +1));
 
@@ -53,6 +56,8 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
     @provide({ context: pickCtx })
     @state()
     picked: Nullable<PickingInfo> = null;
+
+    onPickedObservable = new Observable<Nullable<PickingInfo>>();
 
     @property({ type: Number })
     visibilityMin = 0.25;
@@ -210,27 +215,31 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         if (changes.has("scene")) {
             debug(this, "scene updated");
             this.bounds = this.getBounds();
+            // TODO: something else
         }
         super.update(changes);
     }
 
     override updated(changes: PropertyValues): void {
-        // TODO: observables
-        if (changes.has("scene") && this.isReady) {
-            queueEvent(this, "babylon.update", null);
+        if (!this.isReady) return;
+
+        if (changes.has("scene")) {
+            this.onUpdatedObservable.notifyObservers(this.scene);
+            bubbleEvent(this, "babylon.update", null);
         }
 
-        if (changes.has("picked") && this.isReady) {
+        if (changes.has("picked")) {
             const mesh = this.picked?.pickedMesh;
+            this.onPickedObservable.notifyObservers(this.picked);
             if (mesh) {
-                queueEvent(this, "babylon.pick", {
+                bubbleEvent(this, "babylon.pick", {
                     name: mesh.name,
                     id: mesh.id,
                     enabled: mesh.isEnabled(),
                     visible: mesh.isVisible,
                 });
             } else {
-                queueEvent(this, "babylon.pick", null);
+                bubbleEvent(this, "babylon.pick", null);
             }
         }
     }

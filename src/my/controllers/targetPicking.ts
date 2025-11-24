@@ -1,25 +1,26 @@
-import { ContextConsumer } from "@lit/context";
 
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Nullable } from "@babylonjs/core/types";
 
-import { pickCtx } from "../context";
-import { BabylonController, type BabylonHost } from "./base";
+import { IBabylonElem } from "../context";
+import { BabylonController, BabylonHost } from "./base";
 
-export interface TargetingHost extends BabylonHost, HTMLElement {
+export interface TargetingHost extends BabylonHost {
+    readonly babylon: IBabylonElem;
     target: Nullable<AbstractMesh>;
 }
 
 export class TargetingCtrl extends BabylonController<TargetingHost> {
-    _pickCtx!: ContextConsumer<typeof pickCtx, TargetingHost>;
+
+    #observer: any;
 
     override init() {
-        this._pickCtx = new ContextConsumer(this.host, { context: pickCtx, subscribe: true, callback: this.#onpick });
+        this.#observer = this.host.babylon.onPickedObservable.add(this.#onpick);
     }
 
     override dispose(): void {
-        // consumer disposes itself
+        this.#observer.remove();
     }
 
     #onpick = (info: Nullable<PickingInfo>) => {
