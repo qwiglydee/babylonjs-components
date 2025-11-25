@@ -54,6 +54,6 @@ export class MyEnvironElem extends SceneElement {
     }
 
     override toggle(enabled: boolean): void {
-        this._syncEnabled(this._mesh, enabled);
+        this._syncEnabled(enabled, this._mesh);
     }
 }

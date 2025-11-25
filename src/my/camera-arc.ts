@@ -72,7 +72,7 @@ export class MyArcCameraElem extends SceneElement {
     }
 
     override toggle(enabled: boolean): void {
-        this._syncEnabled(this._camera, enabled);
+        this._syncEnabled(enabled, this._camera);
 
         if (enabled) {
             // this._camera.useAutoRotationBehavior = this.autoSpin;

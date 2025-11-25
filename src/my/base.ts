@@ -11,6 +11,11 @@ import { Tags } from "@babylonjs/core/Misc/tags";
 
 type Enableble = { setEnabled(val: boolean): void } | { isEnabled: boolean };
 
+function enable(enable: boolean, enableble: Enableble) {
+    if ('setEnabled' in enableble) enableble.setEnabled!(enable);
+    else if ('isEnabled' in enableble) enableble.isEnabled = enable;
+    else throw Error("Not enablebla object");
+}
 
 export abstract class SceneElement extends ReactiveElement {
     protected override createRenderRoot() {
@@ -44,11 +49,9 @@ export abstract class SceneElement extends ReactiveElement {
         if (changed.has('disabled')) this.toggle(this.enabled);
     }
 
-    _syncEnabled(object: Enableble, enabled: boolean) {
+    _syncEnabled(enabled: boolean, ...objects: Enableble[]) {
         this.enabled = enabled; // for babylon-originated toggle
-        if ('setEnabled' in object) object.setEnabled!(enabled);
-        else if ('isEnabled' in object) object.isEnabled = enabled;
-        else throw Error("Not enablebla object");
+        objects.forEach(it => enable(enabled, it));
     } 
 
     _setId(object: Node) {

@@ -47,7 +47,7 @@ export class MyGhostElem extends SceneElement {
     }
 
     override toggle(enabled: boolean): void {
-        this._syncEnabled(this._mesh, enabled);
+        this._syncEnabled(enabled, this._mesh);
         this._bhv.targetMesh = enabled ? this.target : null;
     }
 }

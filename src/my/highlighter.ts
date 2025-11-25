@@ -45,7 +45,7 @@ export class MyHighlighter1Elem extends SceneElement {
     }
 
     override toggle(enabled: boolean): void {
-        this._syncEnabled(this._highlighter, enabled);
+        this._syncEnabled(enabled, this._highlighter);
     }
 
     clear() {
