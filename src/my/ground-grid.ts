@@ -34,7 +34,7 @@ export class MyGridGroundElem extends SceneElement {
     autoSize = false;
 
     @property()
-    color: string = "#33334D";
+    color: string = "#000000";
 
     @property({ type: Number })
     opacity = 0.5;

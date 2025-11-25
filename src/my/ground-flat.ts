@@ -31,7 +31,7 @@ export class MyFlatGroundElem extends SceneElement {
     autoSize = false;
 
     @property()
-    color: string = "#33334D";
+    color: string = "#808080";
 
     @property({ type: Number })
     opacity = 1.0;

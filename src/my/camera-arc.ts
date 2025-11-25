@@ -12,7 +12,6 @@ import { smoothFocus, smoothParams, smoothTarget } from "../lib/smoothcam";
 import { boundsCtx, BoundsInfo } from "./context";
 import { TargetingCtrl } from "./controllers/targetPicking";
 import { SceneElement } from "./base";
-import { debug } from "@utils/debug";
 
 @customElement("my3d-camera-arc")
 export class MyArcCameraElem extends SceneElement {

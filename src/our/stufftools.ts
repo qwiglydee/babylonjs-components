@@ -1,10 +1,9 @@
+import { PropertyValues } from "lit";
 import { customElement, query, queryAll, state } from "lit/decorators.js";
 
 import { assertNonNull } from "@utils/asserts";
-import { PropertyValues } from "lit";
 import { WrappingElement } from "./base";
 import { BabylonPickEvent } from "./context";
-import { debug } from "@utils/debug";
 
 @customElement("our-stuff-add")
 export class OurStuffAddElem extends WrappingElement {
@@ -85,13 +84,11 @@ export class OurStuffToolsElem extends WrappingElement {
     }
 
     _select(id: string | null) {
-        debug(this, "selecting", id);
         this.selected = id ? document.getElementById(id) : null;
     }
 
     override update(changes: PropertyValues): void {
         if (changes.has('selected')) {
-            debug(this, "selected", this.selected);
             this.buttons.forEach(b => b.disabled = this.selected == null);
             this.inputs.forEach(b => b.disabled = this.selected == null);         
             this.selId.value = this.selected ? this.selected.id : "";

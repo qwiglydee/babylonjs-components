@@ -1,14 +1,13 @@
+import { PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import { Vector3 } from "@babylonjs/core/Maths";
-import type { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
-import { debug } from "@utils/debug";
 
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
+import { Vector3 } from "@babylonjs/core/Maths";
+import type { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { assertNonNull } from "@utils/asserts";
-import { PropertyValues } from "lit";
+
 import { SceneElement } from "./base";
 
 @customElement("my3d-stuff")
@@ -65,8 +64,6 @@ export class MyStuffElem extends SceneElement {
             this.id = `${this.shape}.${idx}`;
         }
         const name = `${this.localName}-${this.shape}`
-
-        debug(this, "creating", {shape: this.shape, rnd: this.randomizePos });
 
         switch (this.shape) {
             case 'cube':

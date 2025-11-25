@@ -1,6 +1,6 @@
-import { debug } from "@utils/debug";
-import { BabylonController, type BabylonHost } from "./base";
 import { Camera } from "@babylonjs/core/Cameras/camera";
+import { BabylonController, type BabylonHost } from "./base";
+import { debug } from "@utils/debug";
 
 interface CameraHost extends BabylonHost {
     _camera: Camera;
