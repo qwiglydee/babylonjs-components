@@ -15,10 +15,10 @@ import { Tags } from "@babylonjs/core/Misc/tags";
 import { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import { Nullable } from "@babylonjs/core/types";
+import { querySelectorNode, querySelectorNodes } from "@lib/queryselecting";
 import { debug } from "@utils/debug";
 import { bubbleEvent, queueEvent } from "@utils/events";
 
-import { querySelectorNode, querySelectorNodes } from "../lib/queryselecting";
 import { babylonCtx, boundsCtx, BoundsInfo, IBabylonElem, pickCtx, sceneCtx } from "./context";
 import { MoveingCtrl } from "./controllers/appMoving";
 import { PickingCtrl } from "./controllers/appPicking";

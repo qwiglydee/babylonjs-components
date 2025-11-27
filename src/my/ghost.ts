@@ -2,13 +2,13 @@ import { type PropertyValues } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { CreateBox } from "@babylonjs/core/Meshes/Builders/boxBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import type { Nullable } from "@babylonjs/core/types";
-
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
-import { GhostBehavior } from "../lib/ghostbhv";
+import type { Nullable } from "@babylonjs/core/types";
+import { GhostBehavior } from "@lib/ghostbhv";
+
 import { SceneElement } from "./base";
 import { TargetingCtrl } from "./controllers/targetPicking";
 
@@ -21,7 +21,7 @@ export class MyGhostElem extends SceneElement {
 
     _mesh!: Mesh;
     _bhv!: GhostBehavior;
-    
+
     override init() {
         this._mesh = CreateBox(this.localName, {}, this.scene);
         this._setId(this._mesh);
@@ -32,7 +32,7 @@ export class MyGhostElem extends SceneElement {
         this._mesh.material = new BackgroundMaterial("(ghost)", this.scene);
         this._mesh.material.alpha = 0.25;
         this._mesh.material.wireframe = true;
-        
+
         this._bhv = new GhostBehavior();
         this._bhv.attach(this._mesh);
     }
@@ -42,7 +42,7 @@ export class MyGhostElem extends SceneElement {
     }
 
     override update(changes: PropertyValues) {
-        if (changes.has('target') && this.enabled) this._bhv.targetMesh = this.target;
+        if (changes.has("target") && this.enabled) this._bhv.targetMesh = this.target;
         super.update(changes);
     }
 

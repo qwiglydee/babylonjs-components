@@ -18,6 +18,7 @@ export default function (env, argv) {
             extensions: [".ts", ".js"],
             alias: {
                 "@utils": path.resolve("./src/utils/"),
+                "@lib": path.resolve("./src/lib/"),
             },
         },
         module: {

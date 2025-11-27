@@ -7,11 +7,11 @@ import { Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Tools } from "@babylonjs/core/Misc/tools";
 import { Nullable } from "@babylonjs/core/types";
+import { smoothFocus, smoothParams, smoothTarget } from "@lib/smoothcam";
 
-import { smoothFocus, smoothParams, smoothTarget } from "../lib/smoothcam";
+import { SceneElement } from "./base";
 import { boundsCtx, BoundsInfo } from "./context";
 import { TargetingCtrl } from "./controllers/targetPicking";
-import { SceneElement } from "./base";
 
 @customElement("my3d-camera-arc")
 export class MyArcCameraElem extends SceneElement {
@@ -80,7 +80,7 @@ export class MyArcCameraElem extends SceneElement {
         } else {
             // this._camera.useAutoRotationBehavior = false;
             this._camera.detachControl();
-        }            
+        }
     }
 
     override update(changes: PropertyValues): void {
@@ -99,7 +99,7 @@ export class MyArcCameraElem extends SceneElement {
                     beta: Tools.ToRadians(this.defaultBeta),
                     radius: this.defaultRadius,
                     target: Vector3.Zero(),
-                })
+                });
             }
         }
 
