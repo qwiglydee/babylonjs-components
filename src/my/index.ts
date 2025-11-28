@@ -12,3 +12,6 @@ import "./ground-flat";
 import "./ground-grid";
 import "./highlighter";
 import "./ghost";
+
+import "./gui2d/gui";
+import "./gui2d/something";
