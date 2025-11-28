@@ -15,6 +15,7 @@ export class MyGUISomethingElem extends GUI2Element {
         this._control.heightInPixels = 64;
         this._control.background = "#800080";
         
+        this._applyStyle(this._control);
         this._addControl(this._control);
     }
 

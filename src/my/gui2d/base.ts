@@ -6,6 +6,8 @@ import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { babylonCtx, IBabylonElem } from "../context";
 import { guiCtx } from "./context";
+import { debug } from "@utils/debug";
+import { applyCSSStyle } from "./css";
 
 export abstract class GUI2Element extends ReactiveElement {
     protected override createRenderRoot() {
@@ -17,7 +19,6 @@ export abstract class GUI2Element extends ReactiveElement {
 
     @consume({ context: guiCtx, subscribe: false })
     gui!: AdvancedDynamicTexture;
-
 
     _addControl(ctrl: Control) {
         this.gui.addControl(ctrl);
@@ -56,6 +57,7 @@ export abstract class GUI2Element extends ReactiveElement {
     override connectedCallback(): void {
         super.connectedCallback();
         this.init();
+        debug(this, "style", this.style);
     }
 
     override disconnectedCallback(): void {
@@ -72,4 +74,8 @@ export abstract class GUI2Element extends ReactiveElement {
     abstract dispose(): void;
     abstract toggle(enabled: boolean): void;
     abstract toggleVisible(visible: boolean): void;
+
+    _applyStyle(ctrl: Control, keys?: string[]) {
+        applyCSSStyle(ctrl, this.style, keys);
+    }
 }
