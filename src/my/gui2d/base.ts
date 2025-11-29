@@ -75,7 +75,7 @@ export abstract class GUI2Element extends ReactiveElement {
     abstract toggle(enabled: boolean): void;
     abstract toggleVisible(visible: boolean): void;
 
-    _applyStyle(ctrl: Control, keys?: string[]) {
-        applyCSSStyle(ctrl, this.style, keys);
+    _applyStyle(ctrl: Control) {
+        applyCSSStyle(ctrl, this.style);
     }
 }
