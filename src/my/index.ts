@@ -15,3 +15,4 @@ import "./ghost";
 
 import "./gui2d/gui";
 import "./gui2d/something";
+import "./gui2d/button";

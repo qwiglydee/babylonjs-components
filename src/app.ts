@@ -27,6 +27,7 @@ export class TheAppElem extends ReactiveElement {
         this.addEventListener('babylon.init', this.#oninit);
         this.addEventListener('babylon.update', this.#onupdate);
         this.addEventListener('babylon.pick', this.#onpick)
+        this.addEventListener('click', this.#onclick);
     }
 
     #oninit = (event: BabylonEvent) => {
@@ -42,5 +43,9 @@ export class TheAppElem extends ReactiveElement {
     #onpick = (event: BabylonPickEvent) => {
         debugEvent(this, event);
         this.status = event.detail ? `Picked ${event.detail.name} [${event.detail.id}]` : "...";  
+    }
+
+    #onclick = (event: Event) => {
+        debugEvent(this, event);
     }
 }
