@@ -8,6 +8,7 @@ import { babylonCtx, IBabylonElem } from "../context";
 import { guiCtx } from "./context";
 import { debug } from "@utils/debug";
 import { applyCSSStyle } from "./css";
+import { Scene } from "@babylonjs/core/scene";
 
 export abstract class GUI2Element extends ReactiveElement {
     protected override createRenderRoot() {
@@ -16,6 +17,11 @@ export abstract class GUI2Element extends ReactiveElement {
 
     @consume({ context: babylonCtx, subscribe: false })
     babylon!: IBabylonElem;
+
+    get scene(): Scene {
+        // the main scene
+        return this.babylon.scene;
+    }
 
     @consume({ context: guiCtx, subscribe: false })
     gui!: AdvancedDynamicTexture;

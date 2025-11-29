@@ -1,8 +1,10 @@
 import { ReactiveController, ReactiveControllerHost } from "lit";
 
 import { Scene } from "@babylonjs/core/scene";
+import { IBabylonElem } from "../context";
 
 export interface BabylonHost extends ReactiveControllerHost {
+    readonly babylon?: IBabylonElem;
     readonly scene: Scene;
 }
 
