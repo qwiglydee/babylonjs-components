@@ -58,6 +58,13 @@ class StylePropertyInt extends StyleProperty {
     }
 }
 
+class StylePropertyIntArr extends StyleProperty {
+    override assign(ctrl: any, value: string) {
+        const val = value.split(', ').map(v => parseInt(v));
+        if (val.every(n => Number.isFinite(n))) ctrl[this.prop] = val;
+    }
+}
+
 class StylePropertyBool extends StyleProperty {
     conv: (v: string) => boolean;
 
@@ -128,6 +135,7 @@ const PROPS = [
     new StylePropertyColor("stroke", "color"),
     new StylePropertyColor("fill", "background"),
     new StylePropertyInt("stroke-width", "lineWidth"),
+    new StylePropertyIntArr("stroke-dasharray", "dash"),
 
     new StyleProperty('font-family', 'fontFamily'),
     new StyleProperty('font-style', 'fontStyle'),
@@ -142,10 +150,11 @@ const PROPS = [
 ];
 
 export const ALLSTYLES = new Set(PROPS.map(p => p.key));
-export const COLORSTYLES = new Set(['color', 'background-color', 'border-color', 'stroke', 'fill']);
+export const COLORSTYLES = new Set(['color', 'background-color', 'border-color']);
 export const POSITIONSTYLES = new Set(['top', 'left', 'width', 'height', 'justify-self', 'align-self', 'margin']);
 export const TEXTSTYLES = new Set(['font-family', 'font-size', 'font-style', 'text-wrap', 'text-align', 'vertical-align'])
 export const BORDERSTYLES = new Set(['border-color', 'border-width', 'border-radius']);
+export const DRAWSTYLES = new Set(['stroke', 'stroke-width', 'stroke-dasharray', 'fill']); 
 
 export function applyCSSStyle(ctrl: Control, style: CSSStyleDeclaration, keys: Set<string>) {
     PROPS

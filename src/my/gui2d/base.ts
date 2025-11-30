@@ -5,7 +5,6 @@ import { property } from "lit/decorators.js";
 import { Scene } from "@babylonjs/core/scene";
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 import { Control } from "@babylonjs/gui/2D/controls/control";
-import { debug } from "@utils/debug";
 import { babylonCtx, IBabylonElem } from "../context";
 import { guiCtx } from "./context";
 import { ALLSTYLES, applyCSSStyle } from "./css";
@@ -82,7 +81,6 @@ export abstract class GUI2Element extends ReactiveElement {
 
     _applyStyle(ctrl: Control, keys: Set<string> | string[] = ALLSTYLES) {
         if(Array.isArray(keys)) keys = new Set(keys);
-        debug(this,"applying", keys);
         applyCSSStyle(ctrl, this.style, keys);
     }
 }
