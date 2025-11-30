@@ -4,6 +4,7 @@ import { Button } from "@babylonjs/gui/2D/controls/button";
 import { debug } from "@utils/debug";
 import { GUI2Element } from "./base";
 import { bubbleEvent } from "@utils/events";
+import { ALLSTYLES, POSITIONSTYLES } from "./css";
 
 @customElement("my2g-button")
 export class MyGUIButtonElem extends GUI2Element {
@@ -20,7 +21,8 @@ export class MyGUIButtonElem extends GUI2Element {
         this._addControl(this._button);
 
         this._applyStyle(this._button);
-        this._applyStyle(this._button.textBlock!);
+        this._applyStyle(this._button.textBlock!, ALLSTYLES.difference(POSITIONSTYLES));
+        this._applyStyle(this._button.textBlock!, ['padding']);
 
         this.#observer = this._button.onPointerClickObservable.add(this.#onclick);
     }

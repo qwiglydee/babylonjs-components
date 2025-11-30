@@ -7,7 +7,7 @@ import { Control } from "@babylonjs/gui/2D/controls/control";
 import { babylonCtx, IBabylonElem } from "../context";
 import { guiCtx } from "./context";
 import { debug } from "@utils/debug";
-import { applyCSSStyle } from "./css";
+import { ALLSTYLES, applyCSSStyle } from "./css";
 import { Scene } from "@babylonjs/core/scene";
 
 export abstract class GUI2Element extends ReactiveElement {
@@ -63,7 +63,6 @@ export abstract class GUI2Element extends ReactiveElement {
     override connectedCallback(): void {
         super.connectedCallback();
         this.init();
-        debug(this, "style", this.style);
     }
 
     override disconnectedCallback(): void {
@@ -81,7 +80,9 @@ export abstract class GUI2Element extends ReactiveElement {
     abstract toggle(enabled: boolean): void;
     abstract toggleVisible(visible: boolean): void;
 
-    _applyStyle(ctrl: Control) {
-        applyCSSStyle(ctrl, this.style);
+    _applyStyle(ctrl: Control, keys: Set<string> | string[] = ALLSTYLES) {
+        if(Array.isArray(keys)) keys = new Set(keys);
+        debug(this,"applying", keys);
+        applyCSSStyle(ctrl, this.style, keys);
     }
 }

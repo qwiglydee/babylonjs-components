@@ -1,9 +1,10 @@
 import { customElement } from "lit/decorators.js";
 
 import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
+import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { debug } from "@utils/debug";
 import { GUI2Element } from "./base";
-import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
+import { COLORSTYLES } from "./css";
 
 @customElement("my2g-something")
 export class MyGUISomethingElem extends GUI2Element {
@@ -19,7 +20,8 @@ export class MyGUISomethingElem extends GUI2Element {
         this._addControl(this._rect);
 
         this._applyStyle(this._rect);
-        this._applyStyle(this._text);
+        this._applyStyle(this._text, COLORSTYLES);
+        this._applyStyle(this._text, ['padding']);
     }
 
     override dispose(): void {

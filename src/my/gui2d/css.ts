@@ -103,6 +103,7 @@ const PROPS = [
     new StylePropertyFloat("opacity", "alpha"),
     new StylePropertyColor("background-color", "background"),
     new StylePropertyColor("color", "color"),
+
     new StylePropertyNumber("width", "width", (_c: any, v: string) => v !== "auto"),
     new StylePropertyBool(
         "width",
@@ -119,6 +120,7 @@ const PROPS = [
     ),
     new StylePropertyNumber("left", "left"),
     new StylePropertyNumber("top", "top"),
+    new StylePropertyPadding("padding", "setPadding"),
     new StylePropertyPadding("margin", "setPadding"),
     new StylePropertyAlignment("justify-self", "horizontalAlignment"),
     new StylePropertyAlignment("align-self", "verticalAlignment"),
@@ -127,9 +129,11 @@ const PROPS = [
     new StylePropertyColor("fill", "background"),
     new StylePropertyInt("stroke-width", "lineWidth"),
 
+    new StyleProperty('font-family', 'fontFamily'),
+    new StyleProperty('font-style', 'fontStyle'),
+    new StylePropertyNumber('font-size', 'fontSize'),
     new StylePropertyAlignment("text-align", "textHorizontalAlignment", (c: any) => c instanceof TextBlock),
     new StylePropertyAlignment("vertical-align", "textVerticalAlignment", (c: any) => c instanceof TextBlock),
-    new StylePropertyAlignment("text-align", "textHorizontalAlignment", (c: any) => c instanceof TextBlock),
     new StylePropertyBool("text-wrap", "textWrapping", (c: any) => c instanceof TextBlock, (v: string) => v !== 'nowrap'), 
 
     new StylePropertyColor("border-color", "color", (c: any) => c instanceof Rectangle),
@@ -137,7 +141,15 @@ const PROPS = [
     new StylePropertyInt("border-radius", "cornerRadius", (c: any) => c instanceof Rectangle),
 ];
 
-export function applyCSSStyle(ctrl: Control, style: CSSStyleDeclaration) {
-    let propvals = PROPS.map((p) => StyleProperty.extract(style, p));
-    propvals.forEach((pv) => pv.p.apply(ctrl, pv.v));
+export const ALLSTYLES = new Set(PROPS.map(p => p.key));
+export const COLORSTYLES = new Set(['color', 'background-color', 'border-color', 'stroke', 'fill']);
+export const POSITIONSTYLES = new Set(['top', 'left', 'width', 'height', 'justify-self', 'align-self', 'margin']);
+export const TEXTSTYLES = new Set(['font-family', 'font-size', 'font-style', 'text-wrap', 'text-align', 'vertical-align'])
+export const BORDERSTYLES = new Set(['border-color', 'border-width', 'border-radius']);
+
+export function applyCSSStyle(ctrl: Control, style: CSSStyleDeclaration, keys: Set<string>) {
+    PROPS
+        .filter(p => keys.has(p.key))
+        .map((p) => StyleProperty.extract(style, p))
+        .forEach((pv) => pv.p.apply(ctrl, pv.v));
 }
