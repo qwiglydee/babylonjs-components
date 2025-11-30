@@ -16,6 +16,7 @@ export class MyGUIButtonElem extends GUI2Element {
         this._button = Button.CreateSimpleButton("button", this.textContent.trim());
         this._button.textBlock!.name = "label";
         this._button.textBlock!.resizeToFit = true;
+        this._button.textBlock!.textWrapping = false;
         this._addControl(this._button);
 
         this._applyStyle(this._button);
