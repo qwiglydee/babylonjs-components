@@ -107,5 +107,6 @@ export class OurStuffToolsElem extends WrappingElement {
         assertNonNull(this.selected);
         // @ts-ignore
         this.selected.disabled = !enable;
+        this.babylon!.requestUpdate('scene');
     }
 }

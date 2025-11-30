@@ -1,7 +1,7 @@
 const cssrgb_re = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
 const cssrgba_re = /rgba\((\d+),\s*(\d+),\s*(\d+),\s*(\d*(\.\d+))\)/;
 
-interface RGB {
+export interface RGB {
     r: number;
     g: number;
     b: number;

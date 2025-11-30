@@ -3,8 +3,9 @@
  */
 
 import { createContext } from "@lit/context";
+import { ReactiveElement } from "lit";
 
-export interface IBabylonElem extends HTMLElement {
+export interface IBabylonElem extends ReactiveElement {
   /** TODO: some public API **/
 }
 

@@ -2,13 +2,13 @@ import { consume } from "@lit/context";
 import { PropertyValues, ReactiveElement } from "lit";
 import { property } from "lit/decorators.js";
 
+import { Scene } from "@babylonjs/core/scene";
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 import { Control } from "@babylonjs/gui/2D/controls/control";
+import { debug } from "@utils/debug";
 import { babylonCtx, IBabylonElem } from "../context";
 import { guiCtx } from "./context";
-import { debug } from "@utils/debug";
 import { ALLSTYLES, applyCSSStyle } from "./css";
-import { Scene } from "@babylonjs/core/scene";
 
 export abstract class GUI2Element extends ReactiveElement {
     protected override createRenderRoot() {
