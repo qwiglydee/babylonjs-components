@@ -1,52 +1,46 @@
 import { customElement, property } from "lit/decorators.js";
 
-import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
-import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
-import { GUI2Element } from "./base";
-import { PropertyValues } from "lit";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { MyLabel } from "@lib/gui2label";
+import { PropertyValues } from "lit";
+import { GUI2Element } from "./base";
+import { COLORSTYLES, TEXTSTYLES } from "./css";
 
 @customElement("my2g-label")
 export class MyGUILabelElem extends GUI2Element {
     @property()
     anchor = "";
 
-    _rect!: Rectangle;
-    _text!: TextBlock;
+    _label!: MyLabel;
 
     override init(): void {
-        this._rect = new Rectangle("rect");
-        this._text = new TextBlock("text", this.textContent.trim());
-        this._rect.addControl(this._text);
-        this._addControl(this._rect);
+        this._label = new MyLabel("label", this.textContent.trim());
+        this._addControl(this._label);
 
-        this._applyStyle(this._rect);
-        this._applyStyle(this._text);
-        this._rect.adaptWidthToChildren = true;
-        this._rect.adaptHeightToChildren = true;
-        this._text.resizeToFit = true;
-        this._text.textWrapping = false;
-        this._text.alpha = 1.0;
+        this._applyStyle(this._label);
+        this._applyStyle(this._label.textBlock!, TEXTSTYLES);
+        this._applyStyle(this._label.textBlock!, COLORSTYLES);
+        this._applyStyle(this._label.textBlock!, ['padding']);
 
         this.babylon.onUpdatedObservable.add(() => this.requestUpdate('anchor'));
     }
 
     override dispose(): void {
-        this._rect.dispose()
+        this._label.dispose()
     }
 
     override toggle(enabled: boolean): void {
-        this._syncEnabled(enabled, this._rect);
+        this._syncEnabled(enabled, this._label);
     }
 
     override toggleVisible(enabled: boolean): void {
-        const actually = enabled && this._rect.linkedMesh != null && this._rect.linkedMesh.isEnabled(false);
-        this._syncVisible(actually, this._rect);
+        const actually = enabled && this._label.linkedMesh != null && this._label.linkedMesh.isEnabled(false);
+        this._syncVisible(actually, this._label);
     }
 
     #rettach() {
         const match = this.babylon.querySelectorNode(this.anchor) as TransformNode;
-        this._rect.linkWithMesh(match);
+        this._label.linkWithMesh(match);
         this.toggleVisible(match != null);
     }
 
