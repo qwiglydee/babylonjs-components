@@ -16,5 +16,6 @@ import "./ghost";
 import "./gui2d/gui";
 import "./gui2d/something";
 import "./gui2d/button";
-import "./gui2d/label";
 import "./gui2d/hotspot";
+import "./gui2d/label";
+import "./gui2d/callout";
