@@ -1,90 +1,122 @@
 import { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
-import { Vector2, Vector3 } from "@babylonjs/core/Maths/math";
-import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { RegisterClass } from "@babylonjs/core/Misc/typeStore";
-import { Nullable } from "@babylonjs/core/types";
-import { Control } from "@babylonjs/gui/2D/controls/control";
+import { Vector2 } from "@babylonjs/core/Maths/math";
+import { Measure } from "@babylonjs/gui/2D/measure";
 
-export class MyCalloutLine extends Control {
-    private _lineWidth = 1;
-    public get lineWidth(): number {
-        return this._lineWidth;
-    }
-    public set lineWidth(value: number) {
-        if (this._lineWidth === value) return;
-        this._lineWidth = value;
-        this._markAsDirty();
+import { MyLabel } from "./gui2label";
+import { DehomoPoint, homoFinite, homoIntersect, HomoLine, HomoPoint, HomoRay, homoVisible } from "./homogenous2d";
+import { MyLine } from "./gui2line";
+
+
+export class MyCalloutLabel extends MyLabel {
+    constructor(name: string, text: string) {
+        super(name, text);
+        this.descendantsOnlyPadding = false;
     }
 
-    private _dash = new Array<number>();
-    public get dash(): Array<number> {
-        return this._dash;
+    override _computeAlignment(parentMeasure: Measure, _context: ICanvasRenderingContext): void {
+        if (!this.isDirty || !this.anchor.isLinked || parentMeasure.width == 0) return;
+
+        // NB: including padding
+        const half = {
+            width: this._currentMeasure.width / 2,
+            height: this._currentMeasure.height / 2,
+        }
+
+        const snapped = snapToEdges(
+            new Measure(
+                half.width, half.height, 
+                parentMeasure.width - this._currentMeasure.width,
+                parentMeasure.height - this._currentMeasure.height,
+            ), 
+            new Vector2(this.anchor.x!, this.anchor.y!)
+        );
+        
+        if (snapped) {
+            this._currentMeasure.left = snapped.x;
+            this._currentMeasure.top = snapped.y;
+        } else {
+            this._currentMeasure.left = this.anchor.x!;
+            this._currentMeasure.top = this.anchor.y!;
+        }
+
+        // adjust for centering
+        this._currentMeasure.left -= half.width;
+        this._currentMeasure.top -= half.height;
+
+        // adjust for padding
+        this._currentMeasure.width -= (this.paddingLeftInPixels + this.paddingRightInPixels);
+        this._currentMeasure.height -= (this.paddingTopInPixels + this.paddingBottomInPixels);
+        this._currentMeasure.left += this.paddingLeftInPixels;
+        this._currentMeasure.top += this.paddingTopInPixels;
     }
-    public set dash(value: Array<number>) {
-        if (this._dash === value) return;
-        this._dash = value;
-        this._markAsDirty();
-    }
+}
 
-    private _linkedControl?: Control;
-
-    linkWithControl(value: Control) {
-        this._linkedControl = value;
-        this._markAsDirty();
-        this.notRenderable = !!this._linkedMesh && !!this._linkedControl;
-    }
-
-    override linkWithMesh(mesh: Nullable<TransformNode>) {
-        super.linkWithMesh(mesh);
-        this.notRenderable = !!this._linkedMesh && !!this._linkedControl;
-    }
-
-    constructor(name?: string) {
-        super(name);
-        this._automaticSize = true;
-        this.isHitTestVisible = false;
-        this._horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
-        this._verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-        this.notRenderable = true;
-    }
-
-    #cachedProjection?: Vector3;
-    override _moveToProjectedPosition(position: Vector3) {
-        if (this.#cachedProjection && this.#cachedProjection.equalsWithEpsilon(position)) return;
-        this.#cachedProjection = position.clone();
-        this.p0 = new Vector2(position.x, position.y);
-    }
-
-    p0?: Vector2;
-
-    get p1(): Vector2 | undefined {
-        return this._linkedControl ? new Vector2(this._linkedControl.centerX, this._linkedControl.centerY) : undefined;
-    }
-
+export class MyCalloutLine extends MyLine {
+    // drawing anchor1 to anchor2 so that gradient 0-stop is at edge 1
     public override _draw(context: ICanvasRenderingContext): void {
-        const p0 = this.p0,
-            p1 = this.p1;
-        if (!p0 || !p1) return;
-
-        const r = this.p1.subtract(p0);
-
         context.save();
 
         this._applyStates(context);
-        context.strokeStyle = this._getColor(context);
         context.lineWidth = this._lineWidth;
         context.setLineDash(this._dash);
         context.strokeStyle = this._getColor(context);
 
-        // translating to 0 to make gradient 0-based
-        context.translate(p0.x, p0.y);
+        context.translate(this.anchor1.x!, this.anchor1.y!);
         context.beginPath();
         context.moveTo(0, 0);
-        context.lineTo(r.x, r.y);
+        context.lineTo(this.anchor2.x! - this.anchor1.x!, this.anchor2.y! - this.anchor1.y!);
         context.stroke();
 
         context.restore();
     }
 }
 
-RegisterClass("MyCalloutLine", MyCalloutLine);
+
+export function snapToEdges(parent: Measure, position: Vector2): Vector2 | null {
+    const corners = {
+        min: new Vector2(parent.left, parent.top),
+        max: new Vector2(parent.left + parent.width, parent.top + parent.height),
+    }
+    const center = {
+        x: (corners.min.x + corners.max.x) / 2,
+        y: (corners.min.y + corners.max.y) / 2,
+    }
+
+    let edges = [
+        HomoLine(corners.min, new Vector2(0, +1)), // top
+        HomoLine(corners.max, new Vector2(-1, 0)), // right
+        HomoLine(corners.max, new Vector2(0, -1)), // bottom
+        HomoLine(corners.min, new Vector2(+1, 0)), // left
+    ]
+
+    let dir = new Vector2(
+        position.x - center.x,
+        position.y - center.y,
+    );
+    if (Math.abs(dir.x) <= 1 && Math.abs(dir.y) <= 1) dir = new Vector2(0, -1);
+    dir.normalize();
+
+    const pos = new Vector2(position.x, position.y);
+    let ray3 = HomoRay(pos, dir);
+    let pos3 = HomoPoint(pos);
+
+    const snaps = edges
+        .filter(edge => homoVisible(edge, pos3))
+        .map(edge => homoIntersect(edge, ray3))
+        .filter(pnt => homoFinite(pnt) && pnt.z > 0) // at forward direction only
+        .map(pnt => DehomoPoint(pnt));
+
+    if (snaps.length == 0) return null;
+
+    const dots = snaps.map(pnt => {
+        return {
+            pnt,
+            dst: Vector2.DistanceSquared(pnt, pos)
+        }
+    })
+    dots.sort((a, b) => a.dst - b.dst);
+
+    const snapped = dots[0].pnt;
+
+    return snapped;
+}

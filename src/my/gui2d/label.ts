@@ -1,6 +1,8 @@
 import { customElement, property } from "lit/decorators.js";
 
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+
 import { MyLabel } from "@lib/gui2label";
 import { PropertyValues } from "lit";
 import { GUI2Element } from "./base";
@@ -18,9 +20,8 @@ export class MyGUILabelElem extends GUI2Element {
         this._addControl(this._label);
 
         this._applyStyle(this._label);
-        this._applyStyle(this._label.textBlock!, TEXTSTYLES);
-        this._applyStyle(this._label.textBlock!, COLORSTYLES);
-        this._applyStyle(this._label.textBlock!, ['padding']);
+        this._applyStyle(this._label._textBlock!, TEXTSTYLES);
+        this._applyStyle(this._label._textBlock!, COLORSTYLES);
 
         this.babylon.onUpdatedObservable.add(() => this.requestUpdate('anchor'));
     }
@@ -34,16 +35,21 @@ export class MyGUILabelElem extends GUI2Element {
     }
 
     override toggleVisible(enabled: boolean): void {
-        const actually = enabled && this._label.linkedMesh != null && this._label.linkedMesh.isEnabled(false);
-        this._syncVisible(actually, this._label);
+        this._syncVisible(enabled, this._label);
     }
 
     #rettach() {
-        const match = this.babylon.querySelectorNode(this.anchor) as TransformNode;
-        this._label.linkWithMesh(match);
-        this.toggleVisible(match != null);
+        const target = this.babylon.querySelectorNode(this.anchor);
+        this.toggleVisible(target != null);
+        if (target instanceof AbstractMesh) {
+            this._label.anchor.linkMesh(target);
+        } else if (target instanceof TransformNode) {
+            this._label.anchor.linkNode(target);
+        } else {
+            this._label.anchor.unlink();
+        }
     }
-
+    
     override update(changes: PropertyValues): void {
         if (changes.has("anchor")) this.#rettach();
         super.update(changes);

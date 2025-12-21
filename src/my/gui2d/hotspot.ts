@@ -1,10 +1,14 @@
 import { PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { AnimationGroup } from "@babylonjs/core/Animations/animationGroup";
 import { PointerEventTypes, PointerInfo } from "@babylonjs/core/Events/pointerEvents";
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Nullable } from "@babylonjs/core/types";
+import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
+import { formatCSSColor, parseCSSColor } from "@utils/colors";
+
 import { MySpot } from "@lib/gui2spot";
 import { BabylonController } from "../controllers/base";
 import { GUI2Element } from "./base";
@@ -30,6 +34,11 @@ export class MyGUI2SpotElem extends GUI2Element {
     @property()
     anchors = "";
 
+    // not updatable
+    @property({type: Number})
+    radius = 12;
+
+    // not updatable
     @property({ type: Boolean })
     blinking = false;
 
@@ -42,11 +51,15 @@ export class MyGUI2SpotElem extends GUI2Element {
 
     override init(): void {
         this._proto = new MySpot("spot");
-        this._proto.widthInPixels = 32;
-        this._proto.heightInPixels = 32;
-
+        this._proto.radius = this.radius;
+        
         this._applyStyle(this._proto);
-        this._proto._updateGradient();
+        const color = parseCSSColor(this._proto.color);
+
+        this._proto.gradient = new RadialGradient(0, 0, 0, 0, 0, this.radius); 
+        this._proto.gradient.addColorStop(0.0, formatCSSColor({ ...color, a: 1.0}));
+        this._proto.gradient.addColorStop(0.75, formatCSSColor({ ...color, a: 1.0}));
+        this._proto.gradient.addColorStop(1.0, formatCSSColor({ ...color, a: 0.0}));
 
         // NB: requestUpdate('scene') doesn't work here
         this.babylon.onUpdatedObservable.add(() => this.requestUpdate("anchors"));
@@ -80,11 +93,11 @@ export class MyGUI2SpotElem extends GUI2Element {
         }
     }
 
-    #newspot(anchor: TransformNode): MySpot {
-        const clone = this._proto.clone();
-        this._addControl(clone);
-        clone.linkWithMesh(anchor);
-        return clone as MySpot;
+    #newspot(anchor: TransformNode | AbstractMesh): MySpot {
+        const clone = this._proto.clone() as MySpot;
+        this.gui.addControl(clone);
+        if (anchor instanceof AbstractMesh) clone.anchor.linkMesh(anchor); else clone.anchor.linkNode(anchor);
+        return clone;
     }
 
     #reattach() {
@@ -102,16 +115,15 @@ export class MyGUI2SpotElem extends GUI2Element {
             this._spots = this._spots.concat(Array.from(newnodes).map((n) => this.#newspot(n)));
         }
 
-        this.#renable();
+        this.#setupBlinking();
     }
 
     #renable() {
-        this._spots.forEach((s) => (s.isVisible = this.visible && s.linkedMesh!.isEnabled(false)));
+        this._spots.forEach((s) => s.isVisible = this.visible);
     }
 
     override update(changes: PropertyValues): void {
         if (changes.has("anchors")) this.#reattach();
-        if (changes.has("blinking")) this.#setupBlinking();
         super.update(changes);
     }
 

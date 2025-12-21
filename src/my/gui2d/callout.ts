@@ -1,42 +1,42 @@
-import { PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { MyCalloutLine } from "@lib/gui2callout";
-import { MyEdgeLabel, MyLabel } from "@lib/gui2label";
+
+import { PropertyValues } from "lit";
 import { GUI2Element } from "./base";
 import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "./css";
+import { MyCalloutLabel, MyCalloutLine } from "@lib/gui2callout";
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
 @customElement("my2g-callout")
-export class MyGUICallout extends GUI2Element {
+export class MyGUICalloutElem extends GUI2Element {
     @property()
     anchor = "";
 
-    _label!: MyLabel;
+    _label!: MyCalloutLabel;
     _line!: MyCalloutLine;
 
     override init(): void {
-        this._label = new MyEdgeLabel("label", this.textContent.trim());
-        this._label.zIndex = 1;
+        this._label = new MyCalloutLabel("label", this.textContent.trim());
+        this._label.zIndex = 2;
+        this.gui.addControl(this._label);
         this._line = new MyCalloutLine("line");
-        this._addControl(this._label);
-        this._addControl(this._line);
-        this._line.linkWithControl(this._label);
+        this._label.zIndex = 1;
+        this.gui.addControl(this._line);
+        this._line.anchor2.linkControl(this._label);
 
         this._applyStyle(this._label);
-        this._applyStyle(this._label.textBlock!, TEXTSTYLES);
-        this._applyStyle(this._label.textBlock!, COLORSTYLES);
-        this._applyStyle(this._label.textBlock!, ['padding']);
+        this._applyStyle(this._label._textBlock!, TEXTSTYLES);
+        this._applyStyle(this._label._textBlock!, COLORSTYLES);
+        this._applyStyle(this._label._textBlock!, ['padding']);
         this._applyStyle(this._line, DRAWSTYLES);
 
-        const gradient = new RadialGradient(0, 0, 0, 0, 0, 128);
-        const c = parseCSSColor(this._line.color);
-        c.a = 0;
-        gradient.addColorStop(0, formatCSSColor(c));
-        gradient.addColorStop(1, this._line.color);
-        this._line.gradient = gradient;
+        this._line.gradient = new RadialGradient(0, 0, 0, 0, 0, 128);
+        const color = parseCSSColor(this._line.color);
+        this._line.gradient.addColorStop(0.0, formatCSSColor({...color, a: 0.0 }));
+        this._line.gradient.addColorStop(1.0, formatCSSColor({...color, a: 1.0 }));
 
         this.babylon.onUpdatedObservable.add(() => this.requestUpdate('anchor'));
     }
@@ -46,19 +46,26 @@ export class MyGUICallout extends GUI2Element {
     }
 
     override toggle(enabled: boolean): void {
-        this._syncEnabled(enabled, this._label, this._line);
+        this._syncEnabled(enabled, this._label);
     }
 
     override toggleVisible(enabled: boolean): void {
-        const actually = enabled && this._label.linkedMesh != null && this._label.linkedMesh.isEnabled(false);
-        this._syncVisible(actually, this._label, this._line);
+        this._syncVisible(enabled, this._label);
     }
 
     #rettach() {
-        const match = this.babylon.querySelectorNode(this.anchor) as TransformNode;
-        this._label.linkWithMesh(match);
-        this._line.linkWithMesh(match);
-        this.toggleVisible(match != null);
+        const target = this.babylon.querySelectorNode(this.anchor);
+        this.toggleVisible(target != null);
+        if (target instanceof AbstractMesh) {
+            this._label.anchor.linkMesh(target);
+            this._line.anchor1.linkMesh(target);
+        } else if (target instanceof TransformNode) {
+            this._label.anchor.linkNode(target);
+            this._line.anchor1.linkNode(target);
+        } else {
+            this._label.anchor.unlink();
+            this._line.anchor1.unlink();
+        }
     }
 
     override update(changes: PropertyValues): void {

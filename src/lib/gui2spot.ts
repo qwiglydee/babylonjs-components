@@ -1,25 +1,38 @@
+import { Animation } from "@babylonjs/core/Animations/animation";
 import type { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
 import { RegisterClass } from "@babylonjs/core/Misc/typeStore";
-import type { Nullable } from "@babylonjs/core/types";
 import { Control } from "@babylonjs/gui/2D/controls/control";
-import { GradientColorStop } from "@babylonjs/gui/2D/controls/gradient/BaseGradient";
-import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
-import { Measure } from "@babylonjs/gui/2D/measure";
-import { RGB, formatCSSColor, parseCSSColor } from "@utils/colors";
-import { Animation } from "@babylonjs/core/Animations/animation";
+import { serialize } from "@babylonjs/core/Misc/decorators";
+
+import { Anchor } from "@lib/gui2anchor";
 
 export class MySpot extends Control {
     override getClassName(): string {
         return "MySpot";
     }
 
-    static createGradientStops(color: RGB): GradientColorStop[] {
-        return [
-            { offset: 0.0, color: formatCSSColor({ ...color, a: 1.0 }) },
-            { offset: 0.5, color: formatCSSColor({ ...color, a: 1.0 }) },
-            { offset: 0.75, color: formatCSSColor({ ...color, a: 0.5 }) },
-            { offset: 1.0, color: formatCSSColor({ ...color, a: 0.0 }) },
-        ];
+    @serialize()
+    _radius: number = 0;
+    get radius() { return this._radius; }
+    set radius(value: number) {
+        this.widthInPixels = value * 2;
+        this.heightInPixels = value * 2;
+        this._radius = value;
+        this._markAsDirty();
+    }
+
+    anchor = new Anchor(this);
+
+    override _measure(): void {
+        this._currentMeasure.width = this.widthInPixels;
+        this._currentMeasure.height = this.heightInPixels;
+    }
+
+    override _computeAlignment(): void {
+        if (this.anchor.isLinked) {
+            this._currentMeasure.left = this.anchor.x! - this._radius;
+            this._currentMeasure.top = this.anchor.y! - this._radius;
+        }
     }
 
     static createBlinkingAnimation(fps: number, frames: number): Animation {
@@ -32,31 +45,17 @@ export class MySpot extends Control {
         return a;
     }
 
-    get radius(): number {
-        return 0.5 * Math.max(this.widthInPixels, this.heightInPixels);
-    }
-
-    public override _draw(context: ICanvasRenderingContext, _invalidatedRectangle?: Nullable<Measure>): void {
+    override _draw(context: ICanvasRenderingContext) {
         context.save();
-
-        const { left, top, width, height } = this._currentMeasure;
-        const r = 0.5 * Math.max(width, height);
-
-        context.translate(left + r, top + r);
+        this._applyStates(context);
+        // gradient 0-stop is at center
+        context.translate(this.centerX, this.centerY);
 
         context.beginPath();
         // @ts-ignore
-        context.ellipse(0, 0, r, r, 0, 0, 2 * Math.PI);
+        context.ellipse(0, 0, this._radius, this._radius, 0, 0, 2 * Math.PI);
         context.fill();
-
         context.restore();
-    }
-
-    _updateGradient() {
-        const gradient = new RadialGradient(0, 0, 0, 0, 0, this.radius);
-        const color = parseCSSColor(this.color);
-        MySpot.createGradientStops(color).forEach((s) => gradient.addColorStop(s.offset, s.color));
-        this.gradient = gradient;
     }
 }
 
