@@ -14,8 +14,8 @@ class StyleProperty {
         this.pred = pred ?? (() => true);
     }
 
-    static extract(style: CSSStyleDeclaration, p: StyleProperty) {
-        return { p, v: style.getPropertyValue(p.key) };
+    extract(style: CSSStyleDeclaration) {
+        return style.getPropertyValue(this.key);
     }
 
     apply(ctrl: any, value: string) {
@@ -55,6 +55,13 @@ class StylePropertyInt extends StyleProperty {
     override assign(ctrl: any, value: string) {
         const num = parseInt(value);
         if (Number.isFinite(num)) ctrl[this.prop] = num;
+    }
+}
+
+class StylePropertyIntNeg extends StyleProperty {
+    override assign(ctrl: any, value: string) {
+        const num = parseInt(value);
+        if (Number.isFinite(num)) ctrl[this.prop] = -num;
     }
 }
 
@@ -149,6 +156,13 @@ const PROPS = [
     new StylePropertyInt("border-radius", "cornerRadius", (c: any) => c instanceof Rectangle),
 ];
 
+const OFFSETPROPS = [
+    new StylePropertyInt("right", "linkOffsetXInPixels"),
+    new StylePropertyIntNeg("left", "linkOffsetXInPixels"),
+    new StylePropertyInt("bottom", "linkOffsetYInPixels"),
+    new StylePropertyIntNeg("top", "linkOffsetYInPixels"),
+];
+
 export const ALLSTYLES = new Set(PROPS.map(p => p.key));
 export const COLORSTYLES = new Set(['color', 'background-color', 'border-color']);
 export const POSITIONSTYLES = new Set(['top', 'left', 'width', 'height', 'justify-self', 'align-self', 'margin']);
@@ -157,8 +171,9 @@ export const BORDERSTYLES = new Set(['border-color', 'border-width', 'border-rad
 export const DRAWSTYLES = new Set(['stroke', 'stroke-width', 'stroke-dasharray', 'fill']); 
 
 export function applyCSSStyle(ctrl: Control, style: CSSStyleDeclaration, keys: Set<string>) {
-    PROPS
-        .filter(p => keys.has(p.key))
-        .map((p) => StyleProperty.extract(style, p))
-        .forEach((pv) => pv.p.apply(ctrl, pv.v));
+    PROPS.filter(p => keys.has(p.key)).forEach(p => p.apply(ctrl, p.extract(style)));
+}
+
+export function applyCSSOffset(ctrl: Control, style: CSSStyleDeclaration) {
+    OFFSETPROPS.forEach(p => p.apply(ctrl, p.extract(style)));
 }

@@ -7,7 +7,7 @@ import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { babylonCtx, IBabylonElem } from "../context";
 import { guiCtx } from "./context";
-import { ALLSTYLES, applyCSSStyle } from "./css";
+import { ALLSTYLES, applyCSSOffset, applyCSSStyle } from "./css";
 
 export abstract class GUI2Element extends ReactiveElement {
     protected override createRenderRoot() {
@@ -82,5 +82,6 @@ export abstract class GUI2Element extends ReactiveElement {
     _applyStyle(ctrl: Control, keys: Set<string> | string[] = ALLSTYLES) {
         if(Array.isArray(keys)) keys = new Set(keys);
         applyCSSStyle(ctrl, this.style, keys);
+        if (keys.has('offset') && this.style.position == 'relative') applyCSSOffset(ctrl, this.style);
     }
 }

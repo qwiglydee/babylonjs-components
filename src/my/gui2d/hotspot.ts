@@ -54,6 +54,7 @@ export class MyGUI2SpotElem extends GUI2Element {
         this._proto.radius = this.radius;
         
         this._applyStyle(this._proto);
+        this._applyStyle(this._proto, ['offset']);
         const color = parseCSSColor(this._proto.color);
 
         this._proto.gradient = new RadialGradient(0, 0, 0, 0, 0, this.radius); 

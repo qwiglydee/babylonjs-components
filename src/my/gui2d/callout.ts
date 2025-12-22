@@ -1,19 +1,21 @@
 import { customElement, property } from "lit/decorators.js";
 
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 
+import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
+import { MyCalloutLabel, MyCalloutLine } from "@lib/gui2callout";
+import { formatCSSColor, parseCSSColor } from "@utils/colors";
 import { PropertyValues } from "lit";
 import { GUI2Element } from "./base";
 import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "./css";
-import { MyCalloutLabel, MyCalloutLine } from "@lib/gui2callout";
-import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
-import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
 @customElement("my2g-callout")
 export class MyGUICalloutElem extends GUI2Element {
     @property()
     anchor = "";
+
+    @property({ type: Boolean })
+    edge = false;
 
     _label!: MyCalloutLabel;
     _line!: MyCalloutLine;
@@ -28,6 +30,7 @@ export class MyGUICalloutElem extends GUI2Element {
         this._line.anchor2.target = this._label;
 
         this._applyStyle(this._label);
+        this._applyStyle(this._label, ['offset']);
         this._applyStyle(this._label._textBlock!, TEXTSTYLES);
         this._applyStyle(this._label._textBlock!, COLORSTYLES);
         this._applyStyle(this._label._textBlock!, ['padding']);
@@ -67,6 +70,7 @@ export class MyGUICalloutElem extends GUI2Element {
     }
 
     override update(changes: PropertyValues): void {
+        if (changes.has("edge")) this._label.edge = this.edge;
         if (changes.has("anchor")) this.#rettach();
         super.update(changes);
     }

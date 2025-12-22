@@ -1,6 +1,5 @@
 import { customElement, property } from "lit/decorators.js";
 
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 
 import { MyLabel } from "@lib/gui2label";
@@ -20,6 +19,7 @@ export class MyGUILabelElem extends GUI2Element {
         this._addControl(this._label);
 
         this._applyStyle(this._label);
+        this._applyStyle(this._label, ['offset']);
         this._applyStyle(this._label._textBlock!, TEXTSTYLES);
         this._applyStyle(this._label._textBlock!, COLORSTYLES);
 
