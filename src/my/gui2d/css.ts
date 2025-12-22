@@ -143,6 +143,7 @@ const PROPS = [
     new StylePropertyColor("fill", "background"),
     new StylePropertyInt("stroke-width", "lineWidth"),
     new StylePropertyIntArr("stroke-dasharray", "dash"),
+    new StylePropertyInt("r", "radius"),
 
     new StyleProperty('font-family', 'fontFamily'),
     new StyleProperty('font-style', 'fontStyle'),
@@ -168,7 +169,7 @@ export const COLORSTYLES = new Set(['color', 'background-color', 'border-color']
 export const POSITIONSTYLES = new Set(['top', 'left', 'width', 'height', 'justify-self', 'align-self', 'margin']);
 export const TEXTSTYLES = new Set(['font-family', 'font-size', 'font-style', 'text-wrap', 'text-align', 'vertical-align'])
 export const BORDERSTYLES = new Set(['border-color', 'border-width', 'border-radius']);
-export const DRAWSTYLES = new Set(['stroke', 'stroke-width', 'stroke-dasharray', 'fill']); 
+export const DRAWSTYLES = new Set(['stroke', 'stroke-width', 'stroke-dasharray', 'fill', 'r']); 
 
 export function applyCSSStyle(ctrl: Control, style: CSSStyleDeclaration, keys: Set<string>) {
     PROPS.filter(p => keys.has(p.key)).forEach(p => p.apply(ctrl, p.extract(style)));

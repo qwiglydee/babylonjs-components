@@ -12,7 +12,7 @@ export class MySpot extends Control {
     }
 
     @serialize()
-    _radius: number = 0;
+    _radius: number = 4;
     get radius() { return this._radius; }
     set radius(value: number) {
         this.widthInPixels = value * 2;

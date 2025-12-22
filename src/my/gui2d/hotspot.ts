@@ -35,10 +35,6 @@ export class MyGUI2SpotElem extends GUI2Element {
     anchors = "";
 
     // not updatable
-    @property({type: Number})
-    radius = 12;
-
-    // not updatable
     @property({ type: Boolean })
     blinking = false;
 
@@ -51,13 +47,12 @@ export class MyGUI2SpotElem extends GUI2Element {
 
     override init(): void {
         this._proto = new MySpot("spot");
-        this._proto.radius = this.radius;
         
         this._applyStyle(this._proto);
         this._applyStyle(this._proto, ['offset']);
         const color = parseCSSColor(this._proto.color);
 
-        this._proto.gradient = new RadialGradient(0, 0, 0, 0, 0, this.radius); 
+        this._proto.gradient = new RadialGradient(0, 0, 0, 0, 0, this._proto.radius); 
         this._proto.gradient.addColorStop(0.0, formatCSSColor({ ...color, a: 1.0}));
         this._proto.gradient.addColorStop(0.75, formatCSSColor({ ...color, a: 1.0}));
         this._proto.gradient.addColorStop(1.0, formatCSSColor({ ...color, a: 0.0}));
