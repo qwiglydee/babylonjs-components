@@ -40,12 +40,11 @@ export class MyGUILabelElem extends GUI2Element {
 
     #rettach() {
         const target = this.babylon.querySelectorNode(this.anchor);
-        this.toggleVisible(target != null);
-        if (target instanceof AbstractMesh) {
-            this._label.anchor.linkMesh(target);
-        } else if (target instanceof TransformNode) {
-            this._label.anchor.linkNode(target);
+        if (target instanceof TransformNode) {
+            this.toggleVisible(true);
+            this._label.anchor.target = target;
         } else {
+            this.toggleVisible(false);
             this._label.anchor.unlink();
         }
     }

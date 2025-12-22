@@ -25,7 +25,7 @@ export class MyGUICalloutElem extends GUI2Element {
         this._line = new MyCalloutLine("line");
         this._label.zIndex = 1;
         this.gui.addControl(this._line);
-        this._line.anchor2.linkControl(this._label);
+        this._line.anchor2.target = this._label;
 
         this._applyStyle(this._label);
         this._applyStyle(this._label._textBlock!, TEXTSTYLES);
@@ -55,14 +55,12 @@ export class MyGUICalloutElem extends GUI2Element {
 
     #rettach() {
         const target = this.babylon.querySelectorNode(this.anchor);
-        this.toggleVisible(target != null);
-        if (target instanceof AbstractMesh) {
-            this._label.anchor.linkMesh(target);
-            this._line.anchor1.linkMesh(target);
-        } else if (target instanceof TransformNode) {
-            this._label.anchor.linkNode(target);
-            this._line.anchor1.linkNode(target);
+        if (target instanceof TransformNode) {
+            this.toggleVisible(true);
+            this._label.anchor.target = target;
+            this._line.anchor1.target = target;
         } else {
+            this.toggleVisible(false);
             this._label.anchor.unlink();
             this._line.anchor1.unlink();
         }

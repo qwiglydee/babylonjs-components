@@ -19,12 +19,12 @@ import { assertNonNull } from "@utils/asserts";
  */
 export class Anchor {
     owner: Control;
-    target: Nullable<TransformNode | AbstractMesh | Control> = null;
+    _target: Nullable<TransformNode | AbstractMesh | Control> = null;
 
     x: number | null = null;
     y: number | null = null;
 
-    get isLinked(): boolean { return this.target != null; } 
+    get isLinked(): boolean { return this._target != null; } 
 
     get isActive(): boolean { return !this.owner.notRenderable; }
 
@@ -42,24 +42,37 @@ export class Anchor {
         this.owner = owner;
     }
 
+    get target() { return this._target; }
+    set target(value: TransformNode | AbstractMesh | Control | null) {
+        if (this._target !== null || this._target !== value) this.unlink();
+
+        if (value instanceof AbstractMesh) {
+            this.linkMesh(value);
+        } else if (value instanceof TransformNode) {
+            this.linkNode(value);
+        } else if (value instanceof Control) {
+            this.linkControl(value);
+        }
+    }
+
     #observer: Nullable<Observer<any>> = null;
 
     linkNode(target: TransformNode) {
-        this.target = target;
+        this._target = target;
         this.#observer = this._scene.onBeforeCameraRenderObservable.add(this.#checkNode);
         this.owner.notRenderable = true;
         this.#checkNode();
     }
 
     linkMesh(target: AbstractMesh) {
-        this.target = target;
+        this._target = target;
         this.#observer = this._scene.onBeforeCameraRenderObservable.add(this.#checkMesh);
         this.owner.notRenderable = true;
         this.#checkMesh();
     }
 
     linkControl(target: Control) {
-        this.target = target;
+        this._target = target;
         this.#observer = this._scene.onBeforeCameraRenderObservable.add(this.#checkControl);
         this.owner.notRenderable = true;
         this.#checkControl();
@@ -70,27 +83,27 @@ export class Anchor {
             this.#observer.remove();
             this.#observer = null;
         }
-        this.target = null;
+        this._target = null;
         this.x = null;
         this.y = null;
     }
 
     #checkNode = () => {
-        const target = this.target as TransformNode; 
+        const target = this._target as TransformNode; 
         const projected = Vector3.Project(Vector3.ZeroReadOnly, target.getWorldMatrix(), this._scene!.getTransformMatrix(), this._host._getGlobalViewport());
         this.toggleOwner(target.isEnabled() && 0.0 < projected.z && projected.z < 1.0);
         if (this.isActive) this.update(projected.x, projected.y);
     }
 
     #checkMesh = () => {
-        const target = this.target as AbstractMesh; 
+        const target = this._target as AbstractMesh; 
         const projected = Vector3.Project(target.getBoundingInfo().boundingSphere.center, target.getWorldMatrix(), this._scene!.getTransformMatrix(), this._host._getGlobalViewport());
         this.toggleOwner(target.isEnabled() && 0.0 < projected.z && projected.z < 1.0);
         if (this.isActive) this.update(projected.x, projected.y);
     }
 
     #checkControl = () => {
-        const target = this.target as Control
+        const target = this._target as Control
         this.toggleOwner(target.isVisible && target.isEnabled);
         if (this.isActive) this.update(target.centerX, target.centerY);
     }

@@ -96,19 +96,19 @@ export class MyGUI2SpotElem extends GUI2Element {
     #newspot(anchor: TransformNode | AbstractMesh): MySpot {
         const clone = this._proto.clone() as MySpot;
         this.gui.addControl(clone);
-        if (anchor instanceof AbstractMesh) clone.anchor.linkMesh(anchor); else clone.anchor.linkNode(anchor);
+        clone.anchor.target = anchor; 
         return clone;
     }
 
     #reattach() {
         const matches = new Set(this.babylon.querySelectorNodes(this.anchors) as TransformNode[]);
-        const spotted = new Set(this._spots.map((s) => s.linkedMesh));
+        const spotted = new Set(this._spots.map((s) => s.anchor.target));
         const newnodes = matches.difference(spotted);
         const delnodes = spotted.difference(matches);
 
         if (delnodes.size) {
-            this._spots.filter((s) => delnodes.has(s.linkedMesh)).forEach((s) => s.dispose());
-            this._spots = this._spots.filter((s) => s.linkedMesh);
+            this._spots.filter((s) => delnodes.has(s.anchor.target)).forEach((s) => s.dispose());
+            this._spots = this._spots.filter((s) => s.anchor.target);
         }
 
         if (newnodes.size) {
