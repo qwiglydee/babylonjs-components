@@ -36,11 +36,12 @@ export class MyGUICalloutElem extends GUI2Element {
         this._applyStyle(this._label._textBlock!, ['padding']);
         this._applyStyle(this._line, DRAWSTYLES);
 
-        this._line.gradient = new RadialGradient(0, 0, 0, 0, 0, 128);
+        const gradient = new RadialGradient(0, 0, 0, 0, 0, 128);
         const color = parseCSSColor(this._line.color);
-        this._line.gradient.addColorStop(0.0, formatCSSColor({...color, a: 0.0 }));
-        this._line.gradient.addColorStop(1.0, formatCSSColor({...color, a: 1.0 }));
-
+        gradient.addColorStop(0.0, formatCSSColor({...color, a: 0.0 }));
+        gradient.addColorStop(1.0, formatCSSColor({...color, a: 1.0 }));
+        this._line.gradient = gradient;
+        
         this.babylon.onUpdatedObservable.add(() => this.requestUpdate('anchor'));
     }
 

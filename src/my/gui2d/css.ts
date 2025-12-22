@@ -140,7 +140,7 @@ const PROPS = [
     new StylePropertyAlignment("align-self", "verticalAlignment"),
 
     new StylePropertyColor("stroke", "color"),
-    new StylePropertyColor("fill", "background"),
+    new StylePropertyColor("fill", "color"),
     new StylePropertyInt("stroke-width", "lineWidth"),
     new StylePropertyIntArr("stroke-dasharray", "dash"),
     new StylePropertyInt("r", "radius"),
