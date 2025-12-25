@@ -3,10 +3,15 @@
  */
 
 import { createContext } from "@lit/context";
-import { ReactiveElement } from "lit";
 
-export interface IBabylonElem extends ReactiveElement {
-  /** TODO: some public API **/
+export interface UsefulItem {
+    name: string;
+    id: string;
+}
+
+export interface IBabylonElem extends HTMLElement {
+    /** TODO: some public API **/
+    getStuff(): UsefulItem[];
 }
 
 export const statusCtx = createContext<string>(Symbol("app.status"));
@@ -16,18 +21,19 @@ export const babylonCtx = createContext<IBabylonElem | null>(Symbol("app.babylon
 export type BabylonEvent = CustomEvent;
 
 export interface PickDetail {
-  name: string;
-  id: string;
-  enabled: boolean;
-  visible: boolean;
+    name: string;
+    id: string;
+    enabled: boolean;
+    visible: boolean;
 }
 
 export type BabylonPickEvent = CustomEvent<PickDetail | null>;
+export type BabylonUpdateEvent = CustomEvent; 
 
 declare global {
-  interface GlobalEventHandlersEventMap {
-    'babylon.init': BabylonEvent;
-    'babylon.update': BabylonEvent;
-    'babylon.pick': BabylonPickEvent;
-  }
+    interface GlobalEventHandlersEventMap {
+        "babylon.init": BabylonEvent;
+        "babylon.update": BabylonUpdateEvent;
+        "babylon.pick": BabylonPickEvent;
+    }
 }

@@ -225,9 +225,8 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
         if (changes.has("scene")) {
             this.onUpdatedObservable.notifyObservers(this.scene);
-            bubbleEvent(this, "babylon.update", null);
+            bubbleEvent(this, "babylon.update");
         }
-
         if (changes.has("picked")) {
             const mesh = this.picked?.pickedMesh;
             this.onPickedObservable.notifyObservers(this.picked);
@@ -269,5 +268,11 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
 
     querySelectorNode(query: string): Nullable<Node> {
         return querySelectorNode(this.scene, query);
+    }
+
+    getStuff() {
+        return this.scene.getMeshesByTags("!aux").map(item => {
+            return { name: item.name, id: item.id }
+        })
     }
 }

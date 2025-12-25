@@ -63,7 +63,7 @@ export class MyStuffElem extends SceneElement {
             let idx = (1 + (this.scene.meshes.length ?? 0)).toString().padStart(3, "0");
             this.id = `${this.shape}.${idx}`;
         }
-        const name = `${this.localName}-${this.shape}`
+        const name = this.shape;
 
         switch (this.shape) {
             case 'cube':
