@@ -15,10 +15,16 @@ export class OurStatusElem extends LitElement {
 
     static override styles = css`
         :host {
-            display: block;
-            background-color: lightgray;
-            color: black;
-            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.5);
         }
     `;
 

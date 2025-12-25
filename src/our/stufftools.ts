@@ -29,16 +29,9 @@ export class OurStuffAddElem extends WrappingElement {
         if (value) this._addStuff(value);
     };
 
-    // _rndPosition(radius: number) {
-    //     const rndc = () => 0.5 + Math.floor((Math.random() * 2 - 1) * radius);
-    //     return { x: rndc(), z: rndc()}
-    // }
-
     _addStuff(shape: string) {
         const elem = document.createElement("my3d-stuff");
         elem.setAttribute("shape", shape);
-        // @ts-ignore
-        // elem.position = this._rndPosition(Number(this.inputRnd.value));
         elem.setAttribute('randomizePos', this.inputRnd.value);
         this.babylon?.appendChild(elem);
     }
@@ -53,10 +46,10 @@ export class OurStuffToolsElem extends WrappingElement {
     inputs!: HTMLInputElement[];
 
     @query("input[name=enabled]", true)
-    inpEnabled!: HTMLInputElement;
+    input!: HTMLInputElement;
 
     @query("select[name=stuffid]", true)
-    selId!: HTMLInputElement;
+    select!: HTMLInputElement;
 
     @state()
     selected: HTMLElement | null = null;
@@ -64,8 +57,22 @@ export class OurStuffToolsElem extends WrappingElement {
     override linkedCallback(): void {
         assertNonNull(this.babylon, "Missing babylon element");
         this.babylon.addEventListener('babylon.pick', this.#onpick);
+        this.babylon.addEventListener('babylon.update', this.#onupdate);
         this.addEventListener("click", this.#onclick);
         this.addEventListener("change", this.#onchange);
+        this.#onupdate();
+    }
+
+    #onupdate = () => {
+        const stuff = this.babylon!.getStuff();
+        this.select.querySelectorAll('option[value]').forEach(o => o.remove());
+        stuff.forEach(item => {
+            const option = this.ownerDocument.createElement('option');
+            option.textContent = item.name
+            option.value = item.id;
+            option.selected = this.selected?.id == item.id;
+            this.select.appendChild(option);
+        });
     }
 
     #onclick = (event: Event) => {
@@ -75,8 +82,8 @@ export class OurStuffToolsElem extends WrappingElement {
 
     #onchange = (event: Event) => {
         const target = event.target as HTMLInputElement;
-        if (target === this.inpEnabled && this.selected) this._tglEnabled(target.checked);
-        if (target === this.selId) this._select(target.value);
+        if (target === this.input && this.selected) this._tglEnabled(target.checked);
+        if (target === this.select) this._select(target.value);
     }
 
     #onpick = (event: BabylonPickEvent) => {
@@ -91,9 +98,9 @@ export class OurStuffToolsElem extends WrappingElement {
         if (changes.has('selected')) {
             this.buttons.forEach(b => b.disabled = this.selected == null);
             this.inputs.forEach(b => b.disabled = this.selected == null);         
-            this.selId.value = this.selected ? this.selected.id : "";
+            this.select.value = this.selected ? this.selected.id : "";
             // @ts-ignore
-            this.inpEnabled.checked = this.selected ? !this.selected.disabled : false;
+            this.input.checked = this.selected ? !this.selected.disabled : false;
         }
         super.update(changes);
     }

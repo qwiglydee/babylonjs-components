@@ -7,46 +7,104 @@
         <link rel="stylesheet" href="bootstrap.min.css" />
         <script src="fullscreen.js"></script>
         <style>
-            .fullscreen {
+            body.full {
                 width: 100vw;
-                height: var(--vh100, 100vh); /* from fullscreen.js */
+                min-height: var(--vh100, 100vh); /* from fullscreen.js */
             }
 
             the-app {
-                position: relative;
-                display: block;
+                display: flex;
+                flex-flow: row wrap;
+                gap: 8px;
                 height: 100%;
+                margin-bottom: 64px;
             }
 
             my3d-babylon {
-                background-color: var(--bs-gray-dark);
+                flex: 1 1 640px;
                 height: 100%;
-                min-height: 360px;
+                min-height: 480px;
                 max-height: 75vh;
+                border: 2px solid var(--bs-dark);
                 border-radius: var(--bs-border-radius-lg);
                 overflow: hidden;
                 padding: 0 !important;
             }
 
-            our-status {
-                position: absolute;
-                bottom: 0;
-                width: 100%;
-                height: auto;
+            the-app.fullscreen my3d-babylon {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: var(--vh100, 100vh);
+                max-height: none;
+                border: none;
+                border-radius: 0;
+                z-index: 10;
             }
 
-            our-somestuff {
-                display: blocks;
+            .htmlui {
+                flex: 0 0 200px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
             }
 
-            input[type="number"] {
-                width: 5em;
+            @media (max-width: 992px) {
+                .htmlui {
+                    flex: 1 1 100%;
+                }
+            }
+
+            .htmlui .toolbox {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                background-color: var(--bs-primary-bg-subtle);
+                padding: 8px;
+                border: 1px solid var(--bs-primary-border-subtle);
+                border-radius: var(--bs-border-radius-lg);
+            }
+
+            .bi {
+                width: 24px;
+                height: 24px;
+            }
+
+            svg.bi-badge {
+                fill: white;
+                stroke: none;
+            }
+
+            svg.bi-primary {
+                stroke: var(--bs-primary);
+            }
+
+            my3d-babylon button {
+                pointer-events: all;
+            }
+
+            my3d-babylon button * {
+                pointer-events: none;
+            }
+            
+            the-app.fullscreen .htmlui {
+                display: none;
+            }
+
+            the-app.fullscreen .bi-fullscreen {
+                display: none;
+            }
+
+            the-app:not(.fullscreen) .bi-fullscreen-exit {
+                display: none;
             }
         </style>
     </head>
 
-    <body class="container bg-light fullscreen">
-        <the-app>
+    <body class="full container">
+        <h1>Babylonjs Components</h1>
+        <the-app style="visibility: hidden">
             <my3d-babylon id="main" worldSize="100" rightHanded>
                 <my3d-camera-arc class="camera" id="cam1" selected autoZoom></my3d-camera-arc>
                 <my3d-camera-basic class="camera" id="cam2"></my3d-camera-basic>
@@ -66,10 +124,35 @@
                 <my3d-stuff id="box" shape="cube" randomizePos="5"></my3d-stuff>
                 <my3d-stuff id="ball" shape="sphere" randomizePos="5" class="foo"></my3d-stuff>
                 <my3d-stuff id="cone" shape="cone" randomizePos="5" disabled class="foo bar"></my3d-stuff>
+
+                <div slot="overlay" style="position: absolute; left: 0; top: 0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-badge m-1" viewBox="0 0 16 16">
+                        <path d="M10.157 5.968h-.844v4.06h.844c1.116 0 1.621-.667 1.621-2.02 0-1.354-.51-2.04-1.621-2.04" />
+                        <path
+                            d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5.184 4.368c.646 0 1.055.378 1.06.9.008.537-.427.919-1.086.919-.598-.004-1.037-.325-1.068-.756H3c.03.914.791 1.688 2.153 1.688 1.24 0 2.285-.66 2.272-1.798-.013-.953-.747-1.38-1.292-1.432v-.062c.44-.07 1.125-.527 1.108-1.375-.013-.906-.8-1.57-2.053-1.565-1.31.005-2.043.734-2.074 1.67h1.103c.022-.391.383-.751.936-.751.532 0 .928.33.928.813.004.479-.383.835-.928.835h-.632v.914zM8.126 11h2.189C12.125 11 13 9.893 13 7.985c0-1.894-.861-2.984-2.685-2.984H8.126z"
+                        />
+                    </svg>
+                </div>
+                <div slot="overlay" style="position: absolute; right: 0; top: 0">
+                    <button class="btn" type="button" name="fullscreen">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-primary bi-fullscreen" viewBox="0 0 16 16">
+                            <path
+                                d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5M.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5"
+                            />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-primary bi-fullscreen-exit" viewBox="0 0 16 16">
+                            <path
+                                d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5m5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5M0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5m10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0z"
+                            />
+                        </svg>
+                    </button>
+                </div>
             </my3d-babylon>
 
-            <div class="toolbar d-flex m-1 gap-1">
-                <our-stuff-add class="d-flex gap-1">
+            <div class="htmlui">
+                <h3 style="margin: 0">Some UI</h3>
+
+                <our-stuff-add class="toolbox">
                     <div class="input-group">
                         <select name="shape" class="form-select border-primary" disabled>
                             <option>cube</option>
@@ -84,15 +167,11 @@
                         <input id="add-rnd" type="number" name="dist" class="col form-control" value="5" disabled />
                     </div>
                 </our-stuff-add>
-                <hr />
-                <our-stuff-tools class="d-flex gap-1 align-items-center">
+
+                <our-stuff-tools class="toolbox">
                     <div class="input-group">
                         <select name="stuffid" class="form-select border-primary">
-                            <!-- TODO: generate dynamically by some event -->
                             <option></option>
-                            <option>box</option>
-                            <option>ball</option>
-                            <option>cone</option>
                         </select>
                         <button type="button" class="btn btn-outline-primary" name="delete" disabled>del</button>
                     </div>
@@ -101,29 +180,9 @@
                         <label for="stuff-enb" class="form-check-label">enabled</label>
                     </div>
                 </our-stuff-tools>
-                <our-camera-switch class="d-flex gap-1 align-items-center">
-                    <label for="sel-cam">Camera:</label>
-                    <select id="sel-cam" name="camera" class="form-select" disabled>
-                        <option value="cam1">Cam1</option>
-                        <option value="cam2">Cam2</option>
-                    </select>
-                </our-camera-switch>
             </div>
+
             <our-status></our-status>
         </the-app>
-
-        <script>
-            var app = document.querySelector("the-app");
-            var my = {
-                babylon: document.querySelector("my3d-babylon"),
-                stuff: document.querySelectorAll("my3d-stuff"),
-            };
-
-            function switchCam(id) {
-                document.querySelectorAll("my3d-camera-basic").forEach((cam) => {
-                    cam.selected = cam.id == id;
-                });
-            }
-        </script>
     </body>
 </html>
