@@ -1,7 +1,6 @@
 import { type PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import "@babylonjs/core/Helpers/sceneHelpers";
 import { CubeTexture } from "@babylonjs/core/Materials/Textures/cubeTexture";
 import { assertNonNull } from "@utils/asserts";
 
