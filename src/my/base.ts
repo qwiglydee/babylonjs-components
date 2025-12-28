@@ -34,10 +34,13 @@ export abstract class SceneElement extends ReactiveElement {
     get enabled() { return !this.disabled }
     set enabled(val: boolean) { this.disabled = !val; }
 
+    hasInitialized = false;
+
     override connectedCallback(): void {
         super.connectedCallback();
         assertNonNull(this.scene); // just in case
         this.init();
+        this.hasInitialized = true;
     }
 
     override disconnectedCallback(): void {

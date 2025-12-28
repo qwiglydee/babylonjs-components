@@ -2,10 +2,12 @@ import { ContextProvider, provide } from "@lit/context";
 import { css, html, PropertyValues, ReactiveElement, render } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
+import { Engine } from "@babylonjs/core/Engines/engine";
+import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
+import type { EngineOptions } from "@babylonjs/core/Engines/thinEngine";
+
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
-import { Engine } from "@babylonjs/core/Engines/engine";
-import type { EngineOptions } from "@babylonjs/core/Engines/thinEngine";
 import { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
 import { Color4, Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
@@ -22,6 +24,7 @@ import { bubbleEvent, queueEvent } from "@utils/events";
 import { babylonCtx, boundsCtx, BoundsInfo, IBabylonElem, pickCtx, sceneCtx } from "./context";
 import { MoveingCtrl } from "./controllers/appMoving";
 import { PickingCtrl } from "./controllers/appPicking";
+// import { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
 
 const ENGOPTIONS: EngineOptions = {
     antialias: true,
@@ -164,12 +167,16 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         // keep context when reconnecting (not widely available)
     }
 
-    _init() {
-        render(this.render(), this.renderRoot); /** one-shot rendering */
-        debug(this, "initializing", this._canvas);
+    _initEngine() {
         this.engine = new Engine(this._canvas, undefined, ENGOPTIONS);
         this.engine.loadingScreen = this._screen;
         this.engine.loadingScreen.loadingUIBackgroundColor = this.background;
+    }
+
+    _init() {
+        render(this.render(), this.renderRoot); /** one-shot rendering */
+        debug(this, "initializing", this._canvas);
+        this._initEngine();
         this.scene = new Scene(this.engine);
         this.scene.useRightHandedSystem = this.rightHanded;
         this.scene.clearColor = Color4.FromHexString(this.background);
@@ -274,5 +281,12 @@ export class MyBabylonElem extends ReactiveElement implements IBabylonElem {
         return this.scene.getMeshesByTags("!aux").map(item => {
             return { name: item.name, id: item.id }
         })
+    }
+}
+
+@customElement("my3d-babylon-headless")
+export class MyHeadlessBabylonElem extends MyBabylonElem {
+    override _initEngine() {
+        this.engine = new NullEngine();
     }
 }

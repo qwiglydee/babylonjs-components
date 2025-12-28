@@ -16,6 +16,9 @@ export interface BoundsInfo {
 export interface IBabylonElem extends ReactiveElement {
     readonly worldSize: number;
     readonly rightHanded: boolean;
+
+    whenReady: { promise: Promise<boolean> };
+    isReady: boolean;
     
     readonly scene: Scene;
     bounds: BoundsInfo;

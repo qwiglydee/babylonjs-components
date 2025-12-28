@@ -43,6 +43,7 @@ export default function (env, argv) {
         },
         devtool: false,
         plugins: [
+            new HtmlWebpackPlugin({ template: "tests/testpage.html", filename: "testpage.html", minify: false, inject: 'body' }),
             new HtmlWebpackPlugin({ template: "index.html", minify: false }),
             new webpack.SourceMapDevToolPlugin({
                 append: isproduction ? false : undefined,
