@@ -30,11 +30,8 @@ export interface IBabylonElem extends ISceneBase {
     /** assumed maximum scene size */
     readonly worldSize: number;
     
-    // bounds: BoundsInfo;
-    // picked: Nullable<PickingInfo>;
-
-    onSceneObservable: Observable<Scene>;
-    onPickedObservable: Observable<Nullable<PickingInfo>>;
+    bounds: BoundsInfo;
+    picked: Nullable<PickingInfo>;
 
     // /* query = #id | tagsquery  */
     // querySelectorNodes(query: string): Node[];

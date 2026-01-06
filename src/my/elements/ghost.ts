@@ -1,19 +1,24 @@
+import { consume } from "@lit/context";
 import { PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { Nullable } from "@babylonjs/core/types";
-
+import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
 import { CreateBox } from "@babylonjs/core/Meshes/Builders/boxBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { Nullable } from "@babylonjs/core/types";
 import { GhostBehavior } from "@lib/ghostbhv";
 
 import { SceneNodeElemBase } from "../base/node";
-import { TargetingCtrl } from "../controllers/targeting";
+import { pickCtx } from "../context";
 
 @customElement("my3d-ghost")
 export class MyGhostElem extends SceneNodeElemBase<Mesh> {
     static override auxiliary = true;
+
+    @consume({ context: pickCtx, subscribe: true})
+    @state()
+    _picked: Nullable<PickingInfo> = null;
 
     @property({ type: Boolean })
     autoHide = false;
@@ -23,10 +28,6 @@ export class MyGhostElem extends SceneNodeElemBase<Mesh> {
 
     @property({ type: Boolean })
     wireframe = false;
-
-    @state()
-    _target: Nullable<Mesh> = null;
-    #targeting = new TargetingCtrl(this);
 
     _bhv!: GhostBehavior;
 
@@ -49,9 +50,10 @@ export class MyGhostElem extends SceneNodeElemBase<Mesh> {
     }
 
     override update(changes: PropertyValues) {
-        if (this.enabled && changes.has("_target")) {
-            this._bhv.targetMesh = this._target;
-            this.visible = this._target !== null;
+        if (this.enabled && changes.has("_picked")) {
+            let mesh = this._picked?.pickedMesh ?? null;
+            this._bhv.targetMesh = mesh;
+            this.visible = mesh !== null;
         }
         super.update(changes);
     }

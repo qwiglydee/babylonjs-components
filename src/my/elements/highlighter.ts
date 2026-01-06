@@ -1,6 +1,8 @@
+import { consume } from "@lit/context";
 import { PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import "@babylonjs/core/Layers/effectLayerSceneComponent";
 import { HighlightLayer } from "@babylonjs/core/Layers/highlightLayer";
 import { Color3 } from "@babylonjs/core/Maths";
@@ -8,18 +10,19 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Nullable } from "@babylonjs/core/types";
 
 import { BabylonComponentBase } from "../base/elem";
-import { TargetingCtrl } from "../controllers/targeting";
+import { pickCtx } from "../context";
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 
 @customElement("my3d-highlighter")
 export class MyHighlighterElem extends BabylonComponentBase {
+    @consume({ context: pickCtx, subscribe: true})
+    @state()
+    _picked: Nullable<PickingInfo> = null;
+
     @property()
     color = "#FFFFFF";
 
     _color!: Color3;
-
-    @state()
-    _target: Nullable<Mesh> = null;
-    #targetingCtrl = new TargetingCtrl(this);
 
     _highlighter!: HighlightLayer;
 
@@ -29,9 +32,9 @@ export class MyHighlighterElem extends BabylonComponentBase {
     }
 
     override update(changes: PropertyValues): void {
-        if (changes.has('_target')) {
+        if (changes.has('_picked')) {
             this.#clear();
-            if (this._target) this.#highlight();
+            if (this._picked?.pickedMesh) this.#highlight(this._picked?.pickedMesh);
         }
         super.update(changes);
     }
@@ -40,8 +43,8 @@ export class MyHighlighterElem extends BabylonComponentBase {
         this._highlighter.removeAllMeshes();
     }
 
-    #highlight() {
-        this._highlighter.addMesh(this._target!, this._color)
+    #highlight(mesh: AbstractMesh) {
+        this._highlighter.addMesh(mesh as Mesh, this._color)
     }
 
     override dispose(): void {

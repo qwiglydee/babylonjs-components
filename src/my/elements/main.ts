@@ -44,8 +44,6 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
     @property({ type: Number })
     worldSize = 100;
 
-    onSceneObservable = new Observable<Scene>();
-
     static DUMBOUNDS = new BoundingInfo(new Vector3(-1, -1, -1), new Vector3(+1, +1, +1));
 
     @provide({ context: boundsCtx })
@@ -54,7 +52,6 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
     @provide({ context: pickCtx })
     @state()
     picked: Nullable<PickingInfo> = null;
-    onPickedObservable = new Observable<Nullable<PickingInfo>>();
     
     #pickingCtrl = new PickingCtrl(this); // sets this.picked
     #draggingCtrl = new DraggingCtrl(this); // uses this.picked
@@ -140,12 +137,10 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
     override updated(changes: PropertyValues): void {
         debug(this, "updated");
         if (changes.has("scene")) {
-            this.onSceneObservable.notifyObservers(this.scene);
             bubbleEvent(this, "babylon.update");
         }
         if (changes.has("picked")) {
-            if (this.picked) {
-                this.onPickedObservable.notifyObservers(this.picked);
+            if (this.picked?.pickedMesh) {
                 const mesh = this.picked.pickedMesh!;
                 bubbleEvent(this, "babylon.pick", {
                     name: mesh.name,
@@ -154,7 +149,6 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
                     visible: mesh.isVisible,
                 });
             } else {
-                this.onPickedObservable.notifyObservers(null);
                 bubbleEvent(this, "babylon.pick", null);
             }
         }

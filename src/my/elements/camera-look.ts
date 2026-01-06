@@ -4,14 +4,14 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { Vector3 } from "@babylonjs/core/Maths";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Nullable } from "@babylonjs/core/types";
 import { smoothFocus, smoothParams, smoothTarget } from "@lib/smoothcam";
 
+import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
+import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
 import { SceneCameraElemBase } from "../base/camera";
-import { boundsCtx, BoundsInfo } from "../context";
+import { boundsCtx, BoundsInfo, pickCtx } from "../context";
 import { Polar, polarConverter } from "../properties/polar";
-import { TargetingCtrl } from "../controllers/targeting";
 
 @customElement("my3d-camera-look")
 export class MyLookCameraElem extends SceneCameraElemBase<ArcRotateCamera> {
@@ -19,12 +19,12 @@ export class MyLookCameraElem extends SceneCameraElemBase<ArcRotateCamera> {
     @state()
     _bounds: Nullable<BoundsInfo> = null;
 
+    @consume({ context: pickCtx, subscribe: true })
+    @state()
+    _picked: Nullable<PickingInfo> = null;
+
     @property({ useDefault: true, converter: polarConverter })
     defaults: Polar = { a: 45, b: 45, r: 10};
-
-    @state()
-    _target: Nullable<Mesh> = null;
-    #targetingCtrl = new TargetingCtrl(this);
 
     @property({ type: Boolean })
     autoZoom = false;
@@ -47,15 +47,24 @@ export class MyLookCameraElem extends SceneCameraElemBase<ArcRotateCamera> {
     }
 
     override update(changes: PropertyValues) {
-        if (changes.has("_target") || changes.has("_bounds")) {
-            let bounds = this._target ? this._target.getBoundingInfo() : this._bounds ? this._bounds.model : null;
-            if (bounds) {
-                if (this.autoZoom) smoothFocus(this._camera!, bounds);
-                else smoothTarget(this._camera!, bounds.boundingSphere.centerWorld);
+        if (changes.has("_picked") || changes.has("_bounds")) {
+            if (this._picked?.pickedMesh) {
+                this.#retarget(this._picked?.pickedMesh.getBoundingInfo())
+            } else if (this._bounds) {
+                this.#retarget(this._bounds.model);
             } else {
-                this.reset();
+                this.#retarget(null);
             }
         }
         super.update(changes);
+    }
+
+    #retarget(bounds: Nullable<BoundingInfo>) {
+        if (bounds) {
+            if (this.autoZoom) smoothFocus(this._camera!, bounds);
+            else smoothTarget(this._camera!, bounds.boundingSphere.centerWorld);
+        } else {
+            this.reset();
+        }
     }
 }
