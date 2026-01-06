@@ -3,7 +3,7 @@ import { ReactiveElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { debug, debugEvent } from "@utils/debug";
-import { babylonCtx, BabylonEvent, BabylonPickEvent, BabylonUpdateEvent, IBabylonElem, statusCtx } from "./our/context";
+import { babylonCtx, BabylonEvent, BabylonPickEvent, BabylonUpdateEvent, IBabylonElem, statusCtx } from "./context";
 
 /**
  * Babylon-unaware web app
@@ -47,7 +47,6 @@ export class TheAppElem extends ReactiveElement {
 
     override onclick = (event: Event) => {
         debugEvent(this, event);
-        debug(this, "clicked", event.target);
         // @ts-ignore
         if (event.target.name == 'fullscreen') this.toggleFullscreen();
     } 

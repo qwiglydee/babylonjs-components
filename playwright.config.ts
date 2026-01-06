@@ -14,6 +14,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   testMatch: "**/*.test.ts",
+  outputDir: ".testing",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -24,6 +25,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'list',
+  
+  outputDir: '.testing',
 
   /* Configure projects for major browsers */
   projects: [

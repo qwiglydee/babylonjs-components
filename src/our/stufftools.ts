@@ -1,118 +1,97 @@
-import { PropertyValues } from "lit";
-import { customElement, query, queryAll, state } from "lit/decorators.js";
+import { customElement, query } from "lit/decorators.js";
 
 import { assertNonNull } from "@utils/asserts";
 import { WrappingElement } from "./base";
-import { BabylonPickEvent } from "./context";
+import { ISceneElem } from "./context";
 
 @customElement("our-stuff-add")
 export class OurStuffAddElem extends WrappingElement {
     @query("button[name=create]", true)
-    button!: HTMLButtonElement;
+    addButton!: HTMLButtonElement;
 
     @query("select[name=shape]", true)
-    select!: HTMLSelectElement;
-
-    @query("input[name=dist]", true)
-    inputRnd!: HTMLSelectElement;
+    shapeSelect!: HTMLSelectElement;
 
     override linkedCallback(): void {
         assertNonNull(this.babylon, "Missing babylon element");
-        this.button.addEventListener("click", this.#onclick);
-        this.inputRnd.disabled = false;
-        this.select.disabled = false;
-        this.button.disabled = false;
+        this.addButton.addEventListener("click", () => this._createStuff());
+        this.shapeSelect.disabled = false;
+        this.addButton.disabled = false;
     }
 
-    #onclick = (_e: Event) => {
-        const { value } = this.select;
-        if (value) this._addStuff(value);
-    };
-
-    _addStuff(shape: string) {
+    _createStuff() {
         const elem = document.createElement("my3d-stuff");
-        elem.setAttribute("shape", shape);
-        elem.setAttribute('randomizePos', this.inputRnd.value);
+        elem.setAttribute("shape", this.shapeSelect.value);
+        elem.setAttribute('positionRnd', "10");
+        elem.setAttribute('texture', "assets/checker.png");
         this.babylon?.appendChild(elem);
     }
 }
 
 @customElement("our-stuff-tools")
 export class OurStuffToolsElem extends WrappingElement {
-    @queryAll("button")
-    buttons!: HTMLButtonElement[];
+    @query("select[name=id]", true)
+    itemSelect!: HTMLInputElement;
 
-    @queryAll("input")
-    inputs!: HTMLInputElement[];
+    @query("button[name=delete]", true)
+    deleteButton!: HTMLButtonElement;
 
     @query("input[name=enabled]", true)
-    input!: HTMLInputElement;
+    enableCheck!: HTMLInputElement;
 
-    @query("select[name=stuffid]", true)
-    select!: HTMLInputElement;
+    @query("input[name=visible]", true)
+    visibleCheck!: HTMLInputElement;
 
-    @state()
-    selected: HTMLElement | null = null;
+    selected: ISceneElem | null = null;
 
     override linkedCallback(): void {
         assertNonNull(this.babylon, "Missing babylon element");
-        this.babylon.addEventListener('babylon.pick', this.#onpick);
-        this.babylon.addEventListener('babylon.update', this.#onupdate);
-        this.addEventListener("click", this.#onclick);
-        this.addEventListener("change", this.#onchange);
-        this.#onupdate();
+        this.babylon.addEventListener('babylon.pick', (e) => this._selectStuff(e.detail?.id));
+        this.babylon.addEventListener('babylon.update', () => this._updateStuff());
+        this.itemSelect.addEventListener('change', () => this._selectStuff(this.itemSelect.value));
+        this.deleteButton.addEventListener('click', () => this._delStuff());
+        this.enableCheck.addEventListener('change', () => this._toggleEnable(this.enableCheck.checked));
+        this.visibleCheck.addEventListener('change', () => this._toggleVisible(this.visibleCheck.checked));
+        this._updateStuff();
     }
 
-    #onupdate = () => {
+    _updateStuff() {
         const stuff = this.babylon!.getStuff();
-        this.select.querySelectorAll('option[value]').forEach(o => o.remove());
+        // create options for all found stuff
+        this.itemSelect.querySelectorAll('option[value]').forEach(o => o.remove());
         stuff.forEach(item => {
             const option = this.ownerDocument.createElement('option');
             option.textContent = item.name
             option.value = item.id;
             option.selected = this.selected?.id == item.id;
-            this.select.appendChild(option);
+            this.itemSelect.appendChild(option);
         });
     }
 
-    #onclick = (event: Event) => {
-        const target = event.target as HTMLElement;
-        if (target.matches("button[name=delete]")) this._delItem();
+    _selectStuff(id: string | null | undefined) {
+        this.selected = id ? (document.getElementById(id) as ISceneElem) : null;
+        this.itemSelect.value = id ?? "";
+        const valid = this.selected !== null;
+        this.deleteButton.disabled = !valid;
+        this.enableCheck.disabled = !valid;
+        this.enableCheck.checked = this.selected?.enabled ?? false;
+        this.visibleCheck.disabled = !valid;
+        this.visibleCheck.checked = this.selected?.visible ?? false;
     }
 
-    #onchange = (event: Event) => {
-        const target = event.target as HTMLInputElement;
-        if (target === this.input && this.selected) this._tglEnabled(target.checked);
-        if (target === this.select) this._select(target.value);
-    }
-
-    #onpick = (event: BabylonPickEvent) => {
-        this._select(event.detail?.id ?? null);
-    }
-
-    _select(id: string | null) {
-        this.selected = id ? document.getElementById(id) : null;
-    }
-
-    override update(changes: PropertyValues): void {
-        if (changes.has('selected')) {
-            this.buttons.forEach(b => b.disabled = this.selected == null);
-            this.inputs.forEach(b => b.disabled = this.selected == null);         
-            this.select.value = this.selected ? this.selected.id : "";
-            // @ts-ignore
-            this.input.checked = this.selected ? !this.selected.disabled : false;
-        }
-        super.update(changes);
-    }
-
-    _delItem() {
+    _delStuff() {
         assertNonNull(this.selected);
         this.selected.remove();
+        this._selectStuff(null);
     }
 
-    _tglEnabled(enable: boolean) {
+    _toggleEnable(enable: boolean) {
         assertNonNull(this.selected);
-        // @ts-ignore
-        this.selected.disabled = !enable;
+        this.selected.toggleAttribute('disabled', !enable);
+    }
+
+    _toggleVisible(enable: boolean) {
+        assertNonNull(this.selected);
+        this.selected.toggleAttribute('hidden', !enable);
     }
 }

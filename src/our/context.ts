@@ -14,6 +14,11 @@ export interface IBabylonElem extends HTMLElement {
     getStuff(): UsefulItem[];
 }
 
+export interface ISceneElem extends HTMLElement {
+    enabled: boolean;
+    visible: boolean;
+}
+
 export const statusCtx = createContext<string>(Symbol("app.status"));
 
 export const babylonCtx = createContext<IBabylonElem | null>(Symbol("app.babylon"));
