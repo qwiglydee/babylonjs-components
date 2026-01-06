@@ -1,12 +1,12 @@
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import { Camera } from "@babylonjs/core/Cameras/camera";
 import { Observer } from "@babylonjs/core/Misc/observable";
+import { Tags } from "@babylonjs/core/Misc/tags";
 import { assertNonNull } from "@utils/asserts";
 
-import { BabylonComponentBase } from "./elem";
-import { Tags } from "@babylonjs/core/Misc/tags";
+import { ComponentElemBase } from "./elem";
 
 /**
  * Base of elements for cameras.
@@ -18,7 +18,7 @@ import { Tags } from "@babylonjs/core/Misc/tags";
  *
  * (but not automatically disabled when deactivated)
  */
-export abstract class SceneCameraElemBase<SomeCamera extends Camera> extends BabylonComponentBase {
+export abstract class CameraElemBase<SomeCamera extends Camera> extends ComponentElemBase {
     /**
      * Enable/disable the camera when activated/deactivated.
      */
@@ -99,7 +99,7 @@ export abstract class SceneCameraElemBase<SomeCamera extends Camera> extends Bab
         assertNonNull(selected);
         this.toggleAttribute("selected", selected);
         if (selected) this.scene.activeCamera = this._camera;
-        if ((this.constructor as typeof SceneCameraElemBase<SomeCamera>).autoEnable) {
+        if ((this.constructor as typeof CameraElemBase<SomeCamera>).autoEnable) {
             this.enabled = selected;
         }
     }
@@ -109,7 +109,7 @@ export abstract class SceneCameraElemBase<SomeCamera extends Camera> extends Bab
         assertNonNull(enabled);
         this.toggleAttribute("disabled", !enabled);
         this._camera.setEnabled(enabled);
-        if ((this.constructor as typeof SceneCameraElemBase<SomeCamera>).autoAttach) {
+        if ((this.constructor as typeof CameraElemBase<SomeCamera>).autoAttach) {
             if (enabled) {
                 this._camera.attachControl();
             } else {

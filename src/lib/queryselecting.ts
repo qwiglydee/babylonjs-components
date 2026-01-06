@@ -1,7 +1,7 @@
 import { Tags } from "@babylonjs/core/Misc/tags";
 import { Scene } from "@babylonjs/core/scene";
 import { Node } from "@babylonjs/core/node";
-import { Nullable } from "@babylonjs/core/types";
+import type { Nullable } from "@babylonjs/core/types";
 
 function queryMatching(query: string) {
     if (query.at(0) == "#") {

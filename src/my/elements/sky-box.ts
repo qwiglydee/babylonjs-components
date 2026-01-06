@@ -6,10 +6,10 @@ import { CreateBox } from "@babylonjs/core/Meshes/Builders/boxBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { assertNonNull } from "@utils/asserts";
 
-import { SceneNodeElemBase } from "../base/node";
+import { NodeElemBase } from "../base/node";
 
 @customElement("my3d-sky-box")
-export class MySkyboxElem extends SceneNodeElemBase<Mesh> {
+export class SkyboxElem extends NodeElemBase<Mesh> {
     static override auxiliary = true;
 
     @property({ type: Number })
@@ -30,7 +30,7 @@ export class MySkyboxElem extends SceneNodeElemBase<Mesh> {
         material.reflectionTexture = texture;
         material.reflectionBlur = this.blurring;
 
-        this._node = CreateBox("skybox", { size: this.babylon.worldSize, sideOrientation: Mesh.BACKSIDE }, this.scene);
+        this._node = CreateBox("skybox", { size: this.main.worldSize, sideOrientation: Mesh.BACKSIDE }, this.scene);
         this._node.isPickable = false;
         this._node.infiniteDistance = true;
         this._node.ignoreCameraMaxZ = true;

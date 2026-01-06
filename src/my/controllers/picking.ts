@@ -1,11 +1,11 @@
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
-import { ReactiveControllerHost } from "lit";
+import type { ReactiveControllerHost } from "lit";
 
 import { PointerEventTypes, PointerInfo } from "@babylonjs/core/Events/pointerEvents";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Observer } from "@babylonjs/core/Misc/observable";
 import { Scene } from "@babylonjs/core/scene";
-import { Nullable } from "@babylonjs/core/types";
+import type { Nullable } from "@babylonjs/core/types";
 import { BabylonControllerBase } from "./base";
 
 interface PickingHost extends ReactiveControllerHost {

@@ -8,6 +8,7 @@
     "moduleResolution": "node",
     "sourceMap": false,  // redefined in webpack.conf
     "importHelpers": false,
+    "verbatimModuleSyntax": true,
 
     /* Linting */
     "strict": true,
@@ -18,6 +19,7 @@
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
+    
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,

@@ -1,19 +1,19 @@
 import { consume } from "@lit/context";
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
 import { CreateBox } from "@babylonjs/core/Meshes/Builders/boxBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { Nullable } from "@babylonjs/core/types";
+import type { Nullable } from "@babylonjs/core/types";
 import { GhostBehavior } from "@lib/ghostbhv";
 
-import { SceneNodeElemBase } from "../base/node";
+import { NodeElemBase } from "../base/node";
 import { pickCtx } from "../context";
 
 @customElement("my3d-ghost")
-export class MyGhostElem extends SceneNodeElemBase<Mesh> {
+export class GhostElem extends NodeElemBase<Mesh> {
     static override auxiliary = true;
 
     @consume({ context: pickCtx, subscribe: true})

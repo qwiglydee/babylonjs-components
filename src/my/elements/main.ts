@@ -1,29 +1,28 @@
 import { ContextProvider, provide } from "@lit/context";
-import { css, html, PropertyValues } from "lit";
+import { css, html, type PropertyValues } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
+import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
 import { Engine } from "@babylonjs/core/Engines/engine";
-import { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
+import type { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
 import { Vector3 } from "@babylonjs/core/Maths";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import { Observable } from "@babylonjs/core/Misc/observable";
 import { Tags } from "@babylonjs/core/Misc/tags";
 import { Node as BabylonNode } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
-import { Nullable } from "@babylonjs/core/types";
+import type { Nullable } from "@babylonjs/core/types";
 import { querySelectorNode, querySelectorNodes } from "@lib/queryselecting";
-import { debug } from "@utils/debug";
 import { bubbleEvent, queueEvent } from "@utils/events";
 
-import { BabylonMainBase } from "../base/main";
-import { babylonCtx, boundsCtx, BoundsInfo, IBabylonElem, pickCtx } from "../context";
-import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
-import { PickingCtrl } from "../controllers/picking";
+import { MainElemBase } from "../base/main";
+import { boundsCtx, mainCtx, pickCtx } from "../context";
 import { DraggingCtrl } from "../controllers/dragging";
+import { PickingCtrl } from "../controllers/picking";
+import type { BoundsInfo, IMyMain } from "../interfaces";
 
 @customElement("my3d-main")
-export class MyMainElem extends BabylonMainBase implements IBabylonElem {
+export class MainElem extends MainElemBase implements IMyMain {
     /** orientation of scene */
     @property({ type: Boolean })
     rightHanded = false;
@@ -39,7 +38,7 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
     }
 
     /** providing self as context */
-    selfCtx = new ContextProvider(this, { context: babylonCtx, initialValue: this });
+    selfCtx = new ContextProvider(this, { context: mainCtx, initialValue: this });
 
     @property({ type: Number })
     worldSize = 100;
@@ -47,7 +46,7 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
     static DUMBOUNDS = new BoundingInfo(new Vector3(-1, -1, -1), new Vector3(+1, +1, +1));
 
     @provide({ context: boundsCtx })
-    bounds: BoundsInfo = { model: MyMainElem.DUMBOUNDS, world: MyMainElem.DUMBOUNDS };
+    bounds: BoundsInfo = { model: MainElem.DUMBOUNDS, world: MainElem.DUMBOUNDS };
 
     @provide({ context: pickCtx })
     @state()
@@ -60,7 +59,7 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
     // background = "#33334D"; // just to sync all backgrounds
 
     static override styles = [
-        ...BabylonMainBase.styles,
+        ...MainElemBase.styles,
         css`
             slot[name="overlay"] {
                 position: absolute;
@@ -97,8 +96,7 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
     }
 
     _init() {
-        debug(this, "initializing");
-        this.engine = new Engine(this.canvas, undefined, MyMainElem.ENGINEOPTIONS);
+        this.engine = new Engine(this.canvas, undefined, MainElem.ENGINEOPTIONS);
         this.engine.loadingScreen = this._screen;
         // this.engine.loadingScreen.loadingUIBackgroundColor = this.background;
 
@@ -107,7 +105,7 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
         // this.scene.clearColor = Color4.FromHexString(this.background);
 
         const affect = (mesh: AbstractMesh) => {
-            if (MyMainElem._isImportant(mesh)) this.requestUpdate("scene");
+            if (MainElem._isImportant(mesh)) this.requestUpdate("scene");
         };
 
         this.scene.onNewMeshAddedObservable.add(affect);
@@ -120,7 +118,6 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
     }
 
     override _onready() {
-        debug(this, "ready");
         super._onready();
         this._screen.hideLoadingUI();
         queueEvent(this, "babylon.init");
@@ -135,7 +132,6 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
     }
 
     override updated(changes: PropertyValues): void {
-        debug(this, "updated");
         if (changes.has("scene")) {
             bubbleEvent(this, "babylon.update");
         }
@@ -159,13 +155,13 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
         const invalid = (ext: any) => ext.min.x === Number.MAX_VALUE || ext.min.x == ext.max.x;
 
         // actual visible model
-        const modelext = this.scene.getWorldExtends((m) => m.isEnabled() && MyMainElem._isImportant(m));
-        const model = invalid(modelext) ? MyMainElem.DUMBOUNDS : new BoundingInfo(modelext.min, modelext.max);
+        const modelext = this.scene.getWorldExtends((m) => m.isEnabled() && MainElem._isImportant(m));
+        const model = invalid(modelext) ? MainElem.DUMBOUNDS : new BoundingInfo(modelext.min, modelext.max);
 
         // possible model mirrored around 0
-        const worldext = this.scene.getWorldExtends((m) => MyMainElem._isImportant(m));
+        const worldext = this.scene.getWorldExtends((m) => MainElem._isImportant(m));
         const world = invalid(worldext)
-            ? MyMainElem.DUMBOUNDS
+            ? MainElem.DUMBOUNDS
             : new BoundingInfo(
                   new Vector3(Math.min(worldext.min.x, -worldext.max.x), Math.min(worldext.min.y, -worldext.max.y), Math.min(worldext.min.z, -worldext.max.z)),
                   new Vector3(Math.max(worldext.max.x, -worldext.min.x), Math.max(worldext.max.y, -worldext.min.y), Math.max(worldext.max.z, -worldext.min.z))
@@ -174,12 +170,12 @@ export class MyMainElem extends BabylonMainBase implements IBabylonElem {
         return { model, world };
     }
 
-    querySelectorNodes(query: string): BabylonNode[] {
-        return querySelectorNodes(this.scene, query);
+    querySelectorNodes<T extends BabylonNode>(query: string): T[] {
+        return querySelectorNodes(this.scene, query) as T[];
     }
 
-    querySelectorNode(query: string): Nullable<BabylonNode> {
-        return querySelectorNode(this.scene, query);
+    querySelectorNode<T extends BabylonNode>(query: string): Nullable<T> {
+        return querySelectorNode(this.scene, query) as T;
     }
 
     getStuff() {

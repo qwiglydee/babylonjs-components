@@ -1,16 +1,14 @@
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { UniversalCamera } from "@babylonjs/core/Cameras/universalCamera";
-import { Vector3 } from "@babylonjs/core/Maths";
-import { Nullable } from "@babylonjs/core/types";
 import { assertNonNull } from "@utils/asserts";
 
-import { SceneCameraElemBase } from "../base/camera";
-import { Coords, coordsConverter } from "../properties/coords";
+import { type Coords, coordsConverter } from "../properties/coords";
+import { CameraElemBase } from "../base/camera";
 
 @customElement("my3d-camera-basic")
-export class MyBascicCameraElem extends SceneCameraElemBase<UniversalCamera> {
+export class BasicCameraElem extends CameraElemBase<UniversalCamera> {
     @property({ useDefault: true, converter: coordsConverter })
     position: Coords = { x: 0, y: 1.75, z: 0 };
 

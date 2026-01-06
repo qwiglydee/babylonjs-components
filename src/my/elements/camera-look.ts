@@ -1,20 +1,21 @@
 import { consume } from "@lit/context";
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
-import { Vector3 } from "@babylonjs/core/Maths";
-import { Nullable } from "@babylonjs/core/types";
-import { smoothFocus, smoothParams, smoothTarget } from "@lib/smoothcam";
-
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
-import { SceneCameraElemBase } from "../base/camera";
-import { boundsCtx, BoundsInfo, pickCtx } from "../context";
-import { Polar, polarConverter } from "../properties/polar";
+import { Vector3 } from "@babylonjs/core/Maths";
+import type { Nullable } from "@babylonjs/core/types";
+import { smoothFocus, smoothParams, smoothTarget } from "@lib/smoothcam";
+
+import { CameraElemBase } from "../base/camera";
+import { boundsCtx, pickCtx } from "../context";
+import type { BoundsInfo } from "../interfaces";
+import { type Polar, polarConverter } from "../properties/polar";
 
 @customElement("my3d-camera-look")
-export class MyLookCameraElem extends SceneCameraElemBase<ArcRotateCamera> {
+export class LookCameraElem extends CameraElemBase<ArcRotateCamera> {
     @consume({ context: boundsCtx, subscribe: true })
     @state()
     _bounds: Nullable<BoundsInfo> = null;

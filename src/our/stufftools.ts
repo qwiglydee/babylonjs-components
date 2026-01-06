@@ -2,7 +2,7 @@ import { customElement, query } from "lit/decorators.js";
 
 import { assertNonNull } from "@utils/asserts";
 import { WrappingElement } from "./base";
-import { ISceneElem } from "./context";
+import type { IComponentElem } from "./interfaces";
 
 @customElement("our-stuff-add")
 export class OurStuffAddElem extends WrappingElement {
@@ -42,7 +42,7 @@ export class OurStuffToolsElem extends WrappingElement {
     @query("input[name=visible]", true)
     visibleCheck!: HTMLInputElement;
 
-    selected: ISceneElem | null = null;
+    selected: IComponentElem | null = null;
 
     override linkedCallback(): void {
         assertNonNull(this.babylon, "Missing babylon element");
@@ -69,7 +69,7 @@ export class OurStuffToolsElem extends WrappingElement {
     }
 
     _selectStuff(id: string | null | undefined) {
-        this.selected = id ? (document.getElementById(id) as ISceneElem) : null;
+        this.selected = id ? (document.getElementById(id) as IComponentElem) : null;
         this.itemSelect.value = id ?? "";
         const valid = this.selected !== null;
         this.deleteButton.disabled = !valid;

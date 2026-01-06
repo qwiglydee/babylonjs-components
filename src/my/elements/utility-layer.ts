@@ -4,11 +4,11 @@ import { customElement, property } from "lit/decorators.js";
 import { UtilityLayerRenderer } from "@babylonjs/core/Rendering/utilityLayerRenderer";
 import { Scene } from "@babylonjs/core/scene";
 
-import { BabylonComponentBase } from "../base/elem";
+import { ComponentElemBase } from "../base/elem";
 import { sceneCtx } from "../context";
 
 @customElement("my3d-utility-layer")
-export class MyUtilityElem extends BabylonComponentBase {
+export class UtilityElem extends ComponentElemBase {
     @provide({ context: sceneCtx })
     _utilScene!: Scene;
 
@@ -18,7 +18,7 @@ export class MyUtilityElem extends BabylonComponentBase {
     events = false;
 
     override init() {
-        this._layer = new UtilityLayerRenderer(this.babylon.scene, this.events, false);
+        this._layer = new UtilityLayerRenderer(this.main.scene, this.events, false);
         this._utilScene = this._layer.utilityLayerScene;
     }
 

@@ -3,9 +3,9 @@ import { ReactiveElement } from "lit";
 
 import { PointerDragBehavior } from "@babylonjs/core/Behaviors/Meshes/pointerDragBehavior";
 import { Vector3 } from "@babylonjs/core/Maths/math";
-import { Nullable } from "@babylonjs/core/types";
+import type { Nullable } from "@babylonjs/core/types";
+
 import { BabylonControllerBase } from "./base";
-import { debug } from "@utils/debug";
 
 interface PickingHost extends ReactiveElement {
     picked: Nullable<PickingInfo>;
@@ -52,12 +52,10 @@ export class DraggingCtrl extends BabylonControllerBase<PickingHost> {
     }
 
     pick(info: PickingInfo) {
-        debug(this, "picking", info.pickedMesh);
         this.dragBhv.attach(info.pickedMesh!);
     }
 
     unpick() {
-        debug(this, "unpicking", this.dragBhv.attachedNode);
         this.dragBhv.detach();
     } 
 }

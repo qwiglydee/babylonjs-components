@@ -1,10 +1,10 @@
 import { consume } from "@lit/context";
-import { PropertyValues, ReactiveElement } from "lit";
+import { type PropertyValues, ReactiveElement } from "lit";
 
 import { Scene } from "@babylonjs/core/scene";
 
-import { babylonCtx, IBabylonElem, sceneCtx } from "../context";
-import { dbgChanges, debug } from "@utils/debug";
+import { mainCtx, sceneCtx } from "../context";
+import type { IMyMain } from "../interfaces";
 
 /**
  * The very base of elements contributing something to scene
@@ -20,7 +20,7 @@ import { dbgChanges, debug } from "@utils/debug";
  *
  * @TODO explore and test creating components in shadow dom of the main
  */
-export abstract class BabylonComponentBase extends ReactiveElement {
+export abstract class ComponentElemBase extends ReactiveElement {
     protected override createRenderRoot() {
         // disable shadow dom
         return this;
@@ -30,12 +30,13 @@ export abstract class BabylonComponentBase extends ReactiveElement {
      * Context reference to main babylon element.
      * Expected to be initialized before any children created.
      */
-    @consume({ context: babylonCtx, subscribe: false })
-    babylon!: IBabylonElem;
+    @consume({ context: mainCtx, subscribe: false })
+    main!: IMyMain;
 
     /**
      * Context reference to working scene.
      * This might be either main scene or utility scene.
+     * Main scene is at `this.main.scene`
      */
     @consume({ context: sceneCtx, subscribe: false })
     scene!: Scene;
@@ -65,9 +66,9 @@ export abstract class BabylonComponentBase extends ReactiveElement {
         super.update(changes);
     }
 
-    override updated(changes: PropertyValues): void {
-        debug(this, "updated", dbgChanges(this, changes));
-    }
+    // override updated(changes: PropertyValues): void {
+    //     debug(this, "updated", dbgChanges(this, changes));
+    // }
 
     /**
      * Dispose scene entity

@@ -1,20 +1,20 @@
 import { consume } from "@lit/context";
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import "@babylonjs/core/Layers/effectLayerSceneComponent";
 import { HighlightLayer } from "@babylonjs/core/Layers/highlightLayer";
 import { Color3 } from "@babylonjs/core/Maths";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { Nullable } from "@babylonjs/core/types";
-
-import { BabylonComponentBase } from "../base/elem";
-import { pickCtx } from "../context";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import type { Nullable } from "@babylonjs/core/types";
+
+import { ComponentElemBase } from "../base/elem";
+import { pickCtx } from "../context";
 
 @customElement("my3d-highlighter")
-export class MyHighlighterElem extends BabylonComponentBase {
+export class HighlighterElem extends ComponentElemBase {
     @consume({ context: pickCtx, subscribe: true})
     @state()
     _picked: Nullable<PickingInfo> = null;

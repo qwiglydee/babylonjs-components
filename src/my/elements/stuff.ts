@@ -1,4 +1,4 @@
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
@@ -7,14 +7,14 @@ import { Color3, Vector3 } from "@babylonjs/core/Maths";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Tools } from "@babylonjs/core/Misc/tools";
-import { Nullable } from "@babylonjs/core/types";
+import type { Nullable } from "@babylonjs/core/types";
 import { assertNonNull } from "@utils/asserts";
 
-import { SceneNodeElemBase } from "../base/node";
-import { Coords, coordsConverter } from "../properties/coords";
+import { NodeElemBase } from "../base/node";
+import { type Coords, coordsConverter } from "../properties/coords";
 
 @customElement("my3d-stuff")
-export class MyStuffElem extends SceneNodeElemBase<Mesh> {
+export class MyStuffElem extends NodeElemBase<Mesh> {
     @property({ useDefault: true, converter: coordsConverter })
     position: Coords = { x: 0, y: 0.5, z: 0 };
 
@@ -78,7 +78,7 @@ export class MyStuffElem extends SceneNodeElemBase<Mesh> {
         }
 
         if (!this.id) {
-            const i = this.babylon.scene.meshes.length + 1;
+            const i = this.main.scene.meshes.length + 1;
             this.id = `stuff.${i}`;   
         }
         super.init();

@@ -1,5 +1,5 @@
 import { consume } from "@lit/context";
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
@@ -7,14 +7,15 @@ import { Texture } from "@babylonjs/core/Materials/Textures";
 import { Color3 } from "@babylonjs/core/Maths";
 import { CreateGround } from "@babylonjs/core/Meshes/Builders/groundBuilder";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { Nullable } from "@babylonjs/core/types";
+import type { Nullable } from "@babylonjs/core/types";
 import { assertNonNull } from "@utils/asserts";
 
-import { SceneNodeElemBase } from "../base/node";
-import { boundsCtx, BoundsInfo } from "../context";
+import { NodeElemBase } from "../base/node";
+import { boundsCtx } from "../context";
+import type { BoundsInfo } from "../interfaces";
 
 @customElement("my3d-ground-flat")
-export class MyFlatGroundElem extends SceneNodeElemBase<Mesh> {
+export class FlatGroundElem extends NodeElemBase<Mesh> {
     static override auxiliary: boolean = true;
 
     @consume({ context: boundsCtx, subscribe: true })
@@ -52,7 +53,7 @@ export class MyFlatGroundElem extends SceneNodeElemBase<Mesh> {
         this._node.isPickable = false;
         this._node.material = material;
 
-        this.size ??= this.babylon.worldSize;
+        this.size ??= this.main.worldSize;
         this.#resize();
         
         super.init();

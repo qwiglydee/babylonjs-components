@@ -1,14 +1,14 @@
-import { ContextProvider, provide } from "@lit/context";
-import { css, html, PropertyValues, ReactiveElement, render } from "lit";
+import { provide } from "@lit/context";
+import { css, html, type PropertyValues, ReactiveElement, render } from "lit";
 import { property } from "lit/decorators.js";
 
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { Deferred } from "@babylonjs/core/Misc/deferred";
 import { Scene } from "@babylonjs/core/scene";
+import { assertNonNull } from "@utils/asserts";
 
 import { sceneCtx } from "../context";
 
-import { assertNonNull } from "@utils/asserts";
 
 /**
  * Base for main scene component.
@@ -19,10 +19,10 @@ import { assertNonNull } from "@utils/asserts";
  * - handles visibility check to suspend/resume rendering
  *
  * Derived concrete class:
- * - should `_init` and `_dispose`
+ * - should `_init` and `_dispose` engine and scene
  * - should probably override `_renderHTML`
  */
-export abstract class BabylonMainBase extends ReactiveElement {
+export abstract class MainElemBase extends ReactiveElement {
     /** precentage of canvas visibility to suspend rendering */
     @property({ type: Number })
     visibilityThreshold = 0.25;

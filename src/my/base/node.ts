@@ -1,11 +1,11 @@
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import { Tags } from "@babylonjs/core/Misc/tags";
 import { Node as BabylonNode } from "@babylonjs/core/node";
 import { assertNonNull } from "@utils/asserts";
 
-import { BabylonComponentBase } from "./elem";
+import { ComponentElemBase } from "./elem";
 
 /**
  * Base of elements creating some nodes (transformnodes, meshes, lights)
@@ -16,7 +16,7 @@ import { BabylonComponentBase } from "./elem";
  * - synchronizes `disabled` with prop `enabled` and babylon `isEnabled`
  * - synchronizes `hidden` with prop `visible` and babylon `isVisible`
  */
-export abstract class SceneNodeElemBase<SomeNode extends BabylonNode> extends BabylonComponentBase {
+export abstract class NodeElemBase<SomeNode extends BabylonNode> extends ComponentElemBase {
     /**
      * Identifies the class as auxiliary entities.
      * They got marked with 'aux' tag and excluded from some scene analyzis like bounds.
@@ -89,7 +89,7 @@ export abstract class SceneNodeElemBase<SomeNode extends BabylonNode> extends Ba
         assertNonNull(this._node, "Not initialized");
 
         if (this.id) this._node.id = this.id;
-        if ((this.constructor as typeof SceneNodeElemBase).auxiliary) {
+        if ((this.constructor as typeof NodeElemBase).auxiliary) {
             Tags.AddTagsTo(this._node, "aux");
         } else if (this.classList.length) {
             Tags.AddTagsTo(this._node, this.classList.value);

@@ -9,13 +9,15 @@ import { Node as BabylonNode } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
 
-import { SceneCameraElemBase } from "./my/base/camera";
-import { BabylonComponentBase } from "./my/base/elem";
-import { BabylonMainBase } from "./my/base/main";
-import { SceneNodeElemBase } from "./my/base/node";
+import { CameraElemBase } from "./my/base/camera";
+import { ComponentElemBase } from "./my/base/elem";
+import { MainElemBase } from "./my/base/main";
+import { NodeElemBase } from "./my/base/node";
 import { coordsConverter, type Coords } from "./my/properties/coords";
+
+
 @customElement("test-babylon")
-export class TestBabylonElem extends BabylonMainBase {
+export class TestBabylonElem extends MainElemBase {
     override _init() {
         this.engine = new Engine(this.canvas);
         this.scene = new Scene(this.engine);
@@ -29,7 +31,7 @@ export class TestBabylonElem extends BabylonMainBase {
 
 
 @customElement("test-babylon-headless")
-export class TestBabylonHeadlessElem extends BabylonMainBase {
+export class TestHeadlessElem extends MainElemBase {
     override _init() {
         this.engine = new NullEngine();
         this.scene = new Scene(this.engine);
@@ -42,7 +44,7 @@ export class TestBabylonHeadlessElem extends BabylonMainBase {
 }
 
 @customElement("test-babylon-shadowed")
-export class TestBabylonShadowedElem extends TestBabylonHeadlessElem {
+export class TestBabylonShadowedElem extends TestHeadlessElem {
     override _renderHTML() {
         return html`
             ${this.canvas}
@@ -52,7 +54,7 @@ export class TestBabylonShadowedElem extends TestBabylonHeadlessElem {
 }
 
 @customElement("test-something")
-export class TestSomethingElem extends BabylonComponentBase {
+export class TestSomethingElem extends ComponentElemBase {
     @property({ useDefault: true, reflect: true })
     name: string = "something";
 
@@ -73,7 +75,7 @@ export class TestSomethingElem extends BabylonComponentBase {
 }
 
 @customElement("test-somesync")
-export class TestSomesyncElem extends BabylonComponentBase {
+export class TestSomesyncElem extends ComponentElemBase {
     @state()
     __name: string = "something";
 
@@ -111,7 +113,7 @@ export class TestSomesyncElem extends BabylonComponentBase {
 
 
 @customElement("test-node")
-export class TestNodeElem extends SceneNodeElemBase<TransformNode> {
+export class TestNodeElem extends NodeElemBase<TransformNode> {
     @property({ useDefault: true, reflect: false, converter: coordsConverter })
     position: Coords = { x: 0, y: 0, z: 0 };
 
@@ -134,7 +136,7 @@ export class TestNodeElem extends SceneNodeElemBase<TransformNode> {
 }
 
 @customElement("test-camera")
-export class TestCameraElem extends SceneCameraElemBase<FreeCamera> {
+export class TestCameraElem extends CameraElemBase<FreeCamera> {
     /** write-only position */
     @property({ useDefault: true, reflect: false, converter: coordsConverter })
     position: Coords = { x: 0, y: 0, z: 0 };

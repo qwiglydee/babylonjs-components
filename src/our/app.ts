@@ -3,7 +3,8 @@ import { ReactiveElement } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import { debug, debugEvent } from "@utils/debug";
-import { babylonCtx, BabylonEvent, BabylonPickEvent, BabylonUpdateEvent, IBabylonElem, statusCtx } from "./context";
+import { babylonCtx, statusCtx } from "./context";
+import type { BabylonEvent, BabylonPickEvent, BabylonUpdateEvent, IBabylonElem } from "./interfaces";
 
 /**
  * Babylon-unaware web app
@@ -16,12 +17,11 @@ export class TheAppElem extends ReactiveElement {
         return this;
     }
 
-    @provide({ context: statusCtx })
-    status: string = "...";
-
     @provide({ context: babylonCtx })
     babylon: IBabylonElem | null = null;
 
+    @provide({ context: statusCtx })
+    status: string = "...";
     constructor() {
         super();
         this.addEventListener('babylon.init', this.#oninit);
@@ -46,7 +46,6 @@ export class TheAppElem extends ReactiveElement {
     }
 
     override onclick = (event: Event) => {
-        debugEvent(this, event);
         // @ts-ignore
         if (event.target.name == 'fullscreen') this.toggleFullscreen();
     } 

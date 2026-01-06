@@ -1,15 +1,15 @@
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { assertNonNull } from "@utils/asserts";
 
-import { SceneCameraElemBase } from "../base/camera";
-import { Coords, coordsConverter } from "../properties/coords";
-import { Polar, polarConverter } from "../properties/polar";
+import { CameraElemBase } from "../base/camera";
+import { type Coords, coordsConverter } from "../properties/coords";
+import { type Polar, polarConverter } from "../properties/polar";
 
 @customElement("my3d-camera-orbit")
-export class MyOrbitCameraElem extends SceneCameraElemBase<ArcRotateCamera> {
+export class OrbitCameraElem extends CameraElemBase<ArcRotateCamera> {
     /** one-way sync of target coords */
     @property({ useDefault: true, converter: coordsConverter })
     target: Coords = { x: 0, y: 0, z: 0 };
