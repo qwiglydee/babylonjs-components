@@ -4,7 +4,7 @@ import { RegisterClass } from "@babylonjs/core/Misc/typeStore";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { serialize } from "@babylonjs/core/Misc/decorators";
 
-import { Anchor } from "@lib/gui2anchor";
+import { Anchor } from "./anchor";
 
 export class MySpot extends Control {
     override getClassName(): string {

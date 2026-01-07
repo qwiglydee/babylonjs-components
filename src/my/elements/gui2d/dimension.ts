@@ -1,18 +1,18 @@
 import { PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import { Vector3 } from "@babylonjs/core/Maths/math";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { Observer } from "@babylonjs/core/Misc/observable";
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
-import { MyCalloutLine } from "@lib/gui2callout";
-import { MyLabel } from "@lib/gui2label";
-import { MyBridgeLine } from "@lib/gui2line";
-import { MySpot } from "@lib/gui2spot";
+import { MyCalloutLine } from "@lib/gui2/callout";
+import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "@lib/gui2/css";
+import { MyLabel } from "@lib/gui2/label";
+import { MyBridgeLine } from "@lib/gui2/line";
+import { MySpot } from "@lib/gui2/spot";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
 import { GUI2Element } from "./base";
-import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "./css";
-import { Observer } from "@babylonjs/core/Misc/observable";
-import { Vector3 } from "@babylonjs/core/Maths/math";
 
 @customElement("my2g-dimension")
 export class MyGUIDimensionElem extends GUI2Element {

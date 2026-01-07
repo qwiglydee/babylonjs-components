@@ -8,9 +8,9 @@ import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Nullable } from "@babylonjs/core/types";
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";
+import { MySpot } from "@lib/gui2/spot";
 
-import { MySpot } from "@lib/gui2spot";
-import { BabylonController } from "../controllers/base";
+import { BabylonController } from "../../controllers/base";
 import { GUI2Element } from "./base";
 
 

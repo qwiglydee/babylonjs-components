@@ -2,9 +2,10 @@ import { customElement } from "lit/decorators.js";
 
 import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
+import { COLORSTYLES } from "@lib/gui2/css";
 import { debug } from "@utils/debug";
+
 import { GUI2Element } from "./base";
-import { COLORSTYLES } from "./css";
 
 @customElement("my2g-something")
 export class MyGUISomethingElem extends GUI2Element {

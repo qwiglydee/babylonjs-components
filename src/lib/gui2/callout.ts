@@ -1,10 +1,10 @@
 import { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
 import { Vector2 } from "@babylonjs/core/Maths/math";
 import { Measure } from "@babylonjs/gui/2D/measure";
+import { DehomoPoint, homoFinite, homoIntersect, HomoLine, HomoPoint, HomoRay, homoVisible } from "@lib/homogenous2d";
 
-import { MyLabel } from "./gui2label";
-import { DehomoPoint, homoFinite, homoIntersect, HomoLine, HomoPoint, HomoRay, homoVisible } from "./homogenous2d";
-import { MyLine } from "./gui2line";
+import { MyLabel } from "./label";
+import { MyLine } from "./line";
 
 export class MyCalloutLabel extends MyLabel {
     _edge: boolean = false;

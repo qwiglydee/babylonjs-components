@@ -1,12 +1,13 @@
 import { createContext } from "@lit/context";
-import { ReactiveElement } from "lit";
+import type { ReactiveElement } from "lit";
 
-import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
-import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
-import { Node } from "@babylonjs/core/node";
-import { Scene } from "@babylonjs/core/scene";
-import { Nullable } from "@babylonjs/core/types";
-import { Observable } from "@babylonjs/core/Misc/observable";
+import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
+import type { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
+import type { Node } from "@babylonjs/core/node";
+import type { Scene } from "@babylonjs/core/scene";
+import type { Nullable } from "@babylonjs/core/types";
+import type { Observable } from "@babylonjs/core/Misc/observable";
+import type { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 
 export interface BoundsInfo {
     model: BoundingInfo; // all (non-aux) objects in scene 
@@ -34,3 +35,5 @@ export const sceneCtx = createContext<Scene>(Symbol('babylon.scene'));
 export const boundsCtx = createContext<BoundsInfo>(Symbol('babylon.bounds'));
 export const pickCtx = createContext<Nullable<PickingInfo>>(Symbol('babylon.pick'));
 
+
+export const guiCtx = createContext<AdvancedDynamicTexture>(Symbol('babylon.gui'));

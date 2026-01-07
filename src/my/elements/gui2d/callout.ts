@@ -1,13 +1,14 @@
+import { PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
-import { MyCalloutLabel, MyCalloutLine } from "@lib/gui2callout";
+import { MyCalloutLabel, MyCalloutLine } from "@lib/gui2/callout";
+import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "@lib/gui2/css";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";
-import { PropertyValues } from "lit";
+
 import { GUI2Element } from "./base";
-import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "./css";
 
 @customElement("my2g-callout")
 export class MyGUICalloutElem extends GUI2Element {

@@ -1,10 +1,11 @@
 import { customElement } from "lit/decorators.js";
 
 import { Button } from "@babylonjs/gui/2D/controls/button";
+import { ALLSTYLES, POSITIONSTYLES } from "@lib/gui2/css";
 import { debug } from "@utils/debug";
-import { GUI2Element } from "./base";
 import { bubbleEvent } from "@utils/events";
-import { ALLSTYLES, POSITIONSTYLES } from "./css";
+
+import { GUI2Element } from "./base";
 
 @customElement("my2g-button")
 export class MyGUIButtonElem extends GUI2Element {

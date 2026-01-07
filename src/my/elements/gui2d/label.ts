@@ -1,11 +1,11 @@
+import { PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { COLORSTYLES, TEXTSTYLES } from "@lib/gui2/css";
+import { MyLabel } from "@lib/gui2/label";
 
-import { MyLabel } from "@lib/gui2label";
-import { PropertyValues } from "lit";
 import { GUI2Element } from "./base";
-import { COLORSTYLES, TEXTSTYLES } from "./css";
 
 @customElement("my2g-label")
 export class MyGUILabelElem extends GUI2Element {

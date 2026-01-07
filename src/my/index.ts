@@ -13,10 +13,10 @@ import "./ground-grid";
 import "./highlighter";
 import "./ghost";
 
-import "./gui2d/gui";
-import "./gui2d/something";
-import "./gui2d/button";
-import "./gui2d/hotspot";
-import "./gui2d/label";
-import "./gui2d/callout";
-import "./gui2d/dimension";
+import "./elements/gui2d/gui";
+import "./elements/gui2d/something";
+import "./elements/gui2d/button";
+import "./elements/gui2d/hotspot";
+import "./elements/gui2d/label";
+import "./elements/gui2d/callout";
+import "./elements/gui2d/dimension";

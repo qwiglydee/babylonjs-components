@@ -2,12 +2,12 @@ import { consume } from "@lit/context";
 import { PropertyValues, ReactiveElement } from "lit";
 import { property } from "lit/decorators.js";
 
+import { Tags } from "@babylonjs/core/Misc/tags";
 import { Node } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
 
 import { babylonCtx, IBabylonElem, sceneCtx } from "./context";
-import { Tags } from "@babylonjs/core/Misc/tags";
 
 type Enableble = { setEnabled(val: boolean): void } | { isEnabled: boolean };
 

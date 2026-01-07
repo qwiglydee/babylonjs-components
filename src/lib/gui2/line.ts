@@ -1,7 +1,7 @@
 import { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 
-import { Anchor } from "@lib/gui2anchor";
+import { Anchor } from "./anchor";
 
 export class MyLine extends Control {
     _lineWidth = 1;

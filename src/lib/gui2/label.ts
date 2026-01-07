@@ -3,7 +3,7 @@ import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Measure } from "@babylonjs/gui/2D/measure";
 
-import { Anchor } from "@lib/gui2anchor";
+import { Anchor } from "./anchor";
 
 export class MyLabel extends Rectangle {
     _textBlock: TextBlock;

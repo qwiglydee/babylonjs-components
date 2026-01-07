@@ -3,8 +3,8 @@ import { customElement, property } from "lit/decorators.js";
 
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 
-import { SceneElement } from "../base";
-import { guiCtx } from "./context";
+import { SceneElement } from "../../base";
+import { guiCtx } from "../../context";
 
 @customElement("my2g-gui")
 export class MyGUIElem extends SceneElement {

@@ -5,9 +5,9 @@ import { property } from "lit/decorators.js";
 import { Scene } from "@babylonjs/core/scene";
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 import { Control } from "@babylonjs/gui/2D/controls/control";
-import { babylonCtx, IBabylonElem } from "../context";
-import { guiCtx } from "./context";
-import { ALLSTYLES, applyCSSOffset, applyCSSStyle } from "./css";
+import { ALLSTYLES, applyCSSOffset, applyCSSStyle } from "@lib/gui2/css";
+
+import { babylonCtx, guiCtx, IBabylonElem } from "../../context";
 
 export abstract class GUI2Element extends ReactiveElement {
     protected override createRenderRoot() {
