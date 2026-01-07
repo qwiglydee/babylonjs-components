@@ -25,7 +25,7 @@ export function parseCSSRGBA(rgb: string): RGB {
         r: parseInt(m[1]) / 255,
         g: parseInt(m[2]) / 255,
         b: parseInt(m[3]) / 255,
-        a: parseFloat(m[4])
+        a: parseFloat(m[4]),
     };
 }
 
@@ -46,7 +46,11 @@ export function parseCSSColor(value: string): RGB {
 }
 
 export function formatCSSColor(color: RGB): string {
-    const rgb = `${color.r * 255}, ${color.g * 255}, ${color.b * 255}`;
-    if ('a' in color) return `rgba(${rgb}, ${color.a})`
-    else return `rgb(${rgb})`
+    const fmt = (val: number) => Math.round(val * 255);
+    return color.a ? `rgba(${fmt(color.r)}, ${fmt(color.g)}, ${fmt(color.b)}, ${color.a.toFixed(3)})` : `rgb(${fmt(color.r)}, ${fmt(color.g)}, ${fmt(color.b)})`;
+}
+
+export function formatHexColor(color: RGB): string {
+    const fmt = (val: number) => Math.round(val * 255).toString(16).toUpperCase().padStart(2, "0");
+    return color.a ? `#${fmt(color.r)}${fmt(color.g)}${fmt(color.b)}${fmt(color.a)}` : `#${fmt(color.r)}${fmt(color.g)}${fmt(color.b)}`;
 }

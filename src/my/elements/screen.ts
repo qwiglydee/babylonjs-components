@@ -1,4 +1,4 @@
-import { css, html, LitElement, nothing, PropertyValues } from "lit";
+import { css, html, LitElement, nothing, type PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import type { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";

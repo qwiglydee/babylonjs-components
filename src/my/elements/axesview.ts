@@ -1,12 +1,11 @@
 import { customElement, property } from "lit/decorators.js";
 
 import { AxesViewer } from "@babylonjs/core/Debug/axesViewer";
-import { assertNonNull } from "@utils/asserts";
 
-import { SceneElement } from "./base";
+import { ComponentElemBase } from "../base/elem";
 
-@customElement("my3d-axes")
-export class MyAxesElem extends SceneElement {
+@customElement("my3d-axesview")
+export class AxesviewElem extends ComponentElemBase {
     @property({ type: Number })
     scale = 1;
 
@@ -15,15 +14,11 @@ export class MyAxesElem extends SceneElement {
 
     _axes!: AxesViewer;
 
-    override init(): void {
-        assertNonNull(this.scene);
+    override init() {
         this._axes = new AxesViewer(this.scene, this.scale, undefined, undefined, undefined, undefined, this.thickness);
     }
 
-    override dispose(): void {
+    override dispose() {
         this._axes.dispose();
-    }
-
-    override toggle(_enabled: boolean): void {
     }
 }

@@ -1,7 +1,8 @@
-import { LitElement, PropertyValues, ReactiveElement } from "lit";
+import { LitElement, type PropertyValues, ReactiveElement } from "lit";
 import { consume } from "@lit/context";
 
-import { babylonCtx, IBabylonElem } from "./context";
+import { babylonCtx } from "./context";
+import type { IBabylonElem } from "./interfaces";
 
 /**
  * Element linked to neighbour babylon element

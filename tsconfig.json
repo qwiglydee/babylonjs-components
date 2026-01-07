@@ -7,17 +7,19 @@
     "useDefineForClassFields": false,
     "moduleResolution": "node",
     "sourceMap": false,  // redefined in webpack.conf
-    "importHelpers": true,
+    "importHelpers": false,
+    "verbatimModuleSyntax": true,
 
     /* Linting */
     "strict": true,
     "strictNullChecks": true,
     "skipLibCheck": true,
-    "noUnusedLocals": true,
+    // "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
+    
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,

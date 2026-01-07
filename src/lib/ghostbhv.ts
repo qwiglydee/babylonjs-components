@@ -60,10 +60,10 @@ export class GhostBehavior implements Behavior<AbstractMesh> {
             this._attachedNode.position = pos;
             this._attachedNode.scaling = dim;
             this._attachedNode.rotationQuaternion = rot;
-            this._attachedNode.setEnabled(this._targetMesh.isEnabled() && !this.autoHide);
+            this._attachedNode.isVisible = this._targetMesh.isVisible && !this.autoHide;
             this.#updating();
         } else {
-            this._attachedNode.setEnabled(false);
+            this._attachedNode.isVisible = false;
         }
     }
 
@@ -99,27 +99,30 @@ export class GhostBehavior implements Behavior<AbstractMesh> {
         assertNonNull(this._attachedNode);
 
         let updated = false;
+        let updating = false;
         let delta: Vector3;
         if (this._goalPos !== null) {
             delta = this._goalPos.subtract(this._attachedNode.position).scale(this.draggingRatio);
-            if (delta.length() < Epsilon) {
+            updating = delta.length() > Epsilon
+            if (updating) {
+                this._attachedNode.position.addInPlace(delta);
+            } else {
                 this._attachedNode.position.copyFrom(this._goalPos);
                 this._goalPos = null;
-            } else {
-                this._attachedNode.position.addInPlace(delta);
             }
-            updated = true;
+            updated ||= updating;
         }
 
         if (this._goalDim !== null) {
             delta = this._goalDim.subtract(this._attachedNode.scaling).scale(this.draggingRatio);
-            if (delta.length() < Epsilon) {
+            updating = delta.length() > Epsilon
+            if (updating) {
+                this._attachedNode.scaling.addInPlace(delta);
+            } else {
                 this._attachedNode.scaling.copyFrom(this._goalDim);
                 this._goalDim = null;
-            } else {
-                this._attachedNode.scaling.addInPlace(delta);
             }
-            updated = true;
+            updated ||= updating;
         }
 
         if (this._goalRot !== null) {
@@ -128,8 +131,9 @@ export class GhostBehavior implements Behavior<AbstractMesh> {
 
         if (updated) {
             this.attachedNode?.computeWorldMatrix();
+            this._attachedNode!.isVisible = true;
         } else if (this.autoHide) {
-            this._attachedNode!.setEnabled(false);
+            this._attachedNode!.isVisible = false;
         }
 
    }

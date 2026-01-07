@@ -10,5 +10,5 @@ export function debugEvent(that: any, event: Event | CustomEvent) {
 }
 
 export function dbgChanges(that: any, changes: Map<any, unknown>) {
-    return new Map(Array.from(changes.keys()).map(k => [k, that[k]]));
+    return Object.fromEntries(Array.from(changes.keys()).map(k => [k, [changes.get(k), that[k]]]));
 }

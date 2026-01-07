@@ -8,11 +8,12 @@ import * as path from "path";
 export default function (env, argv) {
     const isproduction = argv.mode == "production";
     const isdevelopment = argv.mode == "development";
+    const istesting = !isproduction && !isdevelopment;
 
     const config = {
         entry: {
-            app: "./src/index.ts",
-            mybabylon: "./src/my/index.ts",
+            ourapp: ["./src/our/index.ts"],
+            mybabylon: ["./src/my/index.ts"],
         },
         resolve: {
             extensions: [".ts", ".js"],
@@ -41,7 +42,6 @@ export default function (env, argv) {
             filename: "[name].[contenthash].js",
             assetModuleFilename: "[name][ext]",
         },
-        devtool: false,
         plugins: [
             new HtmlWebpackPlugin({ template: "index.html", minify: false }),
             new webpack.SourceMapDevToolPlugin({
@@ -50,7 +50,7 @@ export default function (env, argv) {
                 include: [/mybabylon/, /app/],
             }),
             new RemoveSourceMapURLWebpackPlugin({
-                test: /^(vendor|lit)\./
+                test: /^(vendor|lit)\./,
             }),
         ],
         performance: {
@@ -69,7 +69,6 @@ export default function (env, argv) {
                     const path = module.userRequest;
                     if (/\/@babylonjs\//.test(path)) return "babylonjs";
                     else if (/\/(@lit|lit|lit-html|lit-element)\//.test(path)) return "lit";
-                    else if (/\/node_modules\//.test(path)) return "vendor";
                 },
             },
         },
@@ -85,24 +84,24 @@ export default function (env, argv) {
                 overlay: false,
             },
         },
+        infrastructureLogging: {
+            appendOnly: true,
+            level: "verbose",
+        },
     };
 
     if (isproduction) {
-        config.optimization.splitChunks = {
-            chunks: "all",
-            name: (module, chunks, cacheGroupKey) => {
-                const path = module.userRequest;
-                if (/\/@babylonjs\//.test(path)) return "babylonjs";
-                else if (/\/(@lit|lit|lit-html|lit-element)\//.test(path)) return "lit";
-                else if (/\/node_modules\//.test(path)) return "vendor";
-            },
-        };
-
         config.plugins.push(
             new CopyPlugin({
                 patterns: [{ from: "public/*.*", to: "[name][ext]", info: { minimized: true } }],
             })
         );
+    }
+
+    if (isdevelopment) {
+        config.devtool = 'eval';
+        config.entry.mybabylon.push("./src/testing.ts");
+        config.plugins.push(new HtmlWebpackPlugin({ template: "tests/testpage.html", filename: "testpage.html", minify: false, inject: "body" }));
     }
 
     return config;
