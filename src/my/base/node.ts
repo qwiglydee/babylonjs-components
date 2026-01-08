@@ -23,6 +23,11 @@ export abstract class NodeElemBase<SomeNode extends BabylonNode> extends Compone
      */
     static auxiliary = false;
 
+    /**
+     * Hide component when disabled
+     */
+    static autoHide = true;
+
     @property()
     name: string = ""
 
@@ -131,6 +136,9 @@ export abstract class NodeElemBase<SomeNode extends BabylonNode> extends Compone
         assertNonNull(enabled);
         this.toggleAttribute("disabled", !enabled); 
         this._node.setEnabled(enabled);
+        if ((this.constructor as typeof NodeElemBase<any>).autoHide) {
+            this.visible = enabled;
+        }
     }
 
     /**
