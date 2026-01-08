@@ -1,7 +1,7 @@
 import { consume } from "@lit/context";
 import { type PropertyValues, ReactiveElement } from "lit";
 
-import { Scene } from "@babylonjs/core/scene";
+import type { Scene } from "@babylonjs/core/scene";
 
 import { mainCtx, sceneCtx } from "../context";
 import type { IMyMain } from "../interfaces";

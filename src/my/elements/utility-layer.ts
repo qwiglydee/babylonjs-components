@@ -2,7 +2,7 @@ import { provide } from "@lit/context";
 import { customElement, property } from "lit/decorators.js";
 
 import { UtilityLayerRenderer } from "@babylonjs/core/Rendering/utilityLayerRenderer";
-import { Scene } from "@babylonjs/core/scene";
+import { type Scene } from "@babylonjs/core/scene";
 
 import { ComponentElemBase } from "../base/elem";
 import { sceneCtx } from "../context";

@@ -2,24 +2,23 @@ import { ContextProvider, provide } from "@lit/context";
 import { css, html, type PropertyValues } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 
-import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
+import { type PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
 import { Engine } from "@babylonjs/core/Engines/engine";
-import type { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
+import { type ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
 import { Vector3 } from "@babylonjs/core/Maths";
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import { type AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { Tags } from "@babylonjs/core/Misc/tags";
-import { Node as BabylonNode } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
-import type { Nullable } from "@babylonjs/core/types";
-import { querySelectorNode, querySelectorNodes } from "@lib/queryselecting";
+import { type Nullable } from "@babylonjs/core/types";
 import { bubbleEvent, queueEvent } from "@utils/events";
 
+import { assert } from "@utils/asserts";
 import { MainElemBase } from "../base/main";
 import { boundsCtx, mainCtx, pickCtx } from "../context";
 import { DraggingCtrl } from "../controllers/dragging";
 import { PickingCtrl } from "../controllers/picking";
-import type { BoundsInfo, IMyMain } from "../interfaces";
+import { type  BoundsInfo, type IMyMain } from "../interfaces";
 
 @customElement("my3d-main")
 export class MainElem extends MainElemBase implements IMyMain {
@@ -37,11 +36,17 @@ export class MainElem extends MainElemBase implements IMyMain {
         return Tags.MatchesQuery(mesh, "!aux");
     }
 
+    getImportant(): AbstractMesh[] {
+        return this.scene.getMeshesByTags("!aux");
+    }
+
     /** providing self as context */
     selfCtx = new ContextProvider(this, { context: mainCtx, initialValue: this });
 
     @property({ type: Number })
     worldSize = 100;
+
+    isEmpty: boolean = true;
 
     static DUMBOUNDS = new BoundingInfo(new Vector3(-1, -1, -1), new Vector3(+1, +1, +1));
 
@@ -51,7 +56,7 @@ export class MainElem extends MainElemBase implements IMyMain {
     @provide({ context: pickCtx })
     @state()
     picked: Nullable<PickingInfo> = null;
-    
+
     #pickingCtrl = new PickingCtrl(this); // sets this.picked
     #draggingCtrl = new DraggingCtrl(this); // uses this.picked
 
@@ -121,12 +126,13 @@ export class MainElem extends MainElemBase implements IMyMain {
         super._onready();
         this._screen.hideLoadingUI();
         queueEvent(this, "babylon.init");
-        this.requestUpdate('scene');
+        this.requestUpdate("scene");
     }
 
     override update(changes: PropertyValues): void {
         if (changes.has("scene")) {
-            this.bounds = this.getBounds();
+            this.isEmpty = this.getImportant().length == 0;
+            this.bounds = !this.isEmpty ? this._getBounds() : { model: MainElem.DUMBOUNDS, world: MainElem.DUMBOUNDS };
         }
         super.update(changes);
     }
@@ -150,32 +156,21 @@ export class MainElem extends MainElemBase implements IMyMain {
         }
     }
 
-    getBounds(): BoundsInfo {
-        // kinda fixed already
-        const invalid = (ext: any) => ext.min.x === Number.MAX_VALUE || ext.min.x == ext.max.x;
+    _getBounds(): BoundsInfo {
+        assert(!this.isEmpty)
 
-        // actual visible model
+        // actual model
         const modelext = this.scene.getWorldExtends((m) => m.isEnabled() && MainElem._isImportant(m));
-        const model = invalid(modelext) ? MainElem.DUMBOUNDS : new BoundingInfo(modelext.min, modelext.max);
+        const model = new BoundingInfo(modelext.min, modelext.max);
 
         // possible model mirrored around 0
         const worldext = this.scene.getWorldExtends((m) => MainElem._isImportant(m));
-        const world = invalid(worldext)
-            ? MainElem.DUMBOUNDS
-            : new BoundingInfo(
-                  new Vector3(Math.min(worldext.min.x, -worldext.max.x), Math.min(worldext.min.y, -worldext.max.y), Math.min(worldext.min.z, -worldext.max.z)),
-                  new Vector3(Math.max(worldext.max.x, -worldext.min.x), Math.max(worldext.max.y, -worldext.min.y), Math.max(worldext.max.z, -worldext.min.z))
-              );
+        const world = new BoundingInfo(
+            new Vector3(Math.min(worldext.min.x, -worldext.max.x), Math.min(worldext.min.y, -worldext.max.y), Math.min(worldext.min.z, -worldext.max.z)),
+            new Vector3(Math.max(worldext.max.x, -worldext.min.x), Math.max(worldext.max.y, -worldext.min.y), Math.max(worldext.max.z, -worldext.min.z))
+        );
 
         return { model, world };
-    }
-
-    querySelectorNodes<T extends BabylonNode>(query: string): T[] {
-        return querySelectorNodes(this.scene, query) as T[];
-    }
-
-    querySelectorNode<T extends BabylonNode>(query: string): Nullable<T> {
-        return querySelectorNode(this.scene, query) as T;
     }
 
     getStuff() {

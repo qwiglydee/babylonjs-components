@@ -1,13 +1,13 @@
-import type { PropertyValues } from "lit";
+import { type PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { Color3, Vector3 } from "@babylonjs/core/Maths";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { type Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Tools } from "@babylonjs/core/Misc/tools";
-import type { Nullable } from "@babylonjs/core/types";
+import { type Nullable } from "@babylonjs/core/types";
 import { assertNonNull } from "@utils/asserts";
 
 import { NodeElemBase } from "../base/node";

@@ -2,7 +2,7 @@ import type { PropertyValues } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import { Tags } from "@babylonjs/core/Misc/tags";
-import { Node as BabylonNode } from "@babylonjs/core/node";
+import type { Node as BabylonNode } from "@babylonjs/core/node";
 import { assertNonNull } from "@utils/asserts";
 
 import { ComponentElemBase } from "./elem";

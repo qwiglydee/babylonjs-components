@@ -2,9 +2,9 @@ import { provide } from "@lit/context";
 import { css, html, type PropertyValues, ReactiveElement, render } from "lit";
 import { property } from "lit/decorators.js";
 
-import { Engine } from "@babylonjs/core/Engines/engine";
+import type { Engine } from "@babylonjs/core/Engines/engine";
 import { Deferred } from "@babylonjs/core/Misc/deferred";
-import { Scene } from "@babylonjs/core/scene";
+import type { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
 
 import { sceneCtx } from "../context";

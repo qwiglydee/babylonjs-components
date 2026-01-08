@@ -1,5 +1,5 @@
 import { Vector3 } from "@babylonjs/core/Maths/math";
-import type { Nullable } from "@babylonjs/core/types";
+import { type Nullable } from "@babylonjs/core/types";
 import { assert } from "@utils/asserts";
 
 export interface Coords {

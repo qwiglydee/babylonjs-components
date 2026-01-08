@@ -8,7 +8,6 @@ import type { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";
 import type { Engine } from "@babylonjs/core/Engines/engine";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
-import type { Node as BabylonNode } from "@babylonjs/core/node";
 
 export interface IBaseMain {
     canvas: HTMLCanvasElement;
@@ -32,13 +31,11 @@ export interface BoundsInfo {
 export interface IMyMain extends IBaseMain {
     worldSize: number;
 
+    isEmpty: boolean;
+
     /** @context */
     bounds: BoundsInfo;
 
     /** @context */
     picked: Nullable<PickingInfo>;
-
-    // TODO: move to `modelcontainer` interface
-    querySelectorNodes<T extends BabylonNode>(query: string): T[];
-    querySelectorNode<T extends BabylonNode>(query: string): Nullable<T>;
 }
