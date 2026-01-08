@@ -24,6 +24,7 @@ export class OurStuffAddElem extends WrappingElement {
         elem.setAttribute("shape", this.shapeSelect.value);
         elem.setAttribute('positionRnd', "10");
         elem.setAttribute('texture', "assets/checker.png");
+        elem.classList.add('baz');
         this.babylon?.appendChild(elem);
     }
 }

@@ -123,8 +123,10 @@
                 <my3d-highlighter color="#F0F000"></my3d-highlighter>
 
                 <my3d-stuff id="ball" shape="sphere"></my3d-stuff>
-                <my3d-stuff shape="cube" size="2" position="[-3, 1, -5]" texture="assets/checker.png"></my3d-stuff>
-                <my3d-stuff shape="cone" positionRnd="5" texture="assets/checker.png"></my3d-stuff>
+                <my3d-stuff id="box" class="foo" shape="cube" size="2" position="[-3, 1, -5]" texture="assets/checker.png"></my3d-stuff>
+                <my3d-stuff id="cone" class="foo bar" shape="cone" positionRnd="5" texture="assets/checker.png"></my3d-stuff>
+
+                <my3d-something id="center" select="baz"></my3d-something>
 
                 <div slot="overlay" style="position: absolute; left: 0; top: 0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-badge m-1" viewBox="0 0 16 16">

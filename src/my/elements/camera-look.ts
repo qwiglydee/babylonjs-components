@@ -49,7 +49,7 @@ export class LookCameraElem extends CameraElemBase<ArcRotateCamera> {
 
     override update(changes: PropertyValues) {
         if (changes.has("_picked") || changes.has("_bounds")) {
-            if (this.main.isEmpty) {
+            if (this.main.model.isEmpty) {
                 this.reset();
             } else if (this._picked?.pickedMesh) {
                 this.#retarget(this._picked.pickedMesh.getBoundingInfo())

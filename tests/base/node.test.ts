@@ -1,56 +1,57 @@
 import { expect, test } from "@playwright/test";
 
 import type { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import type { TestNodeElem } from "../../src/testing";
+import type { TestMeshElem } from "../../src/testing";
 
 import { pickComponent, loadBabylonHeadless } from "../testpage";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 
 test("id and tags", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, `<test-node id="foo" class="bar baz"></test-node>`);
-    const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+    const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh id="foo" class="bar baz"></test-mesh>`);
+    const { ref, elem, inst } = await pickComponent<TestMeshElem, AbstractMesh>(page, "test-mesh", "_node");
 
-    expect(await inst!.evaluate((_) => _.id)).toEqual("foo");
-    expect(await scene.evaluate((_) => _.getTransformNodesByTags("bar && baz").map((n) => n.id))).toEqual(["foo"]);
+    expect(await scene.evaluate((_) => _.meshes.length)).toBe(1);
+    expect(await scene.evaluate((_, inst) => _.getMeshById("foo") === inst, inst)).toBe(true);
+    expect(await scene.evaluate((_, inst) => _.getMeshesByTags("bar && baz").includes(inst!), inst)).toBe(true);
     await expect(ref).toHaveJSProperty("id", "foo");
 });
 
 test.describe("lifecycle", () => {
     test("static creating", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
-        expect(await scene.evaluate((_) => _.transformNodes.length)).toBe(1);
-        expect(await scene.evaluate((_, inst) => _.transformNodes[0] === inst, inst)).toBe(true);
+        expect(await scene.evaluate((_) => _.meshes.length)).toBe(1);
+        expect(await scene.evaluate((_, inst) => _.meshes[0] === inst, inst)).toBe(true);
     });
 
     test("dynamic creating", async ({ page }) => {
         const { babylon, scene } = await loadBabylonHeadless(page, "");
 
-        await babylon.evaluate((_) => _.appendChild(_.ownerDocument.createElement("test-node")));
+        await babylon.evaluate((_) => _.appendChild(_.ownerDocument.createElement("test-mesh")));
 
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
-        expect(await scene.evaluate((_) => _.transformNodes.length)).toBe(1);
-        expect(await scene.evaluate((_, inst) => _.transformNodes[0] === inst, inst)).toBe(true);
+        expect(await scene.evaluate((_) => _.meshes.length)).toBe(1);
+        expect(await scene.evaluate((_, inst) => _.meshes[0] === inst, inst)).toBe(true);
     });
 
     test("deleting", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
-        await babylon.evaluate((_) => _.removeChild(_.querySelector("test-node")!));
+        await babylon.evaluate((_) => _.removeChild(_.querySelector("test-mesh")!));
 
-        expect(await scene.evaluate((_) => _.transformNodes.length)).toBe(0);
+        expect(await scene.evaluate((_) => _.meshes.length)).toBe(0);
         expect(await inst!.evaluate((_) => _.isDisposed())).toBe(true);
     });
 });
 
-
-
 test.describe("enabling", () => {
     test("default enabled", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
         expect(await inst!.evaluate((_) => _.isEnabled())).toEqual(true);
         await expect(ref).toHaveJSProperty("disabled", false);
@@ -58,8 +59,8 @@ test.describe("enabling", () => {
     });
 
     test("disabled attr", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node disabled></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh disabled></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
         expect(await inst!.evaluate((_) => _.isEnabled())).toEqual(false);
         await expect(ref).toHaveJSProperty("disabled", true);
@@ -67,8 +68,8 @@ test.describe("enabling", () => {
     });
 
     test("toggle enabled prop", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
         await elem.evaluate((_) => (_.enabled = false));
 
@@ -84,8 +85,8 @@ test.describe("enabling", () => {
     });
 
     test("toggle enabled babylon", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
         await inst!.evaluate((_) => _.setEnabled(false));
 
@@ -103,8 +104,8 @@ test.describe("enabling", () => {
 
 test.describe("visibility", () => {
     test("default visible", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
         expect(await inst!.evaluate((_) => _.isVisible)).toEqual(true);
         await expect(ref).toHaveJSProperty("hidden", false);
@@ -112,8 +113,8 @@ test.describe("visibility", () => {
     });
 
     test("init hidden attr", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node hidden></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh hidden></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
         expect(await inst!.evaluate((_) => _.isVisible)).toEqual(false);
         await expect(ref).toHaveJSProperty("hidden", true);
@@ -121,8 +122,8 @@ test.describe("visibility", () => {
     });
 
     test("toggle visible prop", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
         await elem.evaluate((_) => (_.visible = false));
 
@@ -138,8 +139,8 @@ test.describe("visibility", () => {
     });
 
     test("toggle visible babylon", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-node></test-node>`);
-        const { ref, elem, inst } = await pickComponent<TestNodeElem, TransformNode>(page, "test-node", "_node");
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
         await inst!.evaluate((_) => (_.isVisible = false));
 

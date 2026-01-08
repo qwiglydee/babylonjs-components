@@ -13,12 +13,11 @@ import { Scene } from "@babylonjs/core/scene";
 import { type Nullable } from "@babylonjs/core/types";
 import { bubbleEvent, queueEvent } from "@utils/events";
 
-import { assert } from "@utils/asserts";
 import { MainElemBase } from "../base/main";
-import { boundsCtx, mainCtx, pickCtx } from "../context";
+import { boundsCtx, mainCtx, modelCtx, pickCtx } from "../context";
 import { DraggingCtrl } from "../controllers/dragging";
 import { PickingCtrl } from "../controllers/picking";
-import { type  BoundsInfo, type IMyMain } from "../interfaces";
+import { type BoundsInfo, type IModelContainer, type IMyMain } from "../interfaces";
 
 @customElement("my3d-main")
 export class MainElem extends MainElemBase implements IMyMain {
@@ -41,12 +40,15 @@ export class MainElem extends MainElemBase implements IMyMain {
     }
 
     /** providing self as context */
-    selfCtx = new ContextProvider(this, { context: mainCtx, initialValue: this });
+    #selfCtx = new ContextProvider(this, { context: mainCtx, initialValue: this });
 
+    model!: IModelContainer;
+
+    /** providing scene as model */
+    #modelCtx = new ContextProvider(this, { context: modelCtx });
+ 
     @property({ type: Number })
     worldSize = 100;
-
-    isEmpty: boolean = true;
 
     static DUMBOUNDS = new BoundingInfo(new Vector3(-1, -1, -1), new Vector3(+1, +1, +1));
 
@@ -109,8 +111,15 @@ export class MainElem extends MainElemBase implements IMyMain {
         this.scene.useRightHandedSystem = this.rightHanded;
         // this.scene.clearColor = Color4.FromHexString(this.background);
 
+        // @ts-ignore
+        this.scene.isEmpty = true;
+        // @ts-ignore
+        this.model = this.scene;
+        // @ts-ignore
+        this.#modelCtx.setValue(this.scene);
+
         const affect = (mesh: AbstractMesh) => {
-            if (MainElem._isImportant(mesh)) this.requestUpdate("scene");
+            if (MainElem._isImportant(mesh)) this.requestUpdate("model");
         };
 
         this.scene.onNewMeshAddedObservable.add(affect);
@@ -126,19 +135,20 @@ export class MainElem extends MainElemBase implements IMyMain {
         super._onready();
         this._screen.hideLoadingUI();
         queueEvent(this, "babylon.init");
-        this.requestUpdate("scene");
+        this.requestUpdate("model");
     }
 
     override update(changes: PropertyValues): void {
-        if (changes.has("scene")) {
-            this.isEmpty = this.getImportant().length == 0;
-            this.bounds = !this.isEmpty ? this._getBounds() : { model: MainElem.DUMBOUNDS, world: MainElem.DUMBOUNDS };
+        if (changes.has("model")) {
+            this.model.isEmpty = this.getImportant().length == 0;
+            this.#modelCtx.setValue(this.model, true); // forced
+            this.bounds = !this.model.isEmpty ? this._getBounds() : { model: MainElem.DUMBOUNDS, world: MainElem.DUMBOUNDS };
         }
         super.update(changes);
     }
 
     override updated(changes: PropertyValues): void {
-        if (changes.has("scene")) {
+        if (changes.has("model")) {
             bubbleEvent(this, "babylon.update");
         }
         if (changes.has("picked")) {
@@ -157,8 +167,6 @@ export class MainElem extends MainElemBase implements IMyMain {
     }
 
     _getBounds(): BoundsInfo {
-        assert(!this.isEmpty)
-
         // actual model
         const modelext = this.scene.getWorldExtends((m) => m.isEnabled() && MainElem._isImportant(m));
         const model = new BoundingInfo(modelext.min, modelext.max);

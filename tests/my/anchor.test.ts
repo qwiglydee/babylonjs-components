@@ -1,12 +1,14 @@
+import { expect, test } from "@playwright/test";
+
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { expect, Page, test } from "@playwright/test";
 
-import { MyAnchorElem } from "../src/my/elements/anchor";
+import { MyAnchorElem } from "../../src/my/elements/anchor";
 
-import { pickComponent, loadBabylonHeadless } from "./testpage";
+import { pickComponent } from "../testpage";
+import { loadBabylonHeadful } from "../mypage";
 
 test("static creation", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, `<my3d-anchor></my3d-anchor>`);
+    const { babylon, scene } = await loadBabylonHeadful(page, `<my3d-anchor></my3d-anchor>`);
     const { ref, elem, inst } = await pickComponent<MyAnchorElem, TransformNode>(page, "my3d-anchor", "_node");
 
     expect(await scene.evaluate((_) => _.transformNodes.length)).toBe(1);
@@ -17,7 +19,7 @@ test("static creation", async ({ page }) => {
 });
 
 test("dynamic creation", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, "");
+    const { babylon, scene } = await loadBabylonHeadful(page, "");
 
     await babylon.evaluate((_) => {
         const elem = _.ownerDocument.createElement("my3d-anchor");
@@ -34,7 +36,7 @@ test("dynamic creation", async ({ page }) => {
 });
 
 test("static attr", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, `<my3d-anchor position="[1, 2, 3]"></my3d-anchor>`);
+    const { babylon, scene } = await loadBabylonHeadful(page, `<my3d-anchor position="[1, 2, 3]"></my3d-anchor>`);
     const { ref, elem, inst } = await pickComponent<MyAnchorElem, TransformNode>(page, "my3d-anchor", "_node");
 
     expect(await inst!.evaluate((_) => _.getAbsolutePosition().toString())).toEqual("{X: 1 Y: 2 Z: 3}");
@@ -43,7 +45,7 @@ test("static attr", async ({ page }) => {
 
 
 test("dynamic attr", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, "");
+    const { babylon, scene } = await loadBabylonHeadful(page, "");
 
     await babylon.evaluate((_) => {
         const elem = _.ownerDocument.createElement("my3d-anchor");
@@ -58,10 +60,10 @@ test("dynamic attr", async ({ page }) => {
 });
 
 test("dynamic prop", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, "");
+    const { babylon, scene } = await loadBabylonHeadful(page, "");
 
     await babylon.evaluate((_) => {
-        const elem = _.ownerDocument.createElement("my3d-anchor");
+        const elem = _.ownerDocument.createElement("my3d-anchor") as MyAnchorElem;
         elem.position = { x: 1, y: 2, z: 3 };
         _.appendChild(elem);
     });
@@ -73,7 +75,7 @@ test("dynamic prop", async ({ page }) => {
 });
 
 test("changing prop", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, `<my3d-anchor></my3d-anchor>`);
+    const { babylon, scene } = await loadBabylonHeadful(page, `<my3d-anchor></my3d-anchor>`);
     const { ref, elem, inst } = await pickComponent<MyAnchorElem, TransformNode>(page, "my3d-anchor", "_node");
 
     await elem.evaluate((_) => {
@@ -85,7 +87,7 @@ test("changing prop", async ({ page }) => {
 });
 
 test("changing value", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, `<my3d-anchor></my3d-anchor>`);
+    const { babylon, scene } = await loadBabylonHeadful(page, `<my3d-anchor></my3d-anchor>`);
     const { ref, elem, inst } = await pickComponent<MyAnchorElem, TransformNode>(page, "my3d-anchor", "_node");
 
     await inst!.evaluate((_) => {

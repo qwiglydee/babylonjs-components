@@ -4,6 +4,7 @@ import "./elements/screen";
 import "./elements/utility-layer";
 
 import "./elements/anchor";
+import "./elements/proxy";
 import "./elements/camera-basic";
 import "./elements/camera-orbit";
 import "./elements/camera-look";
@@ -15,3 +16,5 @@ import "./elements/sky-box";
 import "./elements/stuff";
 import "./elements/highlighter";
 import "./elements/ghost";
+
+import "./elements/something";
