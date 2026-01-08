@@ -74,7 +74,6 @@ export class MyCalloutLine extends MyLine {
 }
 
 export function snapToEdges(parent: Measure, position: Vector2): Vector2 | null {
-    console.debug("snapToEdges", {parent, position});
     const corners = {
         min: new Vector2(parent.left, parent.top),
         max: new Vector2(parent.left + parent.width, parent.top + parent.height),

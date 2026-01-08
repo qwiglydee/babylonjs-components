@@ -4,9 +4,8 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import type { Node as BabylonNode } from "@babylonjs/core/node";
 import { assertNonNull } from "@utils/asserts";
-
 import type { Nullable } from "@babylonjs/core/types";
-import { debug } from "@utils/debug";
+
 import { ComponentElemBase } from "../base/elem";
 import { modelCtx } from "../context";
 import type { IModelContainer } from "../interfaces";
@@ -90,7 +89,6 @@ export class MyProxyElem extends ComponentElemBase {
     }
 
     #rettach() {
-        debug(this, "attaching", this.for);
         this._target = this.for ? this.model.getMeshById(this.for) : null;
     }
 

@@ -1,19 +1,30 @@
+import { consume } from "@lit/context";
 import type { PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import type { Nullable } from "@babylonjs/core/types";
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
 import { MyCalloutLabel, MyCalloutLine } from "@lib/gui2/callout";
 import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "@lib/gui2/css";
-import { querySelectorNode } from "@lib/queryselecting";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
 import { GUI2ComponentBase } from "../../base/gui2";
+import { modelCtx } from "../../context";
+import type { IModelContainer } from "../../interfaces";
+import { querySelectorNode } from "@lib/queryselecting";
 
 @customElement("my2g-callout")
 export class MyGUICalloutElem extends GUI2ComponentBase {
+    @consume({ context: modelCtx, subscribe: true })
+    @state({ hasChanged: () => true }) // do not compare
+    model!: IModelContainer;
+
     @property()
     anchor = "";
+
+    @state()
+    __target: Nullable<TransformNode> = null;
 
     @property({ type: Boolean })
     edge = false;
@@ -25,11 +36,8 @@ export class MyGUICalloutElem extends GUI2ComponentBase {
         this._label = new MyCalloutLabel("label", this.textContent.trim());
         this._label.zIndex = 2;
         this._label.edge = this.edge;
-        this.gui.addControl(this._label);
         this._line = new MyCalloutLine("line");
         this._label.zIndex = 1;
-        this.gui.addControl(this._line);
-        this._line.anchor2.target = this._label;
 
         this.applyStyle(this._label);
         this.applyStyle(this._label, ['offset']);
@@ -43,10 +51,10 @@ export class MyGUICalloutElem extends GUI2ComponentBase {
         gradient.addColorStop(0.0, formatCSSColor({...color, a: 0.0 }));
         gradient.addColorStop(1.0, formatCSSColor({...color, a: 1.0 }));
         this._line.gradient = gradient;
-        
-        // FIXME: make controller
-        this.main.scene.onNewMeshAddedObservable.add(this.#onupdate);
-        this.main.scene.onMeshRemovedObservable.add(this.#onupdate);
+
+        this.addControl(this._label);
+        this.addControl(this._line);
+        this._line.anchor2.target = this._label;
     }
 
     override dispose(): void {
@@ -54,27 +62,30 @@ export class MyGUICalloutElem extends GUI2ComponentBase {
     }
 
     override update(changes: PropertyValues) {
+        if (changes.has('anchor') || changes.has('model')) this.#rescan();
+        if (changes.has('__target')) {
+            this.visible = this.__target !== null && this.__target.isVisible;
+            if (this.__target) this.#rettach();
+            else this.#reset();
+        }
         if (changes.has("edge")) this._label.edge = this.edge;
-        if (changes.has('anchor')) this.#rettach();
+
         if (changes.has("enabled")) this._syncEnabled(this.enabled, this._label);
         if (changes.has("visible")) this._syncVisible(this.visible, this._label);
         super.update(changes);
     }
 
-    #onupdate = () => {
-        this.#rettach();
+    #rescan() {
+        this.__target = this.anchor ? querySelectorNode(this.model, this.anchor) as TransformNode : null;
+    }
+
+    #reset() {
+        this._label.anchor.unlink();
+        this._line.anchor1.unlink();
     }
 
     #rettach() {
-        const target = querySelectorNode(this.main.scene, this.anchor);
-        if (target instanceof TransformNode) {
-            this.visible = true;
-            this._label.anchor.target = target;
-            this._line.anchor1.target = target;
-        } else {
-            this.visible = false;
-            this._label.anchor.unlink();
-            this._line.anchor1.unlink();
-        }
+        this._label.anchor.target = this.__target;
+        this._line.anchor1.target = this.__target;
     }
 }

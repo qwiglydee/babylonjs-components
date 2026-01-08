@@ -1,9 +1,9 @@
+import { consume } from "@lit/context";
 import type { PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import { AnimationGroup } from "@babylonjs/core/Animations/animationGroup";
 import { PointerEventTypes, PointerInfo } from "@babylonjs/core/Events/pointerEvents";
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Nullable } from "@babylonjs/core/types";
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
@@ -12,14 +12,23 @@ import { querySelectorNodes } from "@lib/queryselecting";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
 import { GUI2ComponentBase } from "../../base/gui2";
+import { modelCtx } from "../../context";
 import { BabylonControllerBase } from "../../controllers/base";
+import type { IModelContainer } from "../../interfaces";
 
 export class TouchBlinkCtrl extends BabylonControllerBase<MyGUI2SpotElem> {
     #observer: any;
 
     override init() {
         this.#observer = this.host.main.scene.onPointerObservable.add((info: PointerInfo) => {
-            if (info.type == PointerEventTypes.POINTERTAP && !info.pickInfo?.hit) this.host.blink();
+            if (!this.host._blinkAnimation) return;
+            if (!info.pickInfo?.hit) {
+                if (info.type == PointerEventTypes.POINTERDOWN) this.host._blinkAnimation.play(false);
+                if (info.type == PointerEventTypes.POINTERUP) {
+                    this.host._blinkAnimation.stop();
+                    this.host._blinkAnimation.reset();
+                }
+            }
         });
     }
 
@@ -30,8 +39,19 @@ export class TouchBlinkCtrl extends BabylonControllerBase<MyGUI2SpotElem> {
 
 @customElement("my2g-hotspot")
 export class MyGUI2SpotElem extends GUI2ComponentBase {
+    @consume({ context: modelCtx, subscribe: true })
+    @state({ hasChanged: () => true }) // do not compare
+    model!: IModelContainer;
+
     @property()
-    anchors = "";
+    anchor = "";
+
+    @state()
+    __targets: TransformNode[] = [];
+
+    get valid(): boolean {
+        return this.__targets.length > 0;
+    }
 
     // not updatable
     @property({ type: Boolean })
@@ -56,10 +76,6 @@ export class MyGUI2SpotElem extends GUI2ComponentBase {
         gradient.addColorStop(0.0, formatCSSColor({ ...color, a: 1.0 }));
         gradient.addColorStop(1.0, formatCSSColor({ ...color, a: 0.0 }));
         this._proto.gradient = gradient;
-
-        // FIXME: make controller
-        this.main.scene.onNewMeshAddedObservable.add(this.#onupdate);
-        this.main.scene.onMeshRemovedObservable.add(this.#onupdate);
     }
 
     override dispose(): void {
@@ -68,57 +84,65 @@ export class MyGUI2SpotElem extends GUI2ComponentBase {
     }
 
     override update(changes: PropertyValues) {
+        if (changes.has("anchor") || changes.has("model")) this.#rescan();
+        if (changes.has("__targets")) {
+            if (this.valid) this.#rettach();
+        }
+        if (changes.has("__targets") || changes.has("blinking")) this.#setupBlinking();
+
+        this.visible = this.valid;
+
         if (changes.has("enabled")) this._syncEnabled(this.enabled, ...this._spots);
         if (changes.has("visible")) this._syncVisible(this.visible, ...this._spots);
+        super.update(changes);
+    }
+
+    #rescan() {
+        if (!this.anchor) this.__targets = [];
+        else {
+            const targets = new Set(querySelectorNodes(this.model, this.anchor) as TransformNode[]);
+            const diff = targets.symmetricDifference(new Set(this.__targets));
+            if (diff.size) this.__targets = Array.from(targets);
+        }
+    }
+
+    #rettach() {
+        const targets = new Set(this.__targets);
+        const spotted = new Set(this._spots.map((s) => s.anchor.target));
+        const addnodes = targets.difference(spotted);
+        const delnodes = spotted.difference(targets);
+
+        if (addnodes.size == 0 && delnodes.size == 0) return;
+
+        if (delnodes.size) {
+            this._spots.filter((s) => delnodes.has(s.anchor.target)).forEach((s) => s.dispose());
+            this._spots = this._spots.filter((s) => s.parent !== null); // == not disposed
+        }
+
+        if (addnodes.size) {
+            this._spots = this._spots.concat(Array.from(addnodes).map((n) => this.#newspot(n)));
+        }
+    }
+
+    #newspot(anchor: TransformNode): MySpot {
+        const clone = this._proto.clone() as MySpot;
+        this.addControl(clone);
+        clone.anchor.target = anchor;
+        return clone;
     }
 
     #setupBlinking() {
         if (this.blinking) {
+            if (this._blinkAnimation) this._blinkAnimation?.dispose();
             const animation = MySpot.createBlinkingAnimation(24, 12);
             this._blinkAnimation = new AnimationGroup("blinking");
-            this._spots.forEach((s) => {
-                s.alpha = 0;
-                this._blinkAnimation!.addTargetedAnimation(animation, s);
-            });
+            this._spots.forEach((s) => (s.alpha = 0));
+            this._spots.forEach((s) => this._blinkAnimation!.addTargetedAnimation(animation, s));
         } else {
             this._blinkAnimation?.dispose();
             this._blinkAnimation = null;
             this._spots.forEach((s) => (s.alpha = this._proto.alpha));
         }
-    }
-
-    #newspot(anchor: TransformNode | AbstractMesh): MySpot {
-        const clone = this._proto.clone() as MySpot;
-        this.gui.addControl(clone);
-        clone.anchor.target = anchor;
-        clone.gradient = this._proto.gradient;
-        return clone;
-    }
-
-    #onupdate = () => {
-        this.#rettach();
-    };
-
-    #rettach() {
-        const matches = new Set(querySelectorNodes(this.main.scene, this.anchors) as TransformNode[]);
-        const spotted = new Set(this._spots.map((s) => s.anchor.target));
-        const newnodes = matches.difference(spotted);
-        const delnodes = spotted.difference(matches);
-
-        if (delnodes.size) {
-            this._spots.filter((s) => delnodes.has(s.anchor.target)).forEach((s) => s.dispose());
-            this._spots = this._spots.filter((s) => s.anchor.target);
-        }
-
-        if (newnodes.size) {
-            this._spots = this._spots.concat(Array.from(newnodes).map((n) => this.#newspot(n)));
-        }
-
-        this.#setupBlinking();
-    }
-
-    #renable() {
-        this._spots.forEach((s) => (s.isVisible = this.visible));
     }
 
     blink() {
