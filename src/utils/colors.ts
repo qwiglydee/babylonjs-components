@@ -47,10 +47,10 @@ export function parseCSSColor(value: string): RGB {
 
 export function formatCSSColor(color: RGB): string {
     const fmt = (val: number) => Math.round(val * 255);
-    return color.a ? `rgba(${fmt(color.r)}, ${fmt(color.g)}, ${fmt(color.b)}, ${color.a.toFixed(3)})` : `rgb(${fmt(color.r)}, ${fmt(color.g)}, ${fmt(color.b)})`;
+    return color.a !== undefined ? `rgba(${fmt(color.r)}, ${fmt(color.g)}, ${fmt(color.b)}, ${color.a.toFixed(3)})` : `rgb(${fmt(color.r)}, ${fmt(color.g)}, ${fmt(color.b)})`;
 }
 
 export function formatHexColor(color: RGB): string {
     const fmt = (val: number) => Math.round(val * 255).toString(16).toUpperCase().padStart(2, "0");
-    return color.a ? `#${fmt(color.r)}${fmt(color.g)}${fmt(color.b)}${fmt(color.a)}` : `#${fmt(color.r)}${fmt(color.g)}${fmt(color.b)}`;
+    return color.a !== undefined ? `#${fmt(color.r)}${fmt(color.g)}${fmt(color.b)}${fmt(color.a)}` : `#${fmt(color.r)}${fmt(color.g)}${fmt(color.b)}`;
 }
