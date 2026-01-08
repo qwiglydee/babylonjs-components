@@ -12,6 +12,8 @@ import { MySpot } from "@lib/gui2/spot";
 import { querySelectorNodes } from "@lib/queryselecting";
 
 import { GUI2ComponentBase } from "../../base/gui2";
+import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
+import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
 @customElement("my2g-dimension")
 export class MyGUIDimensionElem extends GUI2ComponentBase {
@@ -62,14 +64,13 @@ export class MyGUIDimensionElem extends GUI2ComponentBase {
         this._line2.anchor2.target = this._dot2;
         this._label.anchor.target = this._bridge;
 
-        // FIXME
-        // const R = Math.max(Math.abs(this._dot1.linkOffsetXInPixels), Math.abs(this._dot1.linkOffsetYInPixels))
-        // const gradient = new RadialGradient(0, 0, 0, 0, 0, R);
-        // const color = parseCSSColor(this._bridge.color);
-        // gradient.addColorStop(0.0, formatCSSColor({...color, a: 0.0 }));
-        // gradient.addColorStop(1.0, formatCSSColor({...color, a: 1.0 }));
-        // this._line1.gradient = gradient;
-        // this._line2.gradient = gradient;
+        const R = Math.max(Math.abs(this._dot1.linkOffsetXInPixels), Math.abs(this._dot1.linkOffsetYInPixels))
+        const gradient = new RadialGradient(0, 0, 0, 0, 0, R);
+        const color = parseCSSColor(this._bridge.color);
+        gradient.addColorStop(0.0, formatCSSColor({...color, a: 0.0 }));
+        gradient.addColorStop(1.0, formatCSSColor({...color, a: 1.0 }));
+        this._line1.gradient = gradient;
+        this._line2.gradient = gradient;
 
         // FIXME
         this.main.scene.onNewMeshAddedObservable.add(this.#onupdate);
@@ -126,3 +127,4 @@ export class MyGUIDimensionElem extends GUI2ComponentBase {
         }
     }
 }
+

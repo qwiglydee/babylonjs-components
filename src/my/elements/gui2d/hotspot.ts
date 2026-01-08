@@ -52,10 +52,10 @@ export class MyGUI2SpotElem extends GUI2ComponentBase {
 
         // FIXME
         const color = parseCSSColor(this._proto.color);
-        this._proto.gradient = new RadialGradient(0, 0, 0, 0, 0, this._proto.radius);
-        this._proto.gradient.addColorStop(0.0, formatCSSColor({ ...color, a: 1.0 }));
-        this._proto.gradient.addColorStop(0.75, formatCSSColor({ ...color, a: 1.0 }));
-        this._proto.gradient.addColorStop(1.0, formatCSSColor({ ...color, a: 0.0 }));
+        const gradient = new RadialGradient(0, 0, 0, 0, 0, this._proto.radius);
+        gradient.addColorStop(0.0, formatCSSColor({ ...color, a: 1.0 }));
+        gradient.addColorStop(1.0, formatCSSColor({ ...color, a: 0.0 }));
+        this._proto.gradient = gradient;
 
         // FIXME: make controller
         this.main.scene.onNewMeshAddedObservable.add(this.#onupdate);
@@ -91,6 +91,7 @@ export class MyGUI2SpotElem extends GUI2ComponentBase {
         const clone = this._proto.clone() as MySpot;
         this.gui.addControl(clone);
         clone.anchor.target = anchor;
+        clone.gradient = this._proto.gradient;
         return clone;
     }
 

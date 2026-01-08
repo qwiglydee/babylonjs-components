@@ -48,9 +48,7 @@ export class MySpot extends Control {
     override _draw(context: ICanvasRenderingContext) {
         context.save();
         this._applyStates(context);
-        // gradient 0-stop is at center
         context.translate(this.centerX, this.centerY);
-
         context.beginPath();
         // @ts-ignore
         context.ellipse(0, 0, this._radius, this._radius, 0, 0, 2 * Math.PI);

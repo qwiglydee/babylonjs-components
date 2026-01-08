@@ -18,6 +18,7 @@ import "./elements/ghost";
 import "./elements/gui2d/layer";
 import "./elements/gui2d/something";
 import "./elements/gui2d/button";
+import "./elements/gui2d/spot";
 import "./elements/gui2d/hotspot";
 import "./elements/gui2d/label";
 import "./elements/gui2d/callout";
