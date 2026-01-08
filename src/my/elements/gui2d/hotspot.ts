@@ -8,6 +8,7 @@ import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Nullable } from "@babylonjs/core/types";
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
 import { MySpot } from "@lib/gui2/spot";
+import { querySelectorNodes } from "@lib/queryselecting";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
 import { GUI2ComponentBase } from "../../base/gui2";
@@ -98,7 +99,7 @@ export class MyGUI2SpotElem extends GUI2ComponentBase {
     };
 
     #rettach() {
-        const matches = new Set(this.main.querySelectorNodes(this.anchors) as TransformNode[]);
+        const matches = new Set(querySelectorNodes(this.main.scene, this.anchors) as TransformNode[]);
         const spotted = new Set(this._spots.map((s) => s.anchor.target));
         const newnodes = matches.difference(spotted);
         const delnodes = spotted.difference(matches);

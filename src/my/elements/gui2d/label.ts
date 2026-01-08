@@ -4,6 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { COLORSTYLES, TEXTSTYLES } from "@lib/gui2/css";
 import { MyLabel } from "@lib/gui2/label";
+import { querySelectorNode } from "@lib/queryselecting";
 
 import { GUI2ComponentBase } from "../../base/gui2";
 
@@ -44,7 +45,7 @@ export class MyGUILabelElem extends GUI2ComponentBase {
     }
 
     #rettach() {
-        const target = this.main.querySelectorNode(this.anchor);
+        const target = querySelectorNode(this.main.scene, this.anchor);
         if (target instanceof TransformNode) {
             this._syncVisible(true);
             this._label.anchor.target = target;

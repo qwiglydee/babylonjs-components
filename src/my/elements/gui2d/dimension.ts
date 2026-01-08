@@ -4,13 +4,12 @@ import { customElement, property } from "lit/decorators.js";
 import { Vector3 } from "@babylonjs/core/Maths/math";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Observer } from "@babylonjs/core/Misc/observable";
-import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
 import { MyCalloutLine } from "@lib/gui2/callout";
 import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "@lib/gui2/css";
 import { MyLabel } from "@lib/gui2/label";
 import { MyBridgeLine } from "@lib/gui2/line";
 import { MySpot } from "@lib/gui2/spot";
-import { formatCSSColor, parseCSSColor } from "@utils/colors";
+import { querySelectorNodes } from "@lib/queryselecting";
 
 import { GUI2ComponentBase } from "../../base/gui2";
 
@@ -97,7 +96,7 @@ export class MyGUIDimensionElem extends GUI2ComponentBase {
     #observers: Observer<any>[] = [];
     #rettach() {
         // FIXME: skip if anchors not changed
-        const targets = this.main.querySelectorNodes(this.anchors);
+        const targets = querySelectorNodes(this.main.scene, this.anchors);
         if (this.#observers.length) this.#observers.forEach(o => o.remove());
         if (targets.length == 2 && targets.every(c => c instanceof TransformNode)) {
             this.visible = true;

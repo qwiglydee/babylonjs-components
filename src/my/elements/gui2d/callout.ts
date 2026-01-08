@@ -5,6 +5,7 @@ import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
 import { MyCalloutLabel, MyCalloutLine } from "@lib/gui2/callout";
 import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "@lib/gui2/css";
+import { querySelectorNode } from "@lib/queryselecting";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
 import { GUI2ComponentBase } from "../../base/gui2";
@@ -65,7 +66,7 @@ export class MyGUICalloutElem extends GUI2ComponentBase {
     }
 
     #rettach() {
-        const target = this.main.querySelectorNode(this.anchor);
+        const target = querySelectorNode(this.main.scene, this.anchor);
         if (target instanceof TransformNode) {
             this.visible = true;
             this._label.anchor.target = target;
