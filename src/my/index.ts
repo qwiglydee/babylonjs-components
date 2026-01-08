@@ -3,6 +3,8 @@ import "./elements/main";
 import "./elements/screen";
 import "./elements/utility-layer";
 
+import "./elements/anchor";
+import "./elements/proxy";
 import "./elements/camera-basic";
 import "./elements/camera-orbit";
 import "./elements/camera-look";
@@ -23,3 +25,5 @@ import "./elements/gui2d/hotspot";
 import "./elements/gui2d/label";
 import "./elements/gui2d/callout";
 import "./elements/gui2d/dimension";
+
+import "./elements/something";

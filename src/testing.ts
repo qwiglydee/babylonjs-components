@@ -1,18 +1,22 @@
+import { consume } from "@lit/context";
 import { html, type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
-import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Node as BabylonNode } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
+
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 
 import { CameraElemBase } from "./my/base/camera";
 import { ComponentElemBase } from "./my/base/elem";
 import { MainElemBase } from "./my/base/main";
 import { NodeElemBase } from "./my/base/node";
+import { modelCtx } from "./my/context";
+import type { IModelContainer } from "./my/interfaces";
 import { coordsConverter, type Coords } from "./my/properties/coords";
 
 
@@ -112,13 +116,16 @@ export class TestSomesyncElem extends ComponentElemBase {
 }
 
 
-@customElement("test-node")
-export class TestNodeElem extends NodeElemBase<TransformNode> {
+@customElement("test-mesh")
+export class TestMeshElem extends NodeElemBase<Mesh> {
+    @property()
+    override name: string = "something";
+
     @property({ useDefault: true, reflect: false, converter: coordsConverter })
     position: Coords = { x: 0, y: 0, z: 0 };
 
     override init(): void {
-        this._node = new TransformNode("something", this.scene);
+        this._node = new Mesh(this.name, this.scene);
         this._syncPosition(this.position);
         super.init();
     }
@@ -137,12 +144,15 @@ export class TestNodeElem extends NodeElemBase<TransformNode> {
 
 @customElement("test-camera")
 export class TestCameraElem extends CameraElemBase<FreeCamera> {
+    @property()
+    override name: string = "somecam";
+
     /** write-only position */
     @property({ useDefault: true, reflect: false, converter: coordsConverter })
     position: Coords = { x: 0, y: 0, z: 0 };
 
     override init(): void {
-        this._camera = new FreeCamera("camera", coordsConverter.toVector3(this.position), this.scene, false);
+        this._camera = new FreeCamera(this.name, coordsConverter.toVector3(this.position), this.scene, false);
         super.init();
     }
 
@@ -157,3 +167,28 @@ export class TestCameraElem extends CameraElemBase<FreeCamera> {
         this._camera.position = coordsConverter.toVector3(position);
     }
 }
+
+
+@customElement("test-watch")
+export class TestWatchElem extends ComponentElemBase {
+    @consume({ context: modelCtx, subscribe: true })
+    @state({ hasChanged: () => true }) // do not compare
+    model!: IModelContainer;
+
+    override init(): boolean | void {
+        this.#render();
+    }
+
+    override dispose(): void {
+        //
+    }
+
+    override update(changes: PropertyValues): void {
+        if (changes.has('model')) this.#render();
+        super.update(changes);
+    }
+
+    #render() {
+        this.innerText = `${this.model.getNodes().length}`
+    }
+};

@@ -125,9 +125,9 @@
                             Click me
                         </my2g-button> -->
                         <my2g-hotspot anchors="#ball" style="color: #00ffff; opacity: 0.5; r: 16px"></my2g-hotspot>
-                        <my2g-hotspot anchors="foo" style="color: #ffff00; opacity: 0.5; r: 24px" blinking></my2g-hotspot>
-                        <my2g-label anchor="#cone" style="border-color: #9eeaf9; background-color: #cff4fc; color: #055160; border-radius: 6px; padding: 6px;">
-                            a cone
+                        <my2g-hotspot anchors="bar" style="color: #ffff00; opacity: 0.5; r: 24px" blinking></my2g-hotspot>
+                        <my2g-label anchor="#center" style="border-color: #9eeaf9; background-color: #cff4fc; color: #055160; border-radius: 6px; padding: 6px;">
+                            bazycenter
                         </my2g-label>
                         <my2g-callout anchor="#ball" style="border-color: #9eeaf9; background-color: #cff4fc; color: #055160; stroke: #0dcaf0; border-radius: 6px; padding: 6px; stroke-width: 2px; stroke-dasharray: 4 4; position: relative; right: 150px; top: 100px;">
                             a ball
@@ -141,9 +141,11 @@
                 </my3d-utility-layer>
                 <my3d-highlighter color="#F0F000"></my3d-highlighter>
 
-                <my3d-stuff id="ball" shape="sphere"></my3d-stuff>
-                <my3d-stuff id="box" class="foo" shape="cube" size="2" position="[-3, 1, -5]" texture="assets/checker.png"></my3d-stuff>
-                <my3d-stuff id="cone" class="foo bar" shape="cone" positionRnd="5" texture="assets/checker.png"></my3d-stuff>
+                <my3d-stuff id="ball" class="foo" shape="sphere"></my3d-stuff>
+                <my3d-stuff id="box" class="bar" shape="cube" size="2" position="[-3, 1, -5]" texture="assets/checker.png"></my3d-stuff>
+                <my3d-stuff id="cone" class="bar" shape="cone" positionRnd="5" texture="assets/checker.png"></my3d-stuff>
+
+                <my3d-something id="center" class="foo" select="baz"></my3d-something>
 
                 <div slot="overlay" style="position: absolute; left: 0; top: 0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-badge m-1" viewBox="0 0 16 16">

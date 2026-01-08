@@ -4,11 +4,10 @@ import { property } from "lit/decorators.js";
 
 import type { Engine } from "@babylonjs/core/Engines/engine";
 import { Deferred } from "@babylonjs/core/Misc/deferred";
-import type { Scene } from "@babylonjs/core/scene";
+import { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
 
 import { sceneCtx } from "../context";
-
 
 /**
  * Base for main scene component.

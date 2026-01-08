@@ -24,6 +24,14 @@ export abstract class NodeElemBase<SomeNode extends BabylonNode> extends Compone
     static auxiliary = false;
 
     /**
+     * Hide component when disabled
+     */
+    static autoHide = true;
+
+    @property()
+    name: string = ""
+
+    /**
      * Reference to a scene node representing some entity
      */
     _node?: SomeNode;
@@ -89,6 +97,7 @@ export abstract class NodeElemBase<SomeNode extends BabylonNode> extends Compone
         assertNonNull(this._node, "Not initialized");
 
         if (this.id) this._node.id = this.id;
+        if (this.name && !this._node.name) this._node.name = this.name; 
         if ((this.constructor as typeof NodeElemBase).auxiliary) {
             Tags.AddTagsTo(this._node, "aux");
         } else if (this.classList.length) {
@@ -127,6 +136,9 @@ export abstract class NodeElemBase<SomeNode extends BabylonNode> extends Compone
         assertNonNull(enabled);
         this.toggleAttribute("disabled", !enabled); 
         this._node.setEnabled(enabled);
+        if ((this.constructor as typeof NodeElemBase<any>).autoHide) {
+            this.visible = enabled;
+        }
     }
 
     /**

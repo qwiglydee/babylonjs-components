@@ -1,7 +1,8 @@
 import { Tags } from "@babylonjs/core/Misc/tags";
-import type { Scene } from "@babylonjs/core/scene";
-import type { Node as BabylonNode} from "@babylonjs/core/node";
+import type { Node as BabylonNode } from "@babylonjs/core/node";
 import type { Nullable } from "@babylonjs/core/types";
+
+import type { IModelContainer } from "../my/interfaces";
 
 function queryMatching(query: string) {
     if (query.at(0) == "#") {
@@ -12,12 +13,12 @@ function queryMatching(query: string) {
     }
 }
 
-export function querySelectorNodes(scene: Scene, query: string): BabylonNode[] {
+export function querySelectorNodes(scene: IModelContainer, query: string): BabylonNode[] {
     let matching = queryMatching(query);
     return scene.getNodes().filter(matching);
 }
 
-export function querySelectorNode(scene: Scene, query: string): Nullable<BabylonNode> {
+export function querySelectorNode(scene: IModelContainer, query: string): Nullable<BabylonNode> {
     let matching = queryMatching(query);
     for (let n of scene.getNodes()) {
         if (matching(n)) return n;

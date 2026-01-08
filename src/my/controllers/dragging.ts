@@ -32,7 +32,7 @@ export class DraggingCtrl extends BabylonControllerBase<PickingHost> {
             this.dragDist += data.dragDistance;
         });
         this.dragBhv.onDragEndObservable.add(() => {
-            this.host.requestUpdate('scene');
+            this.host.requestUpdate('model');
         });
     }
 
