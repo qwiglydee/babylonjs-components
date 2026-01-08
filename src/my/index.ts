@@ -3,6 +3,7 @@ import "./elements/main";
 import "./elements/screen";
 import "./elements/utility-layer";
 
+import "./elements/anchor";
 import "./elements/camera-basic";
 import "./elements/camera-orbit";
 import "./elements/camera-look";
