@@ -1,4 +1,4 @@
-import type { PropertyValues } from "lit";
+import { type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";

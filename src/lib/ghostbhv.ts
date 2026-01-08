@@ -1,8 +1,7 @@
 import type { Behavior } from "@babylonjs/core/Behaviors/behavior";
 import { Epsilon, Quaternion, Vector3 } from "@babylonjs/core/Maths";
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import type { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { Observer } from "@babylonjs/core/Misc/observable";
+import type { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import type { Observer } from "@babylonjs/core/Misc/observable";
 import type { Nullable } from "@babylonjs/core/types";
 import { assert, assertNonNull } from "@utils/asserts";
 
@@ -18,8 +17,7 @@ export class GhostBehavior implements Behavior<AbstractMesh> {
         return "Ghost";
     }
 
-    _attachedNode: Nullable<TransformNode> = null;
-    get attachedNode() { return this._attachedNode; }
+    attachedNode: Nullable<AbstractMesh> = null;
 
     _targetMesh: Nullable<AbstractMesh> = null;
     get targetMesh(): Nullable<AbstractMesh> { return this._targetMesh; }
@@ -32,16 +30,16 @@ export class GhostBehavior implements Behavior<AbstractMesh> {
 
     init() {}
 
-    attach(ghost: TransformNode, target?: AbstractMesh) {
+    attach(ghost: AbstractMesh, target?: AbstractMesh) {
         assert(ghost.scaling.equals(Vector3.One()), "ghost should be scale 1");
-        this._attachedNode = ghost;
-        this._attachedNode.rotationQuaternion = new Quaternion();
+        this.attachedNode = ghost;
+        this.attachedNode.rotationQuaternion = new Quaternion();
         this.targetMesh = target ?? null;
     }
 
     detach() {
         this.targetMesh = null;
-        this._attachedNode = null;
+        this.attachedNode = null;
     }
 
     #getGoal() {
@@ -54,16 +52,16 @@ export class GhostBehavior implements Behavior<AbstractMesh> {
     }
 
     reset() {
-        assertNonNull(this._attachedNode);
+        assertNonNull(this.attachedNode);
         if (this._targetMesh) {
             const { pos, dim, rot } = this.#getGoal();
-            this._attachedNode.position = pos;
-            this._attachedNode.scaling = dim;
-            this._attachedNode.rotationQuaternion = rot;
-            this._attachedNode.isVisible = this._targetMesh.isVisible && !this.autoHide;
+            this.attachedNode.position = pos;
+            this.attachedNode.scaling = dim;
+            this.attachedNode.rotationQuaternion = rot;
+            this.attachedNode.isVisible = this._targetMesh.isVisible && !this.autoHide;
             this.#updating();
         } else {
-            this._attachedNode.isVisible = false;
+            this.attachedNode.isVisible = false;
         }
     }
 
@@ -95,31 +93,31 @@ export class GhostBehavior implements Behavior<AbstractMesh> {
 
     // interpolation like for dragging: current += (goal - current) * ratio
     #interpolating = () => {
-        assertNonNull(this._targetMesh);
-        assertNonNull(this._attachedNode);
+        assertNonNull(this.targetMesh);
+        assertNonNull(this.attachedNode);
 
         let updated = false;
         let updating = false;
         let delta: Vector3;
         if (this._goalPos !== null) {
-            delta = this._goalPos.subtract(this._attachedNode.position).scale(this.draggingRatio);
+            delta = this._goalPos.subtract(this.attachedNode.position).scale(this.draggingRatio);
             updating = delta.length() > Epsilon
             if (updating) {
-                this._attachedNode.position.addInPlace(delta);
+                this.attachedNode.position.addInPlace(delta);
             } else {
-                this._attachedNode.position.copyFrom(this._goalPos);
+                this.attachedNode.position.copyFrom(this._goalPos);
                 this._goalPos = null;
             }
             updated ||= updating;
         }
 
         if (this._goalDim !== null) {
-            delta = this._goalDim.subtract(this._attachedNode.scaling).scale(this.draggingRatio);
+            delta = this._goalDim.subtract(this.attachedNode.scaling).scale(this.draggingRatio);
             updating = delta.length() > Epsilon
             if (updating) {
-                this._attachedNode.scaling.addInPlace(delta);
+                this.attachedNode.scaling.addInPlace(delta);
             } else {
-                this._attachedNode.scaling.copyFrom(this._goalDim);
+                this.attachedNode.scaling.copyFrom(this._goalDim);
                 this._goalDim = null;
             }
             updated ||= updating;
@@ -131,10 +129,9 @@ export class GhostBehavior implements Behavior<AbstractMesh> {
 
         if (updated) {
             this.attachedNode?.computeWorldMatrix();
-            this._attachedNode!.isVisible = true;
+            this.attachedNode!.isVisible = true;
         } else if (this.autoHide) {
-            this._attachedNode!.isVisible = false;
+            this.attachedNode!.isVisible = false;
         }
-
    }
 }

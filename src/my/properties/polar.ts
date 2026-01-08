@@ -1,5 +1,5 @@
 import { Tools } from "@babylonjs/core/Misc/tools";
-import type { Nullable } from "@babylonjs/core/types";
+import { type Nullable } from "@babylonjs/core/types";
 import { assert } from "@utils/asserts";
 
 export interface Polar {

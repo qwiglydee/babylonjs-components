@@ -1,18 +1,18 @@
 import { consume } from "@lit/context";
-import type { PropertyValues } from "lit";
+import { type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures";
 import { Color3 } from "@babylonjs/core/Maths";
 import { CreateGround } from "@babylonjs/core/Meshes/Builders/groundBuilder";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import type { Nullable } from "@babylonjs/core/types";
+import { type Mesh } from "@babylonjs/core/Meshes/mesh";
+import { type Nullable } from "@babylonjs/core/types";
 import { assertNonNull } from "@utils/asserts";
 
 import { NodeElemBase } from "../base/node";
 import { boundsCtx } from "../context";
-import type { BoundsInfo } from "../interfaces";
+import { type BoundsInfo } from "../interfaces";
 
 @customElement("my3d-ground-flat")
 export class FlatGroundElem extends NodeElemBase<Mesh> {

@@ -1,12 +1,12 @@
 import { consume } from "@lit/context";
-import type { PropertyValues } from "lit";
+import { type PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
+import { type PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
 import { CreateBox } from "@babylonjs/core/Meshes/Builders/boxBuilder";
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import type { Nullable } from "@babylonjs/core/types";
+import { type Mesh } from "@babylonjs/core/Meshes/mesh";
+import { type Nullable } from "@babylonjs/core/types";
 import { GhostBehavior } from "@lib/ghostbhv";
 
 import { NodeElemBase } from "../base/node";

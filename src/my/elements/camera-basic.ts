@@ -1,4 +1,4 @@
-import type { PropertyValues } from "lit";
+import { type PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { UniversalCamera } from "@babylonjs/core/Cameras/universalCamera";

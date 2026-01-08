@@ -1,7 +1,7 @@
 import { createContext } from "@lit/context";
 
-import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
-import { Scene } from "@babylonjs/core/scene";
+import type { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
+import type { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
 
 import type { BoundsInfo, IMyMain } from "./interfaces";

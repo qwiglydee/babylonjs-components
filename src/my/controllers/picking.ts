@@ -1,10 +1,10 @@
 import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import type { ReactiveControllerHost } from "lit";
 
-import { PointerEventTypes, PointerInfo } from "@babylonjs/core/Events/pointerEvents";
-import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
-import { Observer } from "@babylonjs/core/Misc/observable";
-import { Scene } from "@babylonjs/core/scene";
+import { PointerEventTypes, type PointerInfo } from "@babylonjs/core/Events/pointerEvents";
+import type { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
+import type { Observer } from "@babylonjs/core/Misc/observable";
+import type { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
 import { BabylonControllerBase } from "./base";
 
