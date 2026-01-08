@@ -1,14 +1,14 @@
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { COLORSTYLES, TEXTSTYLES } from "@lib/gui2/css";
 import { MyLabel } from "@lib/gui2/label";
 
-import { GUI2Element } from "./base";
+import { GUI2ComponentBase } from "../../base/gui2";
 
 @customElement("my2g-label")
-export class MyGUILabelElem extends GUI2Element {
+export class MyGUILabelElem extends GUI2ComponentBase {
     @property()
     anchor = "";
 
@@ -16,41 +16,41 @@ export class MyGUILabelElem extends GUI2Element {
 
     override init(): void {
         this._label = new MyLabel("label", this.textContent.trim());
-        this._addControl(this._label);
+        this.addControl(this._label);
 
-        this._applyStyle(this._label);
-        this._applyStyle(this._label, ['offset']);
-        this._applyStyle(this._label._textBlock!, TEXTSTYLES);
-        this._applyStyle(this._label._textBlock!, COLORSTYLES);
+        this.applyStyle(this._label);
+        this.applyStyle(this._label, ['offset']);
+        this.applyStyle(this._label._textBlock!, TEXTSTYLES);
+        this.applyStyle(this._label._textBlock!, COLORSTYLES);
 
-        this.babylon.onUpdatedObservable.add(() => this.requestUpdate('anchor'));
+        // FIXME: make controller
+        this.main.scene.onNewMeshAddedObservable.add(this.#onupdate);
+        this.main.scene.onMeshRemovedObservable.add(this.#onupdate);
     }
 
     override dispose(): void {
         this._label.dispose()
     }
 
-    override toggle(enabled: boolean): void {
-        this._syncEnabled(enabled, this._label);
+    override update(changes: PropertyValues) {
+        if (changes.has('anchor')) this.#rettach();
+        if (changes.has("enabled")) this._syncEnabled(this.enabled, this._label);
+        if (changes.has("visible")) this._syncVisible(this.visible, this._label);
+        super.update(changes);
     }
 
-    override toggleVisible(enabled: boolean): void {
-        this._syncVisible(enabled, this._label);
+    #onupdate = () => {
+        this.#rettach();
     }
 
     #rettach() {
-        const target = this.babylon.querySelectorNode(this.anchor);
+        const target = this.main.querySelectorNode(this.anchor);
         if (target instanceof TransformNode) {
-            this.toggleVisible(true);
+            this._syncVisible(true);
             this._label.anchor.target = target;
         } else {
-            this.toggleVisible(false);
+            this._syncVisible(false);
             this._label.anchor.unlink();
         }
-    }
-    
-    override update(changes: PropertyValues): void {
-        if (changes.has("anchor")) this.#rettach();
-        super.update(changes);
     }
 }

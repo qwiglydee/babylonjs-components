@@ -1,4 +1,4 @@
-import { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
+import type { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
 import { Vector2 } from "@babylonjs/core/Maths/math";
 import { Measure } from "@babylonjs/gui/2D/measure";
 import { DehomoPoint, homoFinite, homoIntersect, HomoLine, HomoPoint, HomoRay, homoVisible } from "@lib/homogenous2d";
@@ -74,6 +74,7 @@ export class MyCalloutLine extends MyLine {
 }
 
 export function snapToEdges(parent: Measure, position: Vector2): Vector2 | null {
+    console.debug("snapToEdges", {parent, position});
     const corners = {
         min: new Vector2(parent.left, parent.top),
         max: new Vector2(parent.left + parent.width, parent.top + parent.height),

@@ -3,7 +3,7 @@ import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Observer } from "@babylonjs/core/Misc/observable";
 import { Scene } from "@babylonjs/core/scene";
-import { Nullable } from "@babylonjs/core/types";
+import type { Nullable } from "@babylonjs/core/types";
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { assertNonNull } from "@utils/asserts";

@@ -1,4 +1,4 @@
-import { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
+import type { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 
 import { Anchor } from "./anchor";

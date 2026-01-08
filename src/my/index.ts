@@ -15,7 +15,7 @@ import "./elements/stuff";
 import "./elements/highlighter";
 import "./elements/ghost";
 
-import "./elements/gui2d/gui";
+import "./elements/gui2d/layer";
 import "./elements/gui2d/something";
 import "./elements/gui2d/button";
 import "./elements/gui2d/hotspot";

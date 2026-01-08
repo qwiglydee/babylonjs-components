@@ -1,4 +1,4 @@
-import { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
+import type { ICanvasRenderingContext } from "@babylonjs/core/Engines/ICanvas";
 import { Rectangle } from "@babylonjs/gui/2D/controls/rectangle";
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 import { Measure } from "@babylonjs/gui/2D/measure";

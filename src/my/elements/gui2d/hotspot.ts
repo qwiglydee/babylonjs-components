@@ -1,26 +1,25 @@
-import { PropertyValues } from "lit";
+import type { PropertyValues } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { AnimationGroup } from "@babylonjs/core/Animations/animationGroup";
 import { PointerEventTypes, PointerInfo } from "@babylonjs/core/Events/pointerEvents";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { Nullable } from "@babylonjs/core/types";
+import type { Nullable } from "@babylonjs/core/types";
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
-import { formatCSSColor, parseCSSColor } from "@utils/colors";
 import { MySpot } from "@lib/gui2/spot";
+import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
-import { BabylonController } from "../../controllers/base";
-import { GUI2Element } from "./base";
+import { GUI2ComponentBase } from "../../base/gui2";
+import { BabylonControllerBase } from "../../controllers/base";
 
-
-export class TouchBlinkCtrl extends BabylonController<MyGUI2SpotElem> {
+export class TouchBlinkCtrl extends BabylonControllerBase<MyGUI2SpotElem> {
     #observer: any;
 
     override init() {
-        this.#observer = this.host.babylon.scene.onPointerObservable.add((info: PointerInfo) => {
+        this.#observer = this.host.main.scene.onPointerObservable.add((info: PointerInfo) => {
             if (info.type == PointerEventTypes.POINTERTAP && !info.pickInfo?.hit) this.host.blink();
-        })
+        });
     }
 
     override dispose(): void {
@@ -28,9 +27,8 @@ export class TouchBlinkCtrl extends BabylonController<MyGUI2SpotElem> {
     }
 }
 
-
 @customElement("my2g-hotspot")
-export class MyGUI2SpotElem extends GUI2Element {
+export class MyGUI2SpotElem extends GUI2ComponentBase {
     @property()
     anchors = "";
 
@@ -47,18 +45,20 @@ export class MyGUI2SpotElem extends GUI2Element {
 
     override init(): void {
         this._proto = new MySpot("spot");
-        
-        this._applyStyle(this._proto);
-        this._applyStyle(this._proto, ['offset']);
+
+        this.applyStyle(this._proto);
+        this.applyStyle(this._proto, ["offset"]);
+
+        // FIXME
         const color = parseCSSColor(this._proto.color);
+        this._proto.gradient = new RadialGradient(0, 0, 0, 0, 0, this._proto.radius);
+        this._proto.gradient.addColorStop(0.0, formatCSSColor({ ...color, a: 1.0 }));
+        this._proto.gradient.addColorStop(0.75, formatCSSColor({ ...color, a: 1.0 }));
+        this._proto.gradient.addColorStop(1.0, formatCSSColor({ ...color, a: 0.0 }));
 
-        this._proto.gradient = new RadialGradient(0, 0, 0, 0, 0, this._proto.radius); 
-        this._proto.gradient.addColorStop(0.0, formatCSSColor({ ...color, a: 1.0}));
-        this._proto.gradient.addColorStop(0.75, formatCSSColor({ ...color, a: 1.0}));
-        this._proto.gradient.addColorStop(1.0, formatCSSColor({ ...color, a: 0.0}));
-
-        // NB: requestUpdate('scene') doesn't work here
-        this.babylon.onUpdatedObservable.add(() => this.requestUpdate("anchors"));
+        // FIXME: make controller
+        this.main.scene.onNewMeshAddedObservable.add(this.#onupdate);
+        this.main.scene.onMeshRemovedObservable.add(this.#onupdate);
     }
 
     override dispose(): void {
@@ -66,38 +66,39 @@ export class MyGUI2SpotElem extends GUI2Element {
         this._proto.dispose();
     }
 
-    override toggle(enabled: boolean): void {
-        this._syncEnabled(enabled, ...this._spots);
-    }
-
-    override toggleVisible(_visible: boolean): void {
-        this.#renable();
+    override update(changes: PropertyValues) {
+        if (changes.has("enabled")) this._syncEnabled(this.enabled, ...this._spots);
+        if (changes.has("visible")) this._syncVisible(this.visible, ...this._spots);
     }
 
     #setupBlinking() {
         if (this.blinking) {
             const animation = MySpot.createBlinkingAnimation(24, 12);
             this._blinkAnimation = new AnimationGroup("blinking");
-            this._spots.forEach(s => {
+            this._spots.forEach((s) => {
                 s.alpha = 0;
                 this._blinkAnimation!.addTargetedAnimation(animation, s);
             });
         } else {
             this._blinkAnimation?.dispose();
             this._blinkAnimation = null;
-            this._spots.forEach(s => s.alpha = this._proto.alpha);
+            this._spots.forEach((s) => (s.alpha = this._proto.alpha));
         }
     }
 
     #newspot(anchor: TransformNode | AbstractMesh): MySpot {
         const clone = this._proto.clone() as MySpot;
         this.gui.addControl(clone);
-        clone.anchor.target = anchor; 
+        clone.anchor.target = anchor;
         return clone;
     }
 
-    #reattach() {
-        const matches = new Set(this.babylon.querySelectorNodes(this.anchors) as TransformNode[]);
+    #onupdate = () => {
+        this.#rettach();
+    };
+
+    #rettach() {
+        const matches = new Set(this.main.querySelectorNodes(this.anchors) as TransformNode[]);
         const spotted = new Set(this._spots.map((s) => s.anchor.target));
         const newnodes = matches.difference(spotted);
         const delnodes = spotted.difference(matches);
@@ -115,12 +116,7 @@ export class MyGUI2SpotElem extends GUI2Element {
     }
 
     #renable() {
-        this._spots.forEach((s) => s.isVisible = this.visible);
-    }
-
-    override update(changes: PropertyValues): void {
-        if (changes.has("anchors")) this.#reattach();
-        super.update(changes);
+        this._spots.forEach((s) => (s.isVisible = this.visible));
     }
 
     blink() {
