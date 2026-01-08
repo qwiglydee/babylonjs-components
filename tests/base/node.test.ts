@@ -7,15 +7,36 @@ import { pickComponent, loadBabylonHeadless } from "../testpage";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 
-test("id and tags", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh id="foo" class="bar baz"></test-mesh>`);
-    const { ref, elem, inst } = await pickComponent<TestMeshElem, AbstractMesh>(page, "test-mesh", "_node");
 
-    expect(await scene.evaluate((_) => _.meshes.length)).toBe(1);
-    expect(await scene.evaluate((_, inst) => _.getMeshById("foo") === inst, inst)).toBe(true);
-    expect(await scene.evaluate((_, inst) => _.getMeshesByTags("bar && baz").includes(inst!), inst)).toBe(true);
-    await expect(ref).toHaveJSProperty("id", "foo");
-});
+test.describe("primary props", () => {
+    test('id', async ({ page }) => {
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh id="foo"></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, AbstractMesh>(page, "test-mesh", "_node");
+        
+        expect(await elem.evaluate(_ => _.id)).toEqual('foo');
+        expect(await elem.evaluate(_ => _.name)).toEqual('something');
+        expect(await scene.evaluate((_, inst) => _.getMeshById("foo") === inst, inst)).toBe(true);
+    });
+
+    test('name', async ({ page }) => {
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh name="foothing"></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, AbstractMesh>(page, "test-mesh", "_node");
+        
+        expect(await elem.evaluate(_ => _.id)).toEqual("");
+        expect(await elem.evaluate(_ => _.name)).toEqual('foothing');
+        expect(await scene.evaluate((_, inst) => _.getMeshByName("foothing") === inst, inst)).toBe(true);
+    });
+
+    test('tags', async ({ page }) => {
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh class="bar baz"></test-mesh>`);
+        const { ref, elem, inst } = await pickComponent<TestMeshElem, AbstractMesh>(page, "test-mesh", "_node");
+        
+        expect(await elem.evaluate(_ => _.id)).toEqual("");
+        expect(await elem.evaluate(_ => _.name)).toEqual('something');
+        expect(await scene.evaluate((_, inst) => _.getMeshesByTags("bar && baz").includes(inst!), inst)).toBe(true);
+    });
+})
+
 
 test.describe("lifecycle", () => {
     test("static creating", async ({ page }) => {

@@ -5,14 +5,33 @@ import type { TestCameraElem } from "../../src/testing";
 
 import { pickComponent, loadBabylonHeadless } from "../testpage";
 
-test("id and tags", async ({ page }) => {
-    const { babylon, scene } = await loadBabylonHeadless(page, `<test-camera id="foo" class="bar baz"></test-camera>`);
-    const { ref, elem, inst } = await pickComponent<TestCameraElem, FreeCamera>(page, "test-camera", "_camera");
+test.describe("primary props", () => {
+    test("id", async ({ page }) => {
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-camera id="foo"></test-camera>`);
+        const { ref, elem, inst } = await pickComponent<TestCameraElem, FreeCamera>(page, "test-camera", "_camera");
 
-    expect(await scene.evaluate((_) => _.cameras.length)).toBe(1);
-    expect(await inst!.evaluate((_) => _.id)).toEqual("foo");
-    expect(await scene.evaluate((_) => _.getCamerasByTags("bar && baz").map((n) => n.id))).toEqual(["foo"]);
-    await expect(ref).toHaveJSProperty("id", "foo");
+        expect(await elem.evaluate((_) => _.id)).toEqual("foo");
+        expect(await elem.evaluate((_) => _.name)).toEqual("somecam");
+        expect(await scene.evaluate((_, inst) => _.getCameraById("foo") === inst, inst)).toBe(true);
+    });
+
+    test("name", async ({ page }) => {
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-camera name="foocam"></test-camera>`);
+        const { ref, elem, inst } = await pickComponent<TestCameraElem, FreeCamera>(page, "test-camera", "_camera");
+
+        expect(await elem.evaluate((_) => _.id)).toEqual("");
+        expect(await elem.evaluate((_) => _.name)).toEqual("foocam");
+        expect(await scene.evaluate((_, inst) => _.getCameraByName("foocam") === inst, inst)).toBe(true);
+    });
+
+    test("tags", async ({ page }) => {
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-camera class="bar baz"></test-camera>`);
+        const { ref, elem, inst } = await pickComponent<TestCameraElem, FreeCamera>(page, "test-camera", "_camera");
+
+        expect(await elem.evaluate((_) => _.id)).toEqual("");
+        expect(await elem.evaluate((_) => _.name)).toEqual("somecam");
+        expect(await scene.evaluate((_, inst) => _.getCamerasByTags("bar && baz").includes(inst!), inst)).toBe(true);
+    });
 });
 
 test.describe("lifecycle", () => {
@@ -45,8 +64,6 @@ test.describe("lifecycle", () => {
         expect(await inst!.evaluate((_) => _.isDisposed())).toBe(true);
     });
 });
-
-
 
 test.describe("activating", () => {
     test("default inactive", async ({ page }) => {

@@ -119,7 +119,7 @@ export class TestSomesyncElem extends ComponentElemBase {
 @customElement("test-mesh")
 export class TestMeshElem extends NodeElemBase<Mesh> {
     @property()
-    name: string = "something";
+    override name: string = "something";
 
     @property({ useDefault: true, reflect: false, converter: coordsConverter })
     position: Coords = { x: 0, y: 0, z: 0 };
@@ -144,12 +144,15 @@ export class TestMeshElem extends NodeElemBase<Mesh> {
 
 @customElement("test-camera")
 export class TestCameraElem extends CameraElemBase<FreeCamera> {
+    @property()
+    override name: string = "somecam";
+
     /** write-only position */
     @property({ useDefault: true, reflect: false, converter: coordsConverter })
     position: Coords = { x: 0, y: 0, z: 0 };
 
     override init(): void {
-        this._camera = new FreeCamera("camera", coordsConverter.toVector3(this.position), this.scene, false);
+        this._camera = new FreeCamera(this.name, coordsConverter.toVector3(this.position), this.scene, false);
         super.init();
     }
 

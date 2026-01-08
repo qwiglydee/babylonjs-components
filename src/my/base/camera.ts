@@ -29,6 +29,9 @@ export abstract class CameraElemBase<SomeCamera extends Camera> extends Componen
      */
     static autoAttach = true;
 
+    @property()
+    name: string = ""
+
     /**
      * Reference to a camera
      */
@@ -73,6 +76,7 @@ export abstract class CameraElemBase<SomeCamera extends Camera> extends Componen
         assertNonNull(this._camera, "Not iitialized");
 
         if (this.id) this._camera.id = this.id;
+        if (this.name && !this._camera.name) this._camera.name = this.name; 
         Tags.AddTagsTo(this._camera, this.classList.value);
 
         this._syncSelected(this.__selected);
