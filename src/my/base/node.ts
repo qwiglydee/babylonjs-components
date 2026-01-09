@@ -5,7 +5,7 @@ import { Tags } from "@babylonjs/core/Misc/tags";
 import type { Node as BabylonNode } from "@babylonjs/core/node";
 import { assertNonNull } from "@utils/asserts";
 
-import { ComponentElemBase } from "./elem";
+import { ComponentElemBase } from "./component";
 
 /**
  * Base of elements creating some nodes (transformnodes, meshes, lights)

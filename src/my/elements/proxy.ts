@@ -7,7 +7,7 @@ import { assertNonNull } from "@utils/asserts";
 
 import type { Nullable } from "@babylonjs/core/types";
 import { debug } from "@utils/debug";
-import { ComponentElemBase } from "../base/elem";
+import { ComponentElemBase } from "../base/component";
 import { modelCtx } from "../context";
 import type { IModelContainer } from "../interfaces";
 

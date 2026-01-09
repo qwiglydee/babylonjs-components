@@ -2,7 +2,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import { AxesViewer } from "@babylonjs/core/Debug/axesViewer";
 
-import { ComponentElemBase } from "../base/elem";
+import { ComponentElemBase } from "../base/component";
 
 @customElement("my3d-axesview")
 export class AxesviewElem extends ComponentElemBase {

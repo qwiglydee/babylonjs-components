@@ -10,7 +10,7 @@ import { type AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { type Mesh } from "@babylonjs/core/Meshes/mesh";
 import { type Nullable } from "@babylonjs/core/types";
 
-import { ComponentElemBase } from "../base/elem";
+import { ComponentElemBase } from "../base/component";
 import { pickCtx } from "../context";
 
 @customElement("my3d-highlighter")

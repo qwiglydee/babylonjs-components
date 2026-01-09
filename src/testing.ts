@@ -12,7 +12,7 @@ import { assertNonNull } from "@utils/asserts";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 
 import { CameraElemBase } from "./my/base/camera";
-import { ComponentElemBase } from "./my/base/elem";
+import { ComponentElemBase } from "./my/base/component";
 import { MainElemBase } from "./my/base/main";
 import { NodeElemBase } from "./my/base/node";
 import { modelCtx } from "./my/context";

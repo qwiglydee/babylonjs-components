@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import { CubeTexture } from "@babylonjs/core/Materials/Textures/cubeTexture";
 import { assertNonNull } from "@utils/asserts";
 
-import { ComponentElemBase } from "../base/elem";
+import { ComponentElemBase } from "../base/component";
 
 @customElement("my3d-sky-env")
 export class SkyenvElem extends ComponentElemBase {

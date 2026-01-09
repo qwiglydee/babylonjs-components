@@ -6,7 +6,7 @@ import { Observer } from "@babylonjs/core/Misc/observable";
 import { Tags } from "@babylonjs/core/Misc/tags";
 import { assertNonNull } from "@utils/asserts";
 
-import { ComponentElemBase } from "./elem";
+import { ComponentElemBase } from "./component";
 
 /**
  * Base of elements for cameras.
