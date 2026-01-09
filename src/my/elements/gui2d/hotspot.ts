@@ -37,7 +37,7 @@ export class TouchBlinkCtrl extends BabylonControllerBase<MyGUI2SpotElem> {
     }
 }
 
-@customElement("my2g-hotspot")
+@customElement("b2g-hotspot")
 export class MyGUI2SpotElem extends GUI2ComponentBase {
     @consume({ context: modelCtx, subscribe: true })
     @state({ hasChanged: () => true }) // do not compare

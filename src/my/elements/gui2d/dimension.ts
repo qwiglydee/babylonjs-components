@@ -19,7 +19,7 @@ import { modelCtx } from "../../context";
 import type { IModelContainer } from "../../interfaces";
 import { debug } from "@utils/debug";
 
-@customElement("my2g-dimension")
+@customElement("b2g-dimension")
 export class MyGUIDimensionElem extends GUI2ComponentBase {
     @consume({ context: modelCtx, subscribe: true })
     @state({ hasChanged: () => true }) // do not compare

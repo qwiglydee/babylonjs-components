@@ -6,7 +6,7 @@ import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture
 import { guiCtx } from "../../context";
 import { ComponentElemBase } from "../../base/component";
 
-@customElement("my2g-gui-layer")
+@customElement("b2g-gui-layer")
 export class GUI2Layer extends ComponentElemBase {
     @provide({ context: guiCtx })
     _texture!: AdvancedDynamicTexture;

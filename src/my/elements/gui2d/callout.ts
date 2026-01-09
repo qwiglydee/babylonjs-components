@@ -14,7 +14,7 @@ import { GUI2ComponentBase } from "../../base/gui2";
 import { modelCtx } from "../../context";
 import type { IModelContainer } from "../../interfaces";
 
-@customElement("my2g-callout")
+@customElement("b2g-callout")
 export class MyGUICalloutElem extends GUI2ComponentBase {
     @consume({ context: modelCtx, subscribe: true })
     @state({ hasChanged: () => true }) // do not compare

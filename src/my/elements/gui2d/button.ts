@@ -6,7 +6,7 @@ import { bubbleEvent } from "@utils/events";
 
 import { GUI2ComponentBase } from "../../base/gui2";
 
-@customElement("my2g-button")
+@customElement("b2g-button")
 export class MyGUIButtonElem extends GUI2ComponentBase {
     override init(): void {
         const button = Button.CreateSimpleButton("button", this.textContent.trim());

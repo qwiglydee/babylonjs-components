@@ -7,7 +7,7 @@ import { MyDot } from "@lib/gui2/dot";
 import { GUI2ComponentBase } from "../../base/gui2";
 
 
-@customElement("my2g-spot")
+@customElement("b2g-spot")
 export class MyGUI2SpotElem extends GUI2ComponentBase {
     override init(): void {
         const spot = new MyDot("dot");

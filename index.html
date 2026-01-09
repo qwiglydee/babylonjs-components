@@ -114,11 +114,11 @@
                     <!-- <b3d-sky-box blurring="0.75" intensity="0.25"></b3d-sky-box> -->
                 </b3d-sky-env>
 
-                <b3d-stuff id="ball" shape="sphere"></b3d-stuff>
+                <b3d-stuff id="ball" class="qux" shape="sphere"></b3d-stuff>
                 <b3d-stuff id="box" class="foo" shape="cube" size="2" position="[-3, 1, -5]" texture="assets/checker.png"></b3d-stuff>
                 <b3d-stuff id="cone" class="foo bar" shape="cone" positionRnd="5" texture="assets/checker.png"></b3d-stuff>
 
-                <b3d-something id="center" select="baz"></b3d-something>
+                <b3d-something id="center" class="qux" select="baz"></b3d-something>
 
                 <!-- <b3d-ground-flat size="auto" src="assets/ground.png" color="#102040"></b3d-ground-flat> -->
                 <b3d-utility-layer events>
@@ -126,24 +126,24 @@
                     <b3d-axesview></b3d-axesview>
                     <!-- <b3d-ghost autoHide></b3d-ghost> -->
 
-                    <my2g-gui-layer foreground>
-                        <!-- <my2g-something style="color: #FF00FF; align-self: start; justify-self: center;">blabla</my2g-something> -->
-                        <!-- <my2g-button style="background-color: #0d6efd; border-color: #00000080; color: #FFFFFF; border-width: 2px; border-radius: 6px; margin: 2px 4px; padding: 6px 12px; width: auto; height: auto; align-self: center; justify-self: end;">
+                    <b2g-gui-layer foreground>
+                        <!-- <b2g-something style="color: #FF00FF; align-self: start; justify-self: center;">blabla</b2g-something> -->
+                        <!-- <b2g-button style="background-color: #0d6efd; border-color: #00000080; color: #FFFFFF; border-width: 2px; border-radius: 6px; margin: 2px 4px; padding: 6px 12px; width: auto; height: auto; align-self: center; justify-self: end;">
                             Click me
-                        </my2g-button> -->
-                        <my2g-hotspot anchor="#box" style="color: #ff00ff; opacity: 0.5; r: 16px"></my2g-hotspot>
-                        <my2g-hotspot anchor="baz" style="color: #ffff00; opacity: 0.5; r: 24px" blinking></my2g-hotspot>
-                        <my2g-label anchor="#center" style="border-color: #9eeaf9; background-color: #cff4fc; color: #055160; border-radius: 3px; padding: 3px; font-size: 10px;">
+                        </b2g-button> -->
+                        <b2g-hotspot anchor="#box" style="color: #ff00ff; opacity: 0.5; r: 16px"></b2g-hotspot>
+                        <b2g-hotspot anchor="baz" style="color: #ffff00; opacity: 0.5; r: 24px" blinking></b2g-hotspot>
+                        <b2g-label anchor="#center" style="border-color: #9eeaf9; background-color: #cff4fc; color: #055160; border-radius: 3px; padding: 3px; font-size: 10px;">
                             bazycenter
-                        </my2g-label>
-                        <my2g-callout anchor="#ball" style="border-color: #9eeaf9; background-color: #cff4fc; color: #055160; stroke: #0dcaf0; border-radius: 6px; padding: 6px; stroke-width: 2px; stroke-dasharray: 4 4; position: relative; right: 100px; bottom: 100px;">
+                        </b2g-label>
+                        <b2g-callout anchor="#ball" style="border-color: #9eeaf9; background-color: #cff4fc; color: #055160; stroke: #0dcaf0; border-radius: 6px; padding: 6px; stroke-width: 2px; stroke-dasharray: 4 4; position: relative; right: 100px; bottom: 100px;">
                             a ball
-                        </my2g-callout>
-                        <my2g-callout edge anchor="#box" style="border-color: #9eeaf9; background-color: #cff4fc; color: #055160; stroke: #0dcaf0; border-radius: 6px; padding: 6px; stroke-width: 2px; stroke-dasharray: 4 4;">
+                        </b2g-callout>
+                        <b2g-callout edge anchor="#box" style="border-color: #9eeaf9; background-color: #cff4fc; color: #055160; stroke: #0dcaf0; border-radius: 6px; padding: 6px; stroke-width: 2px; stroke-dasharray: 4 4;">
                             a box
-                        </my2g-callout>
-                        <my2g-dimension anchor="qux" style="position: relative; bottom: 150px; stroke-dasharray: 4 4; stroke-width: 2px; stroke: #ffffff; fill: #ffffff; r: 4px; background-color: #808080; color: #000000; border-radius: 6px; padding: 6px; border-width: 0;"></my2g-dimension>
-                    </my2g-gui-layer>
+                        </b2g-callout>
+                        <b2g-dimension anchor="qux" style="position: relative; bottom: 150px; stroke-dasharray: 4 4; stroke-width: 2px; stroke: #ffffff; fill: #ffffff; r: 4px; background-color: #808080; color: #000000; border-radius: 6px; padding: 6px; border-width: 0;"></b2g-dimension>
+                    </b2g-gui-layer>
                 </b3d-utility-layer>
 
                 <b3d-highlighter color="#F0F000"></b3d-highlighter>

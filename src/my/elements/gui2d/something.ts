@@ -4,7 +4,7 @@ import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 
 import { GUI2ComponentBase } from "../../base/gui2";
 
-@customElement("my2g-something")
+@customElement("b2g-something")
 export class MyGUISomethingElem extends GUI2ComponentBase {
     _text!: TextBlock;
 
