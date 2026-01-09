@@ -12,6 +12,7 @@ import { type Nullable } from "@babylonjs/core/types";
 
 import { ComponentElemBase } from "../base/component";
 import { pickCtx } from "../context";
+import { assert } from "@utils/asserts";
 
 @customElement("my3d-highlighter")
 export class HighlighterElem extends ComponentElemBase {
@@ -27,6 +28,7 @@ export class HighlighterElem extends ComponentElemBase {
     _highlighter!: HighlightLayer;
 
     override init() {
+        assert(this.main.engine.isStencilEnable, `<${this.localName}> requires stencil enabled`)
         this._color = Color3.FromHexString(this.color);
         this._highlighter = new HighlightLayer("highlighter", this.scene);
     }
