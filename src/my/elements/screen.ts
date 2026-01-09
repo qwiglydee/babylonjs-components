@@ -3,7 +3,7 @@ import { customElement, property } from "lit-element/decorators.js";
 
 import type { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
 
-@customElement("my3d-screen")
+@customElement("b3d-screen")
 export class MyScreenElem extends LitElement implements ILoadingScreen {
     @property()
     loadingUIBackgroundColor = "#33334D"; // TODO: put default fill background

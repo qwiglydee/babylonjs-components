@@ -5,7 +5,7 @@ import { assertNonNull } from "@utils/asserts";
 
 import { ComponentElemBase } from "../base/component";
 
-@customElement("my3d-sky-env")
+@customElement("b3d-sky-env")
 export class SkyenvElem extends ComponentElemBase {
     @property()
     src?: string;

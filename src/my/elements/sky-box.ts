@@ -8,7 +8,7 @@ import { assertNonNull } from "@utils/asserts";
 
 import { NodeElemBase } from "../base/node";
 
-@customElement("my3d-sky-box")
+@customElement("b3d-sky-box")
 export class SkyboxElem extends NodeElemBase<Mesh> {
     static override auxiliary = true;
 

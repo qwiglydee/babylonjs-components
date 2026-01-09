@@ -8,7 +8,7 @@ import { CameraElemBase } from "../base/camera";
 import { type Coords, coordsConverter } from "../properties/coords";
 import { type Polar, polarConverter } from "../properties/polar";
 
-@customElement("my3d-camera-orbit")
+@customElement("b3d-camera-orbit")
 export class OrbitCameraElem extends CameraElemBase<ArcRotateCamera> {
     /** one-way sync of target coords */
     @property({ useDefault: true, converter: coordsConverter })

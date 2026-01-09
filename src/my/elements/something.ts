@@ -20,7 +20,7 @@ import type { IModelContainer } from "../interfaces";
  * @property disabled: turns off targeting and relocating
  * @property hidden: auto-set when no anchors
  */
-@customElement("my3d-something")
+@customElement("b3d-something")
 export class MySomethingElem extends NodeElemBase<Mesh> {
     static override autoHide = false; // allow enabled + invisible
 

@@ -13,7 +13,7 @@ import { assertNonNull } from "@utils/asserts";
 import { NodeElemBase } from "../base/node";
 import { type Coords, coordsConverter } from "../properties/coords";
 
-@customElement("my3d-stuff")
+@customElement("b3d-stuff")
 export class MyStuffElem extends NodeElemBase<Mesh> {
     @property({ useDefault: true, converter: coordsConverter })
     position: Coords = { x: 0, y: 0.5, z: 0 };

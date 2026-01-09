@@ -7,7 +7,7 @@ import { assertNonNull } from "@utils/asserts";
 import { CameraElemBase } from "../base/camera";
 import { type Coords, coordsConverter } from "../properties/coords";
 
-@customElement("my3d-camera-basic")
+@customElement("b3d-camera-basic")
 export class BasicCameraElem extends CameraElemBase<UniversalCamera> {
     @property({ useDefault: true, converter: coordsConverter })
     position: Coords = { x: 0, y: 1.75, z: 0 };

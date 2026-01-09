@@ -21,7 +21,7 @@ export class OurStuffAddElem extends WrappingElement {
     }
 
     _createStuff() {
-        const elem = document.createElement("my3d-stuff");
+        const elem = document.createElement("b3d-stuff");
         elem.setAttribute("shape", this.shapeSelect.value);
         elem.setAttribute('positionRnd', "10");
         elem.setAttribute('texture', "assets/checker.png");

@@ -10,7 +10,7 @@ import { coordsConverter, type Coords } from "../properties/coords";
 /**
  * A bare transform node with configurable position
  */
-@customElement("my3d-anchor")
+@customElement("b3d-anchor")
 export class MyAnchorElem extends NodeElemBase<TransformNode> {
     /** 
      * Absolute position

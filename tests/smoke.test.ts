@@ -1,6 +1,6 @@
 import { ElementHandle, expect, test } from "@playwright/test";
 
-import type { BabylonMainBase } from "../src/my/base/main";
+import type { MainElemBase } from "../src/my/base/main";
 import { loadPage } from "./testpage";
 
 test("headless", async ({ page }) => {
@@ -9,7 +9,7 @@ test("headless", async ({ page }) => {
     await expect(elem).toBeAttached();
     await expect(elem).toHaveJSProperty('isReady', true);
 
-    const babylon = await elem.elementHandle() as ElementHandle<BabylonMainBase>;
+    const babylon = await elem.elementHandle() as ElementHandle<MainElemBase>;
     const scene = await babylon.evaluateHandle((_) => _.scene);
 
     expect(babylon).toBeDefined();
@@ -29,7 +29,7 @@ test("augmented", async ({ page }) => {
     await expect(elem).toBeAttached();
     await expect(elem).toHaveJSProperty('isReady', true);
 
-    const babylon = await elem.elementHandle() as ElementHandle<BabylonMainBase>;
+    const babylon = await elem.elementHandle() as ElementHandle<MainElemBase>;
     const scene = await babylon.evaluateHandle((_) => _.scene);
 
     expect(babylon).toBeDefined();
@@ -45,7 +45,7 @@ test("shadowed", async ({ page }) => {
     await expect(elem).toBeAttached();
     await expect(elem).toHaveJSProperty('isReady', true);
 
-    const babylon = await elem.elementHandle() as ElementHandle<BabylonMainBase>;
+    const babylon = await elem.elementHandle() as ElementHandle<MainElemBase>;
     const scene = await babylon.evaluateHandle((_) => _.scene);
 
     expect(babylon).toBeDefined();

@@ -14,7 +14,7 @@ import { NodeElemBase } from "../base/node";
 import { boundsCtx } from "../context";
 import { type BoundsInfo } from "../interfaces";
 
-@customElement("my3d-ground-flat")
+@customElement("b3d-ground-flat")
 export class FlatGroundElem extends NodeElemBase<Mesh> {
     static override auxiliary: boolean = true;
 

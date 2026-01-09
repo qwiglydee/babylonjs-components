@@ -19,7 +19,7 @@ import { DraggingCtrl } from "./controllers/dragging";
 import { PickingCtrl } from "./controllers/picking";
 import { type BoundsInfo, type IModelContainer, type IMyMain } from "./interfaces";
 
-@customElement("my3d-main")
+@customElement("b3d-main")
 export class MainElem extends MainElemBase implements IMyMain {
     /** orientation of scene */
     @property({ type: Boolean })
@@ -77,7 +77,7 @@ export class MainElem extends MainElemBase implements IMyMain {
                 pointer-events: none;
             }
 
-            my3d-screen {
+            b3d-screen {
                 z-index: 2;
             }
         `,
@@ -87,11 +87,11 @@ export class MainElem extends MainElemBase implements IMyMain {
         return html`
             ${this.canvas}
             <slot name="overlay"></slot>
-            <my3d-screen></my3d-screen>
+            <b3d-screen></b3d-screen>
         `;
     }
 
-    @query("my3d-screen")
+    @query("b3d-screen")
     _screen!: HTMLElement & ILoadingScreen;
 
     // _pickCtrl = new PickingCtrl(this);
