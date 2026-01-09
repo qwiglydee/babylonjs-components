@@ -1,5 +1,6 @@
 // NB: order of imports determines order of initialization in pre-created html
-import "./elements/main";
+
+import "./main";
 import "./elements/screen";
 import "./elements/utility-layer";
 
