@@ -1,13 +1,13 @@
 import { consume } from "@lit/context";
-import { property, state } from "lit/decorators.js";
+import type { PropertyValues } from "lit-element";
+import { state } from "lit-element/decorators.js";
 
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 import { Control } from "@babylonjs/gui/2D/controls/control";
 import { ALLSTYLES, applyCSSOffset, applyCSSStyle } from "@lib/gui2/css";
 
 import { guiCtx } from "../context";
-import { ComponentElemBase } from "./elem";
-import type { PropertyValues } from "lit";
+import { ComponentElemBase } from "./component";
 
 export abstract class GUI2ComponentBase extends ComponentElemBase {
     @consume({ context: guiCtx, subscribe: false })

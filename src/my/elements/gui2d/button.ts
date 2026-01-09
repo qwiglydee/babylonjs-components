@@ -1,4 +1,4 @@
-import { customElement } from "lit/decorators.js";
+import { customElement } from "lit-element/decorators.js";
 
 import { Button } from "@babylonjs/gui/2D/controls/button";
 import { ALLSTYLES, POSITIONSTYLES } from "@lib/gui2/css";

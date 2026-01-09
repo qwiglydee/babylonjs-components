@@ -1,4 +1,4 @@
-import { customElement } from "lit/decorators.js";
+import { customElement } from "lit-element/decorators.js";
 
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";

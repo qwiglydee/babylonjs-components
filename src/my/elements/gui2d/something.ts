@@ -1,5 +1,4 @@
-import type { PropertyValues } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement } from "lit-element/decorators.js";
 
 import { TextBlock } from "@babylonjs/gui/2D/controls/textBlock";
 

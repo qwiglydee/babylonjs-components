@@ -1,10 +1,10 @@
 import { provide } from "@lit/context";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property } from "lit-element/decorators.js";
 
 import { AdvancedDynamicTexture } from "@babylonjs/gui/2D/advancedDynamicTexture";
 
 import { guiCtx } from "../../context";
-import { ComponentElemBase } from "../../base/elem";
+import { ComponentElemBase } from "../../base/component";
 
 @customElement("my2g-gui-layer")
 export class GUI2Layer extends ComponentElemBase {

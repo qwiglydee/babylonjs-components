@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
-import type { PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import type { PropertyValues } from "lit-element";
+import { customElement, property, state } from "lit-element/decorators.js";
 
 import { Vector3 } from "@babylonjs/core/Maths/math";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
