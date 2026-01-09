@@ -156,7 +156,7 @@ test("dynamic proxy peeking props", async ({ page }) => {
     const { babylon, scene } = await loadBabylonHeadful(
         page,
         `
-        <test-mesh id="foo" hidden></test-mesh>
+        <test-mesh id="foo" disabled></test-mesh>
     `
     );
     const target = (await scene.evaluateHandle(_ => _.getMeshById('foo'))) as JSHandle<Mesh>;
@@ -170,11 +170,11 @@ test("dynamic proxy peeking props", async ({ page }) => {
 
     expect(proxy.ref).toHaveJSProperty("for", "foo");
     expect(await proxy.elem.evaluate((_) => _._target?.name)).toEqual("something");
-    expect(proxy.ref).toHaveJSProperty("enabled", true);
+    expect(proxy.ref).toHaveJSProperty("enabled", false);
     expect(proxy.ref).toHaveJSProperty("visible", false);
 
     expect(await target.evaluate((_) => _.isVisible)).toBe(false);
-    expect(await target.evaluate((_) => _.isEnabled())).toBe(true);
+    expect(await target.evaluate((_) => _.isEnabled())).toBe(false);
 });
 
 test("retargeting", async ({ page }) => {

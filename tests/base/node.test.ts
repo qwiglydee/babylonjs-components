@@ -134,12 +134,12 @@ test.describe("visibility", () => {
     });
 
     test("init hidden attr", async ({ page }) => {
-        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh hidden></test-mesh>`);
+        const { babylon, scene } = await loadBabylonHeadless(page, `<test-mesh disabled></test-mesh>`);
         const { ref, elem, inst } = await pickComponent<TestMeshElem, TransformNode>(page, "test-mesh", "_node");
 
         expect(await inst!.evaluate((_) => _.isVisible)).toEqual(false);
-        await expect(ref).toHaveJSProperty("hidden", true);
-        await expect(ref).toHaveJSProperty("visible", false);
+        await expect(ref).toHaveJSProperty("disabled", true);
+        await expect(ref).toHaveJSProperty("enabled", false);
     });
 
     test("toggle visible prop", async ({ page }) => {
