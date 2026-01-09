@@ -1,5 +1,5 @@
-import { css, html, LitElement, nothing, type PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { css, html, LitElement, nothing, type PropertyValues } from "lit-element";
+import { customElement, property } from "lit-element/decorators.js";
 
 import type { ILoadingScreen } from "@babylonjs/core/Loading/loadingScreen";
 
@@ -98,7 +98,10 @@ export class MyScreenElem extends LitElement implements ILoadingScreen {
                 <polygon fill="#e0684b" points="180.17 52.01 151.97 35.73 124.85 51.39 153.05 67.67 180.17 52.01" />
                 <polygon fill="#e0684b" points="27.12 67.67 117.21 15.66 90.08 0 0 52.01 27.12 67.67" />
                 <polygon fill="#e0684b" points="61.89 120.3 90.08 136.58 118.28 120.3 90.08 104.02 61.89 120.3" />
-                <polygon fill="#bb464b" points="153.05 67.67 153.05 140.37 90.08 176.72 27.12 140.37 27.12 67.67 0 52.01 0 156.03 90.08 208.04 180.17 156.03 180.17 52.01 153.05 67.67"/>
+                <polygon
+                    fill="#bb464b"
+                    points="153.05 67.67 153.05 140.37 90.08 176.72 27.12 140.37 27.12 67.67 0 52.01 0 156.03 90.08 208.04 180.17 156.03 180.17 52.01 153.05 67.67"
+                />
                 <polygon fill="#bb464b" points="90.08 71.46 61.89 87.74 61.89 120.3 90.08 104.02 118.28 120.3 118.28 87.74 90.08 71.46" />
                 <polygon fill="#e0ded8" points="153.05 67.67 118.28 87.74 118.28 120.3 90.08 136.58 90.08 176.72 153.05 140.37 153.05 67.67" />
                 <polygon fill="#d5d2ca" points="27.12 67.67 61.89 87.74 61.89 120.3 90.08 136.58 90.08 176.72 27.12 140.37 27.12 67.67" />
@@ -115,7 +118,7 @@ export class MyScreenElem extends LitElement implements ILoadingScreen {
     }
 
     protected override update(changes: PropertyValues): void {
-        if (changes.has('loadingUIBackgroundColor')) {
+        if (changes.has("loadingUIBackgroundColor")) {
             this.style.backgroundColor = this.loadingUIBackgroundColor;
         }
         super.update(changes);

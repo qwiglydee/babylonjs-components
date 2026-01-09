@@ -1,5 +1,5 @@
 import { provide } from "@lit/context";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property } from "lit-element/decorators.js";
 
 import { UtilityLayerRenderer } from "@babylonjs/core/Rendering/utilityLayerRenderer";
 import { type Scene } from "@babylonjs/core/scene";

@@ -1,5 +1,5 @@
-import type { PropertyValues } from "lit";
-import { property, state } from "lit/decorators.js";
+import { type PropertyValues } from "lit-element";
+import { property, state } from "lit-element/decorators.js";
 
 import { Tags } from "@babylonjs/core/Misc/tags";
 import type { Node as BabylonNode } from "@babylonjs/core/node";

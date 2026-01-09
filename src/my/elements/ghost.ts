@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
-import { type PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { type PropertyValues } from "lit-element";
+import { customElement, property, state } from "lit-element/decorators.js";
 
 import { type PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
@@ -16,7 +16,7 @@ import { pickCtx } from "../context";
 export class GhostElem extends NodeElemBase<Mesh> {
     static override auxiliary = true;
 
-    @consume({ context: pickCtx, subscribe: true})
+    @consume({ context: pickCtx, subscribe: true })
     @state()
     _picked: Nullable<PickingInfo> = null;
 

@@ -1,5 +1,5 @@
-import { LitElement, type PropertyValues, ReactiveElement } from "lit";
 import { consume } from "@lit/context";
+import { LitElement, ReactiveElement, type PropertyValues } from "lit-element";
 
 import { babylonCtx } from "./context";
 import type { IBabylonElem } from "./interfaces";

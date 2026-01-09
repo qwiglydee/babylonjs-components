@@ -1,5 +1,5 @@
 import { consume } from "@lit/context";
-import { type PropertyValues, ReactiveElement } from "lit";
+import { ReactiveElement, type PropertyValues } from "lit-element";
 
 import type { Scene } from "@babylonjs/core/scene";
 

@@ -1,6 +1,7 @@
-import { customElement, query } from "lit/decorators.js";
+import { customElement, query } from "lit-element/decorators.js";
 
 import { assertNonNull } from "@utils/asserts";
+
 import { WrappingElement } from "./base";
 import type { IComponentElem } from "./interfaces";
 

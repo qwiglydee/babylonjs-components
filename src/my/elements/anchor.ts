@@ -1,5 +1,5 @@
-import { type PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { type PropertyValues } from "lit-element";
+import { customElement, property, state } from "lit-element/decorators.js";
 
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { assertNonNull } from "@utils/asserts";

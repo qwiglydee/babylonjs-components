@@ -1,5 +1,5 @@
-import { type PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { type PropertyValues } from "lit-element";
+import { customElement, property } from "lit-element/decorators.js";
 
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";

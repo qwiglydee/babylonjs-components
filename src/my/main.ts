@@ -1,6 +1,6 @@
 import { ContextProvider, provide } from "@lit/context";
-import { css, html, type PropertyValues } from "lit";
-import { customElement, property, query, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit-element/decorators.js";
+import { css, html, type PropertyValues } from "lit-element";
 
 import { type PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { BoundingInfo } from "@babylonjs/core/Culling/boundingInfo";

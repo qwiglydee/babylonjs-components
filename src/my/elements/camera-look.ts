@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
-import { type PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { type PropertyValues } from "lit-element";
+import { customElement, property, state } from "lit-element/decorators.js";
 
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { type PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
@@ -25,7 +25,7 @@ export class LookCameraElem extends CameraElemBase<ArcRotateCamera> {
     _picked: Nullable<PickingInfo> = null;
 
     @property({ useDefault: true, converter: polarConverter })
-    defaults: Polar = { a: 45, b: 45, r: 10};
+    defaults: Polar = { a: 45, b: 45, r: 10 };
 
     @property({ type: Boolean })
     autoZoom = false;
@@ -44,7 +44,7 @@ export class LookCameraElem extends CameraElemBase<ArcRotateCamera> {
 
     reset() {
         const { alpha, beta, radius } = polarConverter.toCam(this.defaults)!;
-        smoothParams(this._camera!, {alpha, beta, radius, target: Vector3.Zero()});
+        smoothParams(this._camera!, { alpha, beta, radius, target: Vector3.Zero() });
     }
 
     override update(changes: PropertyValues) {
@@ -52,7 +52,7 @@ export class LookCameraElem extends CameraElemBase<ArcRotateCamera> {
             if (this.main.model.isEmpty) {
                 this.reset();
             } else if (this._picked?.pickedMesh) {
-                this.#retarget(this._picked.pickedMesh.getBoundingInfo())
+                this.#retarget(this._picked.pickedMesh.getBoundingInfo());
             } else if (this._bounds) {
                 this.#retarget(this._bounds.model);
             }

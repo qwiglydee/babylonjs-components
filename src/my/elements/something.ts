@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
-import { type PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { type PropertyValues } from "lit-element";
+import { customElement, property, state } from "lit-element/decorators.js";
 
 import { Vector3 } from "@babylonjs/core/Maths/math";
 import { CreateIcoSphere } from "@babylonjs/core/Meshes/Builders/icoSphereBuilder";
@@ -8,6 +8,7 @@ import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { querySelectorNodes } from "@lib/queryselecting";
 import { dbgChanges, debug } from "@utils/debug";
+
 import { NodeElemBase } from "../base/node";
 import { modelCtx } from "../context";
 import type { IModelContainer } from "../interfaces";

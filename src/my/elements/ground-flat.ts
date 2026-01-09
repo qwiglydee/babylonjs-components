@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
-import { type PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { type PropertyValues } from "lit-element";
+import { customElement, property, state } from "lit-element/decorators.js";
 
 import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures";

@@ -1,6 +1,6 @@
 import { provide } from "@lit/context";
-import { css, html, type PropertyValues, ReactiveElement, render } from "lit";
-import { property } from "lit/decorators.js";
+import { css, html, ReactiveElement, render, type PropertyValues } from "lit-element";
+import { property } from "lit-element/decorators.js";
 
 import type { Engine } from "@babylonjs/core/Engines/engine";
 import { Deferred } from "@babylonjs/core/Misc/deferred";

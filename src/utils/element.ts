@@ -1,4 +1,4 @@
-import { ReactiveElement } from "lit";
+import { ReactiveElement } from "lit-element";
 
 export class VirtualElement extends ReactiveElement {
     protected override createRenderRoot() {
