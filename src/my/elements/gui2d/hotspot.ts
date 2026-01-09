@@ -58,7 +58,6 @@ export class MyGUI2SpotElem extends GUI2ComponentBase {
     blinking = false;
 
     _proto!: MySpot;
-    _spots: MySpot[] = [];
 
     _blinkAnimation: Nullable<AnimationGroup> = null;
 
@@ -79,21 +78,16 @@ export class MyGUI2SpotElem extends GUI2ComponentBase {
     }
 
     override dispose(): void {
-        this._spots.forEach((s) => s.dispose());
+        super.dispose();
         this._proto.dispose();
     }
 
     override update(changes: PropertyValues) {
         if (changes.has("anchor") || changes.has("model")) this.#rescan();
-        if (changes.has("__targets")) {
-            if (this.valid) this.#rettach();
-        }
+        if (changes.has("__targets")) this.#rettach();
         if (changes.has("__targets") || changes.has("blinking")) this.#setupBlinking();
 
         this.visible = this.valid;
-
-        if (changes.has("enabled")) this._syncEnabled(this.enabled, ...this._spots);
-        if (changes.has("visible")) this._syncVisible(this.visible, ...this._spots);
         super.update(changes);
     }
 
@@ -107,21 +101,24 @@ export class MyGUI2SpotElem extends GUI2ComponentBase {
     }
 
     #rettach() {
+        let _spots = this._controls as MySpot[];
         const targets = new Set(this.__targets);
-        const spotted = new Set(this._spots.map((s) => s.anchor.target));
+        const spotted = new Set(_spots.map((_) => _.anchor.target));
         const addnodes = targets.difference(spotted);
         const delnodes = spotted.difference(targets);
 
         if (addnodes.size == 0 && delnodes.size == 0) return;
 
         if (delnodes.size) {
-            this._spots.filter((s) => delnodes.has(s.anchor.target)).forEach((s) => s.dispose());
-            this._spots = this._spots.filter((s) => s.parent !== null); // == not disposed
+            _spots.filter((s) => delnodes.has(s.anchor.target)).forEach((s) => s.dispose());
+            _spots = _spots.filter((s) => s.parent !== null); // == not disposed
         }
 
         if (addnodes.size) {
-            this._spots = this._spots.concat(Array.from(addnodes).map((n) => this.#newspot(n)));
+            _spots = _spots.concat(Array.from(addnodes).map((n) => this.#newspot(n)));
         }
+
+        this._controls = _spots;
     }
 
     #newspot(anchor: TransformNode): MySpot {
@@ -136,12 +133,12 @@ export class MyGUI2SpotElem extends GUI2ComponentBase {
             if (this._blinkAnimation) this._blinkAnimation?.dispose();
             const animation = MySpot.createBlinkingAnimation(24, 12);
             this._blinkAnimation = new AnimationGroup("blinking");
-            this._spots.forEach((s) => (s.alpha = 0));
-            this._spots.forEach((s) => this._blinkAnimation!.addTargetedAnimation(animation, s));
+            this._controls.forEach((_) => (_.alpha = 0));
+            this._controls.forEach((_) => this._blinkAnimation!.addTargetedAnimation(animation, _));
         } else {
             this._blinkAnimation?.dispose();
             this._blinkAnimation = null;
-            this._spots.forEach((s) => (s.alpha = this._proto.alpha));
+            this._controls.forEach((_) => (_.alpha = this._proto.alpha));
         }
     }
 

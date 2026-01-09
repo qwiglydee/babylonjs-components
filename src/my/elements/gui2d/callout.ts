@@ -7,12 +7,12 @@ import type { Nullable } from "@babylonjs/core/types";
 import { RadialGradient } from "@babylonjs/gui/2D/controls/gradient/RadialGradient";
 import { MyCalloutLabel, MyCalloutLine } from "@lib/gui2/callout";
 import { COLORSTYLES, DRAWSTYLES, TEXTSTYLES } from "@lib/gui2/css";
+import { querySelectorNode } from "@lib/queryselecting";
 import { formatCSSColor, parseCSSColor } from "@utils/colors";
 
 import { GUI2ComponentBase } from "../../base/gui2";
 import { modelCtx } from "../../context";
 import type { IModelContainer } from "../../interfaces";
-import { querySelectorNode } from "@lib/queryselecting";
 
 @customElement("my2g-callout")
 export class MyGUICalloutElem extends GUI2ComponentBase {
@@ -40,16 +40,16 @@ export class MyGUICalloutElem extends GUI2ComponentBase {
         this._label.zIndex = 1;
 
         this.applyStyle(this._label);
-        this.applyStyle(this._label, ['offset']);
+        this.applyStyle(this._label, ["offset"]);
         this.applyStyle(this._label._textBlock!, TEXTSTYLES);
         this.applyStyle(this._label._textBlock!, COLORSTYLES);
-        this.applyStyle(this._label._textBlock!, ['padding']);
+        this.applyStyle(this._label._textBlock!, ["padding"]);
         this.applyStyle(this._line, DRAWSTYLES);
 
         const gradient = new RadialGradient(0, 0, 0, 0, 0, 128);
         const color = parseCSSColor(this._line.color);
-        gradient.addColorStop(0.0, formatCSSColor({...color, a: 0.0 }));
-        gradient.addColorStop(1.0, formatCSSColor({...color, a: 1.0 }));
+        gradient.addColorStop(0.0, formatCSSColor({ ...color, a: 0.0 }));
+        gradient.addColorStop(1.0, formatCSSColor({ ...color, a: 1.0 }));
         this._line.gradient = gradient;
 
         this.addControl(this._label);
@@ -57,31 +57,19 @@ export class MyGUICalloutElem extends GUI2ComponentBase {
         this._line.anchor2.target = this._label;
     }
 
-    override dispose(): void {
-        this._label.dispose()
-    }
-
     override update(changes: PropertyValues) {
-        if (changes.has('anchor') || changes.has('model')) this.#rescan();
-        if (changes.has('__target')) {
+        if (changes.has("anchor") || changes.has("model")) this.#rescan();
+        if (changes.has("__target")) {
             this.visible = this.__target !== null && this.__target.isVisible;
-            if (this.__target) this.#rettach();
-            else this.#reset();
+            this.#rettach();
         }
         if (changes.has("edge")) this._label.edge = this.edge;
 
-        if (changes.has("enabled")) this._syncEnabled(this.enabled, this._label);
-        if (changes.has("visible")) this._syncVisible(this.visible, this._label);
         super.update(changes);
     }
 
     #rescan() {
-        this.__target = this.anchor ? querySelectorNode(this.model, this.anchor) as TransformNode : null;
-    }
-
-    #reset() {
-        this._label.anchor.unlink();
-        this._line.anchor1.unlink();
+        this.__target = this.anchor ? (querySelectorNode(this.model, this.anchor) as TransformNode) : null;
     }
 
     #rettach() {

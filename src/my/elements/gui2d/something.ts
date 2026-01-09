@@ -17,13 +17,4 @@ export class MyGUISomethingElem extends GUI2ComponentBase {
 
         this.addControl(this._text);
     }
-
-    override dispose(): void {
-        this._text.dispose();
-    }
-
-    override update(changes: PropertyValues) {
-        if (changes.has("enabled")) this._syncEnabled(this.enabled, this._text);
-        if (changes.has("visible")) this._syncVisible(this.visible, this._text);
-    }
 }
