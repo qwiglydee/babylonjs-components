@@ -1,11 +1,11 @@
-import { type PropertyValues } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { type PropertyValues } from "lit-element";
+import { customElement, property } from "lit-element/decorators.js";
 
 import { UniversalCamera } from "@babylonjs/core/Cameras/universalCamera";
 import { assertNonNull } from "@utils/asserts";
 
-import { type Coords, coordsConverter } from "../properties/coords";
 import { CameraElemBase } from "../base/camera";
+import { type Coords, coordsConverter } from "../properties/coords";
 
 @customElement("my3d-camera-basic")
 export class BasicCameraElem extends CameraElemBase<UniversalCamera> {

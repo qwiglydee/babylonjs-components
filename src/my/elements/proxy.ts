@@ -1,18 +1,18 @@
 import { consume } from "@lit/context";
-import type { PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import type { PropertyValues } from "lit-element";
+import { customElement, property, state } from "lit-element/decorators.js";
 
 import type { Node as BabylonNode } from "@babylonjs/core/node";
-import { assertNonNull } from "@utils/asserts";
 import type { Nullable } from "@babylonjs/core/types";
+import { assertNonNull } from "@utils/asserts";
 
-import { ComponentElemBase } from "../base/elem";
+import { ComponentElemBase } from "../base/component";
 import { modelCtx } from "../context";
 import type { IModelContainer } from "../interfaces";
 
 /**
  * An element that refers to a node in scene.
- * 
+ *
  * Setting disabled/hidden affects target node.
  */
 @customElement("my3d-proxy")
@@ -27,7 +27,7 @@ export class MyProxyElem extends ComponentElemBase {
      */
     @property()
     for: string = "";
-    
+
     @state()
     _target: Nullable<BabylonNode> = null;
 
@@ -77,13 +77,13 @@ export class MyProxyElem extends ComponentElemBase {
     }
 
     override willUpdate(changes: PropertyValues): void {
-        if (changes.has('for') || changes.has('model')) this.#rettach();        
+        if (changes.has("for") || changes.has("model")) this.#rettach();
     }
 
     override update(changes: PropertyValues) {
         if (this._target) {
-            if (changes.has('_target') || changes.has("__enabled")) this._syncEnabled(this.__enabled);
-            if (changes.has('_target') || changes.has("__visible")) this._syncVisible(this.__visible);
+            if (changes.has("_target") || changes.has("__enabled")) this._syncEnabled(this.__enabled);
+            if (changes.has("_target") || changes.has("__visible")) this._syncVisible(this.__visible);
         }
         super.update(changes);
     }
@@ -95,14 +95,14 @@ export class MyProxyElem extends ComponentElemBase {
     protected _syncEnabled(enabled: boolean) {
         assertNonNull(this._target);
         assertNonNull(enabled);
-        this.toggleAttribute("disabled", !enabled); 
+        this.toggleAttribute("disabled", !enabled);
         this._target.setEnabled(enabled);
     }
 
     protected _syncVisible(enabled: boolean) {
         assertNonNull(this._target);
         assertNonNull(enabled);
-        this.toggleAttribute("hidden", !enabled); 
+        this.toggleAttribute("hidden", !enabled);
         this._target.isVisible = enabled;
     }
 }

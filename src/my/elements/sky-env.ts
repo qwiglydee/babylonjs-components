@@ -1,4 +1,4 @@
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property } from "lit-element/decorators.js";
 
 import { CubeTexture } from "@babylonjs/core/Materials/Textures/cubeTexture";
 import { assertNonNull } from "@utils/asserts";

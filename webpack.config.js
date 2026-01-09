@@ -2,7 +2,6 @@ import webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import TerserPlugin from "terser-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
-import RemoveSourceMapURLWebpackPlugin from "@rbarilani/remove-source-map-url-webpack-plugin";
 import * as path from "path";
 
 export default function (env, argv) {
@@ -46,14 +45,13 @@ export default function (env, argv) {
             new HtmlWebpackPlugin({ template: "index.html", minify: false }),
             new webpack.SourceMapDevToolPlugin({
                 append: isproduction ? false : undefined,
-                filename: "[file].map[query]",
-                include: [/mybabylon/, /app/],
-            }),
-            new RemoveSourceMapURLWebpackPlugin({
-                test: /^(vendor|lit)\./,
+                columns: false,
+                // filename: "[file].map[query]",
+                exclude: [/\/node_modules\//],
             }),
         ],
         performance: {
+            maxAssetSize: 3000000,
             maxEntrypointSize: 5000000,
         },
         optimization: {
@@ -68,10 +66,11 @@ export default function (env, argv) {
                 name: (module, chunks, cacheGroupKey) => {
                     const path = module.userRequest;
                     if (/\/@babylonjs\//.test(path)) return "babylonjs";
-                    else if (/\/(@lit|lit|lit-html|lit-element)\//.test(path)) return "lit";
+                    else if (/\/(@lit|lit-html|lit-element)\//.test(path)) return "lit";
                 },
             },
         },
+        devtool: false,
         devServer: {
             hot: true,
             compress: true,
@@ -85,8 +84,9 @@ export default function (env, argv) {
             },
         },
         infrastructureLogging: {
+            colors: true, 
             appendOnly: true,
-            level: "verbose",
+            level: "info",
         },
     };
 
@@ -99,7 +99,6 @@ export default function (env, argv) {
     }
 
     if (isdevelopment) {
-        config.devtool = 'eval';
         config.entry.mybabylon.push("./src/testing.ts");
         config.plugins.push(new HtmlWebpackPlugin({ template: "tests/testpage.html", filename: "testpage.html", minify: false, inject: "body" }));
     }

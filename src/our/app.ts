@@ -1,8 +1,9 @@
 import { provide } from "@lit/context";
-import { ReactiveElement } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement } from "lit-element/decorators.js";
+import { ReactiveElement } from "lit-element";
 
-import { debug, debugEvent } from "@utils/debug";
+import { debugEvent } from "@utils/debug";
+
 import { babylonCtx, statusCtx } from "./context";
 import type { BabylonEvent, BabylonPickEvent, BabylonUpdateEvent, IBabylonElem } from "./interfaces";
 

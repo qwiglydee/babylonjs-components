@@ -1,7 +1,7 @@
-import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
-import { ReactiveElement } from "lit";
+import type { ReactiveElement } from "lit-element";
 
 import { PointerDragBehavior } from "@babylonjs/core/Behaviors/Meshes/pointerDragBehavior";
+import { PickingInfo } from "@babylonjs/core/Collisions/pickingInfo";
 import { Vector3 } from "@babylonjs/core/Maths/math";
 import type { Nullable } from "@babylonjs/core/types";
 

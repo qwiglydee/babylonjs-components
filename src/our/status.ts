@@ -1,6 +1,6 @@
 import { consume } from "@lit/context";
-import { css, html, LitElement } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement } from "lit-element/decorators.js";
+import { LitElement, css, html } from "lit-element";
 
 import { statusCtx } from "./context";
 

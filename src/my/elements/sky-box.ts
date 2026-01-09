@@ -1,4 +1,4 @@
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property } from "lit-element/decorators.js";
 
 import { BackgroundMaterial } from "@babylonjs/core/Materials/Background/backgroundMaterial";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";

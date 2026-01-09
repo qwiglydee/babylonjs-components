@@ -1,15 +1,14 @@
 import { consume } from "@lit/context";
-import { html, type PropertyValues } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { html, type PropertyValues } from "lit-element";
+import { customElement, property, state } from "lit-element/decorators.js";
 
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
+import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { Node as BabylonNode } from "@babylonjs/core/node";
 import { Scene } from "@babylonjs/core/scene";
 import { assertNonNull } from "@utils/asserts";
-
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
 
 import { CameraElemBase } from "./my/base/camera";
 import { ComponentElemBase } from "./my/base/component";
