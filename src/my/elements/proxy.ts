@@ -16,7 +16,7 @@ import type { IModelContainer } from "../interfaces";
  *
  * Setting disabled/hidden affects target node.
  */
-@customElement("my3d-proxy")
+@customElement("b3d-proxy")
 export class MyProxyElem extends ComponentElemBase {
     /** context-provided container to search for target */
     @consume({ context: modelCtx, subscribe: true })

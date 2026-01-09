@@ -14,7 +14,7 @@ import { assert } from "@utils/asserts";
 import { ComponentElemBase } from "../base/component";
 import { pickCtx } from "../context";
 
-@customElement("my3d-highlighter")
+@customElement("b3d-highlighter")
 export class HighlighterElem extends ComponentElemBase {
     @consume({ context: pickCtx, subscribe: true })
     @state()

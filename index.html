@@ -20,7 +20,7 @@
                 margin-bottom: 64px;
             }
 
-            my3d-main {
+            b3d-main {
                 flex: 1 1 640px;
                 height: 100%;
                 min-height: 480px;
@@ -31,7 +31,7 @@
                 padding: 0 !important;
             }
 
-            the-app.fullscreen my3d-main {
+            the-app.fullscreen b3d-main {
                 position: fixed;
                 left: 0;
                 top: 0;
@@ -80,11 +80,11 @@
                 stroke: var(--bs-primary);
             }
 
-            my3d-main button {
+            b3d-main button {
                 pointer-events: all;
             }
 
-            my3d-main button * {
+            b3d-main button * {
                 pointer-events: none;
             }
 
@@ -105,28 +105,28 @@
     <body class="full container">
         <h1>Babylonjs Components</h1>
         <the-app style="visibility: hidden">
-            <my3d-main worldSize="100" rightHanded>
-                <my3d-camera-basic id="cam0" position="[5, 1.75, 5]"></my3d-camera-basic>
-                <my3d-camera-orbit id="cam1" orbit="[45, 60, 10]"></my3d-camera-orbit>
-                <my3d-camera-look id="cam2" selected autoZoom defaults="[45, 45, 10]"></my3d-camera-look>
+            <b3d-main worldSize="100" rightHanded>
+                <b3d-camera-basic id="cam0" position="[5, 1.75, 5]"></b3d-camera-basic>
+                <b3d-camera-orbit id="cam1" orbit="[45, 60, 10]"></b3d-camera-orbit>
+                <b3d-camera-look id="cam2" selected autoZoom defaults="[45, 45, 10]"></b3d-camera-look>
 
-                <my3d-sky-env src="assets/studio.env">
-                    <my3d-sky-box blurring="0.75" intensity="0.25"></my3d-sky-box>
-                </my3d-sky-env>
+                <b3d-sky-env src="assets/studio.env">
+                    <!-- <b3d-sky-box blurring="0.75" intensity="0.25"></b3d-sky-box> -->
+                </b3d-sky-env>
 
-                <!-- <my3d-ground-flat size="auto" src="assets/ground.png" color="#102040"></my3d-ground-flat> -->
-                <my3d-utility-layer>
-                    <my3d-ground-grid size="auto" src="assets/ground.png" color="#80FFFF"></my3d-ground-grid>
-                    <my3d-axesview></my3d-axesview>
-                    <!-- <my3d-ghost autoHide></my3d-ghost> -->
-                </my3d-utility-layer>
-                <my3d-highlighter color="#F0F000"></my3d-highlighter>
+                <b3d-stuff id="ball" shape="sphere"></b3d-stuff>
+                <b3d-stuff id="box" class="foo" shape="cube" size="2" position="[-3, 1, -5]" texture="assets/checker.png"></b3d-stuff>
+                <b3d-stuff id="cone" class="foo bar" shape="cone" positionRnd="5" texture="assets/checker.png"></b3d-stuff>
 
-                <my3d-stuff id="ball" shape="sphere"></my3d-stuff>
-                <my3d-stuff id="box" class="foo" shape="cube" size="2" position="[-3, 1, -5]" texture="assets/checker.png"></my3d-stuff>
-                <my3d-stuff id="cone" class="foo bar" shape="cone" positionRnd="5" texture="assets/checker.png"></my3d-stuff>
+                <b3d-something id="center" select="baz"></b3d-something>
 
-                <my3d-something id="center" select="baz"></my3d-something>
+                <!-- <b3d-ground-flat size="auto" src="assets/ground.png" color="#102040"></b3d-ground-flat> -->
+                <b3d-utility-layer>
+                    <b3d-ground-grid size="auto" src="assets/ground.png" color="#80FFFF"></b3d-ground-grid>
+                    <b3d-axesview></b3d-axesview>
+                    <!-- <b3d-ghost autoHide></b3d-ghost> -->
+                </b3d-utility-layer>
+                <b3d-highlighter color="#F0F000"></b3d-highlighter>
 
                 <div slot="overlay" style="position: absolute; left: 0; top: 0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-badge m-1" viewBox="0 0 16 16">
@@ -150,7 +150,7 @@
                         </svg>
                     </button>
                 </div>
-            </my3d-main>
+            </b3d-main>
 
             <div class="htmlui">
                 <h3 style="margin: 0">Some UI</h3>

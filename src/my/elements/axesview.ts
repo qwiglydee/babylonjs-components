@@ -4,7 +4,7 @@ import { AxesViewer } from "@babylonjs/core/Debug/axesViewer";
 
 import { ComponentElemBase } from "../base/component";
 
-@customElement("my3d-axesview")
+@customElement("b3d-axesview")
 export class AxesviewElem extends ComponentElemBase {
     @property({ type: Number })
     scale = 1;

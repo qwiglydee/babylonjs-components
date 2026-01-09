@@ -12,7 +12,7 @@ import { GhostBehavior } from "@lib/ghostbhv";
 import { NodeElemBase } from "../base/node";
 import { pickCtx } from "../context";
 
-@customElement("my3d-ghost")
+@customElement("b3d-ghost")
 export class GhostElem extends NodeElemBase<Mesh> {
     static override auxiliary = true;
 

@@ -11,10 +11,10 @@ test("default", async ({ page }) => {
     const { babylon, scene } = await loadBabylonHeadful(
         page,
         `
-        <my3d-proxy></my3d-proxy>
+        <b3d-proxy></b3d-proxy>
     `
     );
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     expect(proxy.ref).toHaveJSProperty("for", "");
     expect(await proxy.elem.evaluate((_) => _._target?.name)).toBeUndefined();
@@ -27,11 +27,11 @@ test("invalid", async ({ page }) => {
         page,
         `
         <test-mesh id="foo"></test-mesh>
-        <my3d-proxy for="bar"></my3d-proxy>
+        <b3d-proxy for="bar"></b3d-proxy>
     `
     );
     const inst = scene.evaluateHandle(_ => _.getMeshById('foo'));
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     expect(proxy.ref).toHaveJSProperty("for", "bar");
     expect(await proxy.elem.evaluate((_) => _._target?.name)).toBeUndefined();
@@ -44,11 +44,11 @@ test("static link", async ({ page }) => {
         page,
         `
         <test-mesh id="foo"></test-mesh>
-        <my3d-proxy for="foo"></my3d-proxy>
+        <b3d-proxy for="foo"></b3d-proxy>
     `
     );
     const target = (await scene.evaluateHandle(_ => _.getMeshById('foo'))) as JSHandle<Mesh>;
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     expect(proxy.ref).toHaveJSProperty("for", "foo");
     expect(await proxy.elem.evaluate((_) => _._target?.name)).toEqual("something");
@@ -64,11 +64,11 @@ test("sync props", async ({ page }) => {
         page,
         `
         <test-mesh id="foo"></test-mesh>
-        <my3d-proxy for="foo"></my3d-proxy>
+        <b3d-proxy for="foo"></b3d-proxy>
     `
     );
     const target = (await scene.evaluateHandle(_ => _.getMeshById('foo'))) as JSHandle<Mesh>;
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     await proxy.elem.evaluate((_) => (_.visible = false));
     await proxy.elem.evaluate((_) => (_.enabled = false));
@@ -81,10 +81,10 @@ test("dynamic target", async ({ page }) => {
     const { babylon, scene } = await loadBabylonHeadful(
         page,
         `
-        <my3d-proxy for="foo"></my3d-proxy>
+        <b3d-proxy for="foo"></b3d-proxy>
     `
     );
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     babylon.evaluate((_) => {
         const elem = _.ownerDocument.createElement("test-mesh");
@@ -106,10 +106,10 @@ test("dynamic target overriding props", async ({ page }) => {
     const { babylon, scene } = await loadBabylonHeadful(
         page,
         `
-        <my3d-proxy for="foo" hidden></my3d-proxy>
+        <b3d-proxy for="foo" hidden></b3d-proxy>
     `
     );
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     babylon.evaluate((_) => {
         const elem = _.ownerDocument.createElement("test-mesh");
@@ -137,11 +137,11 @@ test("dynamic proxy", async ({ page }) => {
     const target = (await scene.evaluateHandle(_ => _.getMeshById('foo'))) as JSHandle<Mesh>;
 
     babylon.evaluate((_) => {
-        const elem = _.ownerDocument.createElement("my3d-proxy") as MyProxyElem;
+        const elem = _.ownerDocument.createElement("b3d-proxy") as MyProxyElem;
         elem.for = "foo";
         _.appendChild(elem);
     });
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     expect(proxy.ref).toHaveJSProperty("for", "foo");
     expect(await proxy.elem.evaluate((_) => _._target?.name)).toEqual("something");
@@ -162,11 +162,11 @@ test("dynamic proxy peeking props", async ({ page }) => {
     const target = (await scene.evaluateHandle(_ => _.getMeshById('foo'))) as JSHandle<Mesh>;
 
     babylon.evaluate((_) => {
-        const elem = _.ownerDocument.createElement("my3d-proxy") as MyProxyElem;
+        const elem = _.ownerDocument.createElement("b3d-proxy") as MyProxyElem;
         elem.for = "foo";
         _.appendChild(elem);
     });
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     expect(proxy.ref).toHaveJSProperty("for", "foo");
     expect(await proxy.elem.evaluate((_) => _._target?.name)).toEqual("something");
@@ -183,10 +183,10 @@ test("retargeting", async ({ page }) => {
         `
         <test-mesh id="foo" name="foothing"></test-mesh>
         <test-mesh id="bar" name="barthing"></test-mesh>
-        <my3d-proxy for="foo"></my3d-proxy>
+        <b3d-proxy for="foo"></b3d-proxy>
     `
     );
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     expect(proxy.ref).toHaveJSProperty("for", "foo");
     expect(await proxy.elem.evaluate((_) => _._target?.name)).toEqual("foothing");
@@ -202,10 +202,10 @@ test("replacing", async ({ page }) => {
         page,
         `
         <test-mesh id="foo" name="foo1thing"></test-mesh>
-        <my3d-proxy for="foo"></my3d-proxy>
+        <b3d-proxy for="foo"></b3d-proxy>
     `
     );
-    const proxy = await pickComponent<MyProxyElem, unknown>(page, "my3d-proxy");
+    const proxy = await pickComponent<MyProxyElem, unknown>(page, "b3d-proxy");
 
     expect(proxy.ref).toHaveJSProperty("for", "foo");
     expect(await proxy.elem.evaluate((_) => _._target?.name)).toEqual("foo1thing");

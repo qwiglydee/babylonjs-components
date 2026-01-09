@@ -7,7 +7,7 @@ import { type Scene } from "@babylonjs/core/scene";
 import { ComponentElemBase } from "../base/component";
 import { sceneCtx } from "../context";
 
-@customElement("my3d-utility-layer")
+@customElement("b3d-utility-layer")
 export class UtilityElem extends ComponentElemBase {
     @provide({ context: sceneCtx })
     _utilScene!: Scene;

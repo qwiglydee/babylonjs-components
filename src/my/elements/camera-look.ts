@@ -14,7 +14,7 @@ import { boundsCtx, pickCtx } from "../context";
 import { type BoundsInfo } from "../interfaces";
 import { type Polar, polarConverter } from "../properties/polar";
 
-@customElement("my3d-camera-look")
+@customElement("b3d-camera-look")
 export class LookCameraElem extends CameraElemBase<ArcRotateCamera> {
     @consume({ context: boundsCtx, subscribe: true })
     @state()
