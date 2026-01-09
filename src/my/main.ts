@@ -13,11 +13,11 @@ import { Scene } from "@babylonjs/core/scene";
 import { type Nullable } from "@babylonjs/core/types";
 import { bubbleEvent, queueEvent } from "@utils/events";
 
-import { MainElemBase } from "../base/main";
-import { boundsCtx, mainCtx, modelCtx, pickCtx } from "../context";
-import { DraggingCtrl } from "../controllers/dragging";
-import { PickingCtrl } from "../controllers/picking";
-import { type BoundsInfo, type IModelContainer, type IMyMain } from "../interfaces";
+import { MainElemBase } from "./base/main";
+import { boundsCtx, mainCtx, modelCtx, pickCtx } from "./context";
+import { DraggingCtrl } from "./controllers/dragging";
+import { PickingCtrl } from "./controllers/picking";
+import { type BoundsInfo, type IModelContainer, type IMyMain } from "./interfaces";
 
 @customElement("my3d-main")
 export class MainElem extends MainElemBase implements IMyMain {

@@ -4,7 +4,7 @@ import { customElement, property } from "lit/decorators.js";
 import { UtilityLayerRenderer } from "@babylonjs/core/Rendering/utilityLayerRenderer";
 import { type Scene } from "@babylonjs/core/scene";
 
-import { ComponentElemBase } from "../base/elem";
+import { ComponentElemBase } from "../base/component";
 import { sceneCtx } from "../context";
 
 @customElement("my3d-utility-layer")

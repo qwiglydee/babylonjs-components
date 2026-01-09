@@ -1,5 +1,11 @@
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 
+
+/**
+ * Controller to implement some functions.
+ * 
+ * No assumtion on host element, it could be main, component, or gui
+ */
 export abstract class BabylonControllerBase<Host extends ReactiveControllerHost> implements ReactiveController {
     host: Host;
     
@@ -8,8 +14,16 @@ export abstract class BabylonControllerBase<Host extends ReactiveControllerHost>
         this.host.addController(this);
     }
 
+    /**
+     * self-removing from host
+     * slightly supporting dynaic controllers
+     */
+    remove() {
+        this.dispose();
+        this.host.removeController(this);
+    }
+
     hostConnected(): void {
-        // afer connection/init completed
         queueMicrotask(() => this.init())
     }
 
@@ -23,6 +37,17 @@ export abstract class BabylonControllerBase<Host extends ReactiveControllerHost>
     hostUpdated(): void {
     }
 
+    /**
+     * Initialization, 
+     * after host connected and initialized 
+     * (context available)
+     */
     abstract init(): void;
+
+    /**
+     * Disposal,
+     * after host disposed everything, before disconnected
+     * (context still available)
+     */
     abstract dispose(): void;
 }
