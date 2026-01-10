@@ -132,6 +132,11 @@ export abstract class MainElemBase extends ReactiveElement {
         super.disconnectedCallback();
     }
 
+    // @ts-ignore
+    override connectedMoveCallback() {
+        // keep context when reconnecting (not widely available)
+    }
+
     override shouldUpdate(_changedProperties: PropertyValues): boolean {
         return this.isReady;    
     }

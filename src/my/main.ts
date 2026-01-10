@@ -46,7 +46,7 @@ export class MainElem extends MainElemBase implements IMyMain {
 
     /** providing scene as model */
     #modelCtx = new ContextProvider(this, { context: modelCtx });
- 
+
     @property({ type: Number })
     worldSize = 100;
 
@@ -93,14 +93,6 @@ export class MainElem extends MainElemBase implements IMyMain {
 
     @query("b3d-screen")
     _screen!: HTMLElement & ILoadingScreen;
-
-    // _pickCtrl = new PickingCtrl(this);
-    // _moveCtrl = new MoveingCtrl(this);
-
-    // @ts-ignore
-    override connectedMoveCallback() {
-        // keep context when reconnecting (not widely available)
-    }
 
     _init() {
         this.engine = new Engine(this.canvas, undefined, MainElem.ENGINEOPTIONS);
