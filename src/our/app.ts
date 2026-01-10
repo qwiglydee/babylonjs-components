@@ -5,7 +5,7 @@ import { ReactiveElement } from "lit-element";
 import { debugEvent } from "@utils/debug";
 
 import { babylonCtx, statusCtx } from "./context";
-import type { BabylonEvent, BabylonPickEvent, BabylonUpdateEvent, IBabylonElem } from "./interfaces";
+import type { BabylonInitEvent, BabylonPickEvent, BabylonUpdateEvent, IBabylonElem } from "./interfaces";
 
 /**
  * Babylon-unaware web app
@@ -30,7 +30,7 @@ export class TheAppElem extends ReactiveElement {
         this.addEventListener('babylon.pick', this.#onpick);
     }
 
-    #oninit = (event: BabylonEvent) => {
+    #oninit = (event: BabylonInitEvent) => {
         debugEvent(this, event);
         this.babylon = event.target as IBabylonElem;
         this.status = "hello";  
