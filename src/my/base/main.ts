@@ -12,26 +12,36 @@ import { sceneCtx } from "../context";
 /**
  * Base for main scene component.
  *
- * - provides readyness async status flag  
- * - creates canvas (unattached)
+ * - provides readiness status flag  
+ * - creates canvas
+ * - expects subclass `_init` to create engine and scene
  * - handles canvas resizing
  * - handles visibility check to suspend/resume rendering
+ * - provides scene to all ancestors via context
  *
- * Derived concrete class:
- * - should `_init` and `_dispose` engine and scene
- * - should probably override `_renderHTML`
+ * @context babylon.scene
  */
 export abstract class MainElemBase extends ReactiveElement {
-    /** precentage of canvas visibility to suspend rendering */
+    /** threshold of canvas visibility to suspend rendering */
     @property({ type: Number })
     visibilityThreshold = 0.25;
 
+    /** the canvas element
+     * created ahead of any initialization
+     */
     canvas: HTMLCanvasElement;
 
-    /** should be initialized in specific class */
+    /** the engine
+     * should be initialized by `_init`
+     */
     engine!: Engine;
 
-    /** should be initialized in specific class */
+    /**
+     * the scene 
+     * should be initialized by `_init`
+     * 
+     * @context babylon.scene
+     */
     @provide({ context: sceneCtx })
     scene!: Scene;
 
@@ -56,33 +66,35 @@ export abstract class MainElemBase extends ReactiveElement {
     ];
 
     /**
-     * Called once to initialize shadow DOM
+     * Called once to render shadow DOM
+     * The renering is performed after initialization of engine and scene. 
      */
     protected _renderHTML() {
         return html`${this.canvas}`;
     }
 
     /**
-     * Should init engine and scene.
+     * Should init engine, scene, whateve
      */
     abstract _init(): void;
 
     /**
-     * Should dispose engine and scene
+     * Should dispose engine, scene, whateve
      */
     abstract _dispose(): void;
 
     /**
-     * Called when scene becomes initially ready
+     * Called once when scene becomes initially ready
      */
     protected _onready() {
+        // TODO: auto activate first camera if none selected during initialization 
         this._startRendering();
         this.whenReady.resolve(true);
         this.isReady = true;
     }
 
     /**
-     * Called to stop rendering initially or after suspension
+     * Called to start/resume rendering
      */
     protected _startRendering() {
         if (!this.scene.isReady()) return;
@@ -91,7 +103,7 @@ export abstract class MainElemBase extends ReactiveElement {
     }
 
     /**
-     * Called to stop rendering for suspension
+     * Called to stop/suspend rendering
      */
     protected _stopRendering() {
         this.engine.stopRenderLoop(this.#rendering);
@@ -108,6 +120,7 @@ export abstract class MainElemBase extends ReactiveElement {
 
     override connectedCallback(): void {
         super.connectedCallback();
+
         this._init();
         assertNonNull(this.engine);
         assertNonNull(this.scene);
@@ -117,6 +130,8 @@ export abstract class MainElemBase extends ReactiveElement {
 
         this.#resizingObs.observe(this);
         this.#visibilityObs.observe(this);
+
+        // FIXME: prevent initial call to update
 
         // after shadow dom initializes
         queueMicrotask(() => {
@@ -129,12 +144,13 @@ export abstract class MainElemBase extends ReactiveElement {
         this.#visibilityObs.disconnect();
         this._stopRendering();
         this._dispose();
+
         super.disconnectedCallback();
     }
 
     // @ts-ignore
     override connectedMoveCallback() {
-        // keep context when reconnecting (not widely available)
+        // trying to keep context when reconnecting (not widely available)
     }
 
     override shouldUpdate(_changedProperties: PropertyValues): boolean {

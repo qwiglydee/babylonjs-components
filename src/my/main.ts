@@ -19,6 +19,32 @@ import { DraggingCtrl } from "./controllers/dragging";
 import { PickingCtrl } from "./controllers/picking";
 import { type BoundsInfo, type IModelContainer, type IMyMain } from "./interfaces";
 
+/**
+ * Main component for the demo app
+ * Creates usual engine and scene.
+ * 
+ * Includes loading screen, but for now it only spins initially
+ * Addon controllers:
+ * - PickingCtrl: picking by pointer tap
+ * - DraggingCtrl: moving the picked mesh  
+ * 
+ * Important and auxiliary content of the scene are differentiated by 'aux' tag.
+ * Content update is determined by adding/removed important meshes
+ * It can be enforced in other cases (like, moving) by calling `.requestUpdate('model')`
+ * 
+ * @context babylon.main: itself, constant
+ * @context babylon.scene: the scene, constant
+ * @context babylon.model: the same scene as `IModelContainer`
+ *   - it's visible through utility layer with it's own scene
+ *   - updated forcedly (with the same value) when content changes   
+ * @context babylon.bounds: bounds of model in scene (not counting auxiliary stuff)
+ *   - updated when content changed, initialy is 1x1x1 bbox
+ * @context babylon.picked: selected mesh set by add-on controller
+ *
+ * @event babylon.init: when initialized and get ready
+ * @event babylon.update: when content changed
+ * @event babylon.pick: some mesh picked or unpicked
+ */
 @customElement("b3d-main")
 export class MainElem extends MainElemBase implements IMyMain {
     /** orientation of scene */
@@ -39,12 +65,10 @@ export class MainElem extends MainElemBase implements IMyMain {
         return this.scene.getMeshesByTags("!aux");
     }
 
-    /** providing self as context */
     #selfCtx = new ContextProvider(this, { context: mainCtx, initialValue: this });
 
     model!: IModelContainer;
 
-    /** providing scene as model */
     #modelCtx = new ContextProvider(this, { context: modelCtx });
 
     @property({ type: Number })
@@ -104,11 +128,9 @@ export class MainElem extends MainElemBase implements IMyMain {
         // this.scene.clearColor = Color4.FromHexString(this.background);
 
         // @ts-ignore
-        this.scene.isEmpty = true;
-        // @ts-ignore
-        this.model = this.scene;
-        // @ts-ignore
-        this.#modelCtx.setValue(this.scene);
+        this.model = this.scene as IModelContainer;
+        this.model.isEmpty = true;
+        this.#modelCtx.setValue(this.model);
 
         const affect = (mesh: AbstractMesh) => {
             if (MainElem._isImportant(mesh)) this.requestUpdate("model");
@@ -173,6 +195,10 @@ export class MainElem extends MainElemBase implements IMyMain {
         return { model, world };
     }
 
+    /** 
+     * very public API to get content
+     * TODO: add tags
+     */
     getStuff() {
         return this.scene.getMeshesByTags("!aux").map((item) => {
             return { name: item.name, id: item.id };

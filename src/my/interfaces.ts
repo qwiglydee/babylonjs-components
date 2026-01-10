@@ -12,20 +12,31 @@ import type { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Nullable } from "@babylonjs/core/types";
 
+/**
+ * Like AssetContainer, but Model 
+ * With some extensions to appear in future.
+ */
 export interface IModelContainer extends IAssetContainer {
+    /** Indicates if there is some important (non aux) stuff present */
     isEmpty: boolean;
 
     getTransformNodeById(id: string): TransformNode;
     getTransformNodesByTags(query: string): TransformNode[];
     getMeshById(id: string): AbstractMesh;
     getMeshesByTags(query: string): AbstractMesh[];
+
+    // TODO: heterogenous for positional entities
+    // getStuffById(id: string): TransformNode|AbstractMesh;
+    // getStuffByTags(query: string): TransformNode|AbstractMesh[];
+
+    // TODO:
+    // querySelectorNode<T extends BabylonNode>(id_or_tags: string): T;
+    // querySelectorNodes<T extends BabylonNode>(id_or_tags: string): T[];
 }
 
 export interface IBaseMain {
     canvas: HTMLCanvasElement;
     engine: Engine;
-
-    /** @context babylon.scene */
     scene: Scene;
 
     whenReady: { promise: Promise<boolean> };
@@ -44,17 +55,22 @@ export interface BoundsInfo {
  */
 export interface IMyMain extends IBaseMain {
     /** 
-     * @context babylon.model 
-     * same as scene, but transparent via utility scene 
+     * Maximal possible size   
+     */
+    worldSize: number;
+
+    /**
+     * Scene as container
      */
     model: IModelContainer;
-
-    /** @property */
-    worldSize: number;
     
-    /** @context babylon.bounds */
+    /**
+     * Bounds of current content 
+     */
     bounds: BoundsInfo;
 
-    /** @context babylon.pick */
+    /**
+     * Something picked
+     */
     picked: Nullable<PickingInfo>;
 }
