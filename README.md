@@ -1,26 +1,7 @@
 # babylonjs-components
-Web components for babylonjs apps powered by [Lit](https://lit.dev/)
 
-## Context
+A boilerplate for creating [BabylonJS](https://www.babylonjs.com/) web-modules from web-components powered by [Lit](https://lit.dev/).
 
-```html
-<the-app>
-  <!-- some existing babylonjs-unaware app -->
+# TODO
 
-  <my3d-app id="main3d" param="..." param="...">
-    <!-- babylonjs component, shadow dom contains canvas and everything -->
-
-    <my3d-something param="..." param="...">
-      <!-- a babylon-related component, using babylon internal APIs -->
-    </my3d-something>
-  </my3d-app>
-
-  <our-something ref="#main3d">
-    <!-- some integration component using /public API/ of my3d-app -->
-  </our-something>
-
-  <their-something>
-    <!-- some third-party component than might be somehow related --> 
-  </their-something>
-</the-app>
-```
+- [ ] write readme
