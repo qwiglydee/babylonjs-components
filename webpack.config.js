@@ -93,8 +93,11 @@ export default function (env, argv) {
     if (isproduction) {
         config.plugins.push(
             new CopyPlugin({
-                patterns: [{ from: "public/*.*", to: "[name][ext]", info: { minimized: true } }],
-            })
+                patterns: [
+                    { from: "public/*.*", to: "[name][ext]", info: { minimized: true } },
+                    { from: "public/assets/*.*", to: "assets/[name][ext]" }
+                ],
+            }),
         );
     }
 
