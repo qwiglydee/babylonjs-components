@@ -1,7 +1,9 @@
 {
   "name": "babylonjs-components",
-  "private": true,
+  "description": "Boilerplate for babylonjs apps with Lit and web-components",
   "author": "qwiglydee@gmail.com",
+  "private": false,
+  "version": "2026.01.10",
   "type": "module",
   "scripts": {
     "build": "webpack build --mode production",
